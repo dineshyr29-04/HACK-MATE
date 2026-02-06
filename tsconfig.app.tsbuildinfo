@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/projectsetup.tsx","./src/components/stagedetail.tsx","./src/components/stageselection.tsx","./src/components/ui/ai-input-hero.tsx","./src/components/ui/mini-navbar.tsx","./src/lib/store.ts","./src/lib/utils.ts"],"version":"5.9.3"}
