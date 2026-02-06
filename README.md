@@ -1,73 +1,93 @@
-# React + TypeScript + Vite
+# Hackathon Copilot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**The secret weapon for winning hackathons.**
 
-Currently, two official plugins are available:
+Hackathon Copilot is a calm, opinionated, and minimal workspace designed to guide builders through the chaos of a 24-48 hour hackathon. It doesn't write the code for you; it ensures you're building the *right* thing, with the *right* tools, at the *right* speed.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🧘 Product Philosophy
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Calm**: Reduces cognitive load when pressure is high.
+- **Opinionated**: Provides strong defaults so you don't waste time deciding.
+- **Handcrafted**: Every interaction is designed to feel premium and deliberate.
+- **Local-First**: No sign-ups. Your data stays in your browser.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ✨ Key Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 🚀 Strategic Workflow
+Step-by-step guidance broken down into critical stages:
+1. **Ideation**: Refine your problem statement and UVP.
+2. **Market Research**: Validate your idea against competitors.
+3. **Design**: Generate UI systems and mockups.
+4. **Build**: Get the best stack for rapid prototyping.
+5. **Git & GitHub**: Workflow commands for team collaboration.
+6. **Pitch Deck**: Craft a winning narrative.
+7. **Submission**: Don't miss the deadline.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 🧠 10x Prompts
+Don't guess what to ask ChatGPT or Claude. We provide **engineered, role-specific prompts** (e.g., "Act as a YC Founder", "Act as a Senior UX Designer") that you can copy, edit, and use immediately to get high-quality outputs.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 💾 Persistent Workspace
+- **Auto-Save**: Never lose your progress. Everything is saved locally.
+- **Resume Work**: Close the tab and come back later exactly where you left off.
+- **Stateful Checklists**: Track every task across every stage.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 🔗 Shared Workspaces
+Collaborate effortlessly without accounts.
+- Generate a unique **read-only link** for your workspace.
+- Share with teammates or mentors to show your current plan and progress.
+- Link contains the *entire* project state (no backend required).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🛠️ Tech Stack
+
+- **Framework**: React + TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS (Custom Design System)
+- **Icons**: Lucide React
+- **Persistence**: LocalStorage + URL Encoding
+
+---
+
+## ⚡ Getting Started
+
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/anandmahadev/HACK-MATE.git
+   cd HACK-MATE
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions that align with the **minimal** and **calm** philosophy. Please open an issue before submitting a PR.
+
+---
+
+**Built with 🖤 by Hack Mate.**
