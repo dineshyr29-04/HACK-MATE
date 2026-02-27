@@ -6,9 +6,15 @@ import { store, Project } from "../../lib/store";
 export type HeroWaveProps = {
     onPromptSubmit?: (value: string) => void;
     onResumeProject?: (project: Project) => void;
+    onOpenGuide?: () => void;
+    onOpenFeatures?: () => void;
+    onOpenHowItWorks?: () => void;
+    onOpenFAQ?: () => void;
+    onOpenResources?: () => void;
+    onOpenCaseStudies?: () => void;
 };
 
-export function HeroWave({ onPromptSubmit, onResumeProject }: HeroWaveProps) {
+export function HeroWave({ onPromptSubmit, onResumeProject, onOpenGuide, onOpenFeatures, onOpenHowItWorks, onOpenFAQ, onOpenResources, onOpenCaseStudies }: HeroWaveProps) {
     const [prompt, setPrompt] = useState("");
     const [recentProjects, setRecentProjects] = useState<Project[]>([]);
 
@@ -16,24 +22,43 @@ export function HeroWave({ onPromptSubmit, onResumeProject }: HeroWaveProps) {
         setRecentProjects(store.getProjects().slice(0, 3));
     }, []);
 
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onPromptSubmit?.(prompt);
     };
 
-    const suggestions = [
-        "AI-Powered Legal Assistant",
-        "Sustainable Supply Chain Tracker",
-        "Peer-to-Peer Skill Sharing",
-        "Smart City Traffic Control"
+    const allSuggestions = [
+        { label: "AI-Powered Legal Assistant", category: "AI" },
+        { label: "Sustainable Supply Chain", category: "Social Good" },
+        { label: "Peer-to-Peer Skill Sharing", category: "Education" },
+        { label: "Smart City Traffic Control", category: "AI" },
+        { label: "Remote Patient Monitoring", category: "HealthTech" },
+        { label: "Personal Investment Assistant", category: "FinTech" },
+        { label: "AI Tutor for Competitive Exams", category: "EdTech" },
+        { label: "Disaster Relief Coordinator", category: "Social Good" },
+        { label: "Multiplayer Quiz with Rewards", category: "Gaming" },
+        { label: "Smart Product Recommendations", category: "E-Commerce" },
+        { label: "AI Crop Disease Detection", category: "AgriTech" },
+        { label: "Virtual Property Tours AR", category: "RealEstate" }
     ];
+
+    const [showAllSuggestions, setShowAllSuggestions] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+    const categories = Array.from(new Set(allSuggestions.map(s => s.category)));
+
+    const filteredSuggestions = allSuggestions.filter(s =>
+        !selectedCategory || s.category === selectedCategory
+    );
+
+    const displayedSuggestions = showAllSuggestions ? filteredSuggestions : filteredSuggestions.slice(0, 4);
 
     return (
         <div className="relative min-h-screen flex flex-col overflow-hidden bg-white text-gray-900 selection:bg-gray-900 selection:text-white font-sans">
 
-            {/* Background Decor - Subtle Grid */}
             <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
-                <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5c5ff,transparent)]"></div>
+                <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#e5e7eb,transparent)]"></div>
             </div>
 
             {/* Navbar */}
@@ -45,10 +70,14 @@ export function HeroWave({ onPromptSubmit, onResumeProject }: HeroWaveProps) {
                     <span>Hackathon Copilot</span>
                 </div>
                 <div className="hidden sm:flex items-center gap-6 text-sm font-medium text-gray-600">
-                    <span className="cursor-pointer hover:text-gray-900 transition-colors">How it works</span>
-                    <span className="cursor-pointer hover:text-gray-900 transition-colors">Features</span>
-                    <a href="https://github.com" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-gray-900">
-                        <GitGraph className="w-4 h-4" /> GitHub
+                    <button onClick={onOpenHowItWorks} className="hover:text-gray-900 transition-colors">How it Works</button>
+                    <button onClick={onOpenFeatures} className="hover:text-gray-900 transition-colors">Features</button>
+                    <button onClick={onOpenResources} className="hover:text-gray-900 transition-colors">Resources</button>
+                    <button onClick={onOpenCaseStudies} className="hover:text-gray-900 transition-colors">Success Stories</button>
+                    <button onClick={onOpenGuide} className="hover:text-gray-900 transition-colors">Guide</button>
+                    <button onClick={onOpenFAQ} className="hover:text-gray-900 transition-colors">FAQ</button>
+                    <a href="https://github.com/anandmahadev/HackBro" target="_blank" rel="noreferrer" title="View on GitHub" className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-gray-900 group">
+                        <GitGraph className="w-4 h-4 group-hover:rotate-12 transition-transform" /> GitHub
                     </a>
                 </div>
             </nav>
@@ -74,7 +103,7 @@ export function HeroWave({ onPromptSubmit, onResumeProject }: HeroWaveProps) {
 
                 {/* Input Interactive Area */}
                 <div className="w-full max-w-2xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 z-20">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-violet-200 via-gray-100 to-violet-200 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-500"></div>
+                    <div className="absolute -inset-1 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-500"></div>
 
                     <form onSubmit={handleSubmit} className="relative flex flex-col sm:flex-row items-center bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-gray-900/5 focus-within:border-gray-900/10 transition-all">
                         <div className="flex-1 w-full relative">
@@ -96,30 +125,56 @@ export function HeroWave({ onPromptSubmit, onResumeProject }: HeroWaveProps) {
                         </button>
                     </form>
 
-                    {/* Quick Suggestions */}
-                    <div className="mt-6 flex flex-wrap justify-center gap-2 opacity-0 animate-in fade-in duration-700 delay-500 fill-mode-forwards">
-                        <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest mr-2 py-1.5">Try:</span>
-                        {suggestions.map((s, i) => (
+                    {/* Category Filters */}
+                    <div className="mt-8 flex flex-wrap justify-center gap-2 opacity-0 animate-in fade-in duration-700 delay-500 fill-mode-forwards">
+                        <button
+                            onClick={() => setSelectedCategory(null)}
+                            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${!selectedCategory ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                        >
+                            All
+                        </button>
+                        {categories.map(cat => (
                             <button
-                                key={i}
-                                onClick={() => setPrompt(s)}
-                                className="px-3 py-1.5 rounded-md bg-gray-50 border border-gray-100 text-xs font-medium text-gray-600 hover:bg-white hover:border-gray-300 hover:text-gray-900 hover:shadow-sm transition-all"
+                                key={cat}
+                                onClick={() => setSelectedCategory(cat)}
+                                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${selectedCategory === cat ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
                             >
-                                {s}
+                                {cat}
                             </button>
                         ))}
+                    </div>
+
+                    {/* Quick Suggestions */}
+                    <div className="mt-4 flex flex-wrap justify-center gap-2 opacity-0 animate-in fade-in duration-700 delay-500 fill-mode-forwards">
+                        {displayedSuggestions.map((s, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setPrompt(s.label)}
+                                className="px-3 py-1.5 rounded-md bg-gray-50 border border-gray-100 text-xs font-medium text-gray-600 hover:bg-white hover:border-gray-300 hover:text-gray-900 transition-all"
+                            >
+                                {s.label}
+                            </button>
+                        ))}
+                        {filteredSuggestions.length > 4 && (
+                            <button
+                                onClick={() => setShowAllSuggestions(!showAllSuggestions)}
+                                className="px-3 py-1.5 rounded-md bg-gray-50 border border-gray-100 text-xs font-bold text-gray-900 hover:bg-gray-100 transition-all"
+                            >
+                                {showAllSuggestions ? "Show Less" : `+${filteredSuggestions.length - 4} More`}
+                            </button>
+                        )}
                     </div>
                 </div>
 
                 {/* Feature Grid / Social Proof */}
                 <div className="w-full max-w-6xl mx-auto mt-24 grid grid-cols-1 sm:grid-cols-3 gap-8 px-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
                     <FeatureCard
-                        icon={<Zap className="w-6 h-6 text-violet-600" />}
+                        icon={<Zap className="w-6 h-6 text-gray-900" />}
                         title="Instant Strategy"
                         desc="Get a tailored roadmap from Ideation to Pitch Deck in seconds."
                     />
                     <FeatureCard
-                        icon={<LayoutTemplate className="w-6 h-6 text-blue-600" />}
+                        icon={<LayoutTemplate className="w-6 h-6 text-gray-900" />}
                         title="Best-in-Class Tools"
                         desc="Curated recommendations for the exact tech stack you need."
                     />
@@ -128,6 +183,56 @@ export function HeroWave({ onPromptSubmit, onResumeProject }: HeroWaveProps) {
                         title="10x Prompts"
                         desc="Copy-paste prompts engineered for GPT-4, Midjourney, and more."
                     />
+                </div>
+
+                {/* Setup Guide Section */}
+                <div className="w-full max-w-4xl mx-auto mt-24 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-400">
+                    <div className="bg-white rounded-3xl border border-gray-200 shadow-xl overflow-hidden">
+                        <div className="p-8 md:p-12 border-b border-gray-100">
+                            <h2 className="text-3xl font-bold mb-4">Setup Guide</h2>
+                            <p className="text-gray-500 text-lg">
+                                Ready to build? Initialize the Antigravity engine in three simple steps.
+                            </p>
+                        </div>
+                        <div className="bg-gray-900 p-8 font-mono text-sm md:text-base overflow-x-auto">
+                            <div className="flex flex-col gap-6">
+                                <div className="group">
+                                    <div className="flex items-center gap-2 text-gray-500 mb-2 select-none">
+                                        <div className="w-2 h-2 rounded-full bg-gray-600" />
+                                        <span>Step 1: Clone Repository</span>
+                                    </div>
+                                    <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded-xl border border-gray-700/50 group-hover:border-gray-600 transition-colors">
+                                        <code className="text-blue-400">git clone https://github.com/antigravity/engine.git</code>
+                                        <button className="text-gray-500 hover:text-white transition-colors">
+                                            <Box className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="group">
+                                    <div className="flex items-center gap-2 text-gray-500 mb-2 select-none">
+                                        <div className="w-2 h-2 rounded-full bg-gray-600" />
+                                        <span>Step 2: Install</span>
+                                    </div>
+                                    <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded-xl border border-gray-700/50 group-hover:border-gray-600 transition-colors">
+                                        <code className="text-green-400">npm install</code>
+                                        <span className="text-gray-600 text-xs">20s</span>
+                                    </div>
+                                </div>
+
+                                <div className="group">
+                                    <div className="flex items-center gap-2 text-gray-500 mb-2 select-none">
+                                        <div className="w-2 h-2 rounded-full bg-gray-600" />
+                                        <span>Step 3: Launch</span>
+                                    </div>
+                                    <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded-xl border border-gray-700/50 group-hover:border-gray-600 transition-colors">
+                                        <code className="text-yellow-400">npm run dev</code>
+                                        <span className="text-gray-600 text-xs">Ready</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Recent Projects (Minimal) */}
