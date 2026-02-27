@@ -3,9 +3,16 @@ import { HeroWave } from "@/components/ui/ai-input-hero";
 import { ProjectSetup } from "./components/ProjectSetup";
 import { StageSelection } from "./components/StageSelection";
 import { StageDetail } from "./components/StageDetail";
+import { AntigravityGuide } from "./components/AntigravityGuide";
 import { store } from "./lib/store";
 
-type AppStage = 'landing' | 'setup' | 'selection' | 'detail';
+type AppStage = 'landing' | 'setup' | 'selection' | 'detail' | 'guide' | 'how-it-works' | 'features' | 'faq' | 'resources' | 'case-studies';
+
+import { HowItWorks } from "./components/HowItWorks";
+import { Features } from "./components/Features";
+import { FAQ } from "./components/FAQ";
+import { Resources } from "./components/Resources";
+import { CaseStudies } from "./components/CaseStudies";
 
 function App() {
   const [stage, setStage] = useState<AppStage>('landing');
@@ -24,7 +31,12 @@ function App() {
           setProjectData({
             name: project.name,
             problem: project.problem,
-            timeLeft: project.timeLeft
+            timeLeft: project.timeLeft,
+            type: project.type || 'Online Hackathon',
+            prizeCategory: project.prizeCategory || 'AI/ML Track',
+            judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
+            teamSize: project.teamSize || '2-3 people',
+            isTeam: project.isTeam ?? true
           });
           setStage('selection');
           // Cleanup URL
@@ -39,7 +51,12 @@ function App() {
   const [projectData, setProjectData] = useState({
     name: '',
     problem: '',
-    timeLeft: '24'
+    timeLeft: '48',
+    type: 'Online Hackathon',
+    prizeCategory: 'AI/ML Track',
+    judgingFocus: ['Innovation', 'Technical Complexity'],
+    teamSize: '2-3 people',
+    isTeam: true
   });
 
   const [selectedStageId, setSelectedStageId] = useState<string | null>(null);
@@ -55,12 +72,26 @@ function App() {
     setProjectData({
       name: project.name,
       problem: project.problem,
-      timeLeft: project.timeLeft
+      timeLeft: project.timeLeft,
+      type: project.type || 'Online Hackathon',
+      prizeCategory: project.prizeCategory || 'AI/ML Track',
+      judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
+      teamSize: project.teamSize || '2-3 people',
+      isTeam: project.isTeam ?? true
     });
     setStage('selection');
   };
 
-  const handleSetupComplete = (data: { name: string; problem: string; timeLeft: string }) => {
+  const handleSetupComplete = (data: {
+    name: string;
+    problem: string;
+    timeLeft: string;
+    type: string;
+    prizeCategory: string;
+    judgingFocus: string[];
+    teamSize: string;
+    isTeam: boolean;
+  }) => {
     const newId = crypto.randomUUID();
     store.saveProject({
       id: newId,
@@ -84,6 +115,12 @@ function App() {
         <HeroWave
           onPromptSubmit={handlePromptSubmit}
           onResumeProject={handleResumeProject}
+          onOpenGuide={() => setStage('guide')}
+          onOpenFeatures={() => setStage('features')}
+          onOpenHowItWorks={() => setStage('how-it-works')}
+          onOpenFAQ={() => setStage('faq')}
+          onOpenResources={() => setStage('resources')}
+          onOpenCaseStudies={() => setStage('case-studies')}
         />
       )}
 
@@ -108,8 +145,48 @@ function App() {
         <StageDetail
           stageId={selectedStageId}
           onBack={() => setStage('selection')}
-          problemStatement={projectData.problem}
-          projectId={projectId || 'temp'}
+          project={store.getProjects().find(p => p.id === projectId) || {
+            id: projectId || 'temp',
+            ...projectData,
+            createdAt: Date.now(),
+            lastModified: Date.now()
+          }}
+        />
+      )}
+
+      {stage === 'guide' && (
+        <AntigravityGuide
+          onBack={() => setStage('landing')}
+        />
+      )}
+
+      {stage === 'how-it-works' && (
+        <HowItWorks
+          onBack={() => setStage('landing')}
+        />
+      )}
+
+      {stage === 'features' && (
+        <Features
+          onBack={() => setStage('landing')}
+        />
+      )}
+
+      {stage === 'faq' && (
+        <FAQ
+          onBack={() => setStage('landing')}
+        />
+      )}
+
+      {stage === 'resources' && (
+        <Resources
+          onBack={() => setStage('landing')}
+        />
+      )}
+
+      {stage === 'case-studies' && (
+        <CaseStudies
+          onBack={() => setStage('landing')}
         />
       )}
     </div>
