@@ -19,31 +19,34 @@ function App() {
 
   // Handle Shared Link Import
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const shareCode = params.get('share');
-    if (shareCode) {
-      const importedId = store.importProject(shareCode);
-      if (importedId) {
-        const projects = store.getProjects();
-        const project = projects.find(p => p.id === importedId);
-        if (project) {
-          setProjectId(importedId);
-          setProjectData({
-            name: project.name,
-            problem: project.problem,
-            timeLeft: project.timeLeft,
-            type: project.type || 'Online Hackathon',
-            prizeCategory: project.prizeCategory || 'AI/ML Track',
-            judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
-            teamSize: project.teamSize || '2-3 people',
-            isTeam: project.isTeam ?? true
-          });
-          setStage('selection');
-          // Cleanup URL
-          window.history.replaceState({}, '', window.location.pathname);
+    const handleImport = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const shareCode = params.get('share');
+      if (shareCode) {
+        const importedId = await store.importProject(shareCode);
+        if (importedId) {
+          const projects = await store.getProjects();
+          const project = projects.find(p => p.id === importedId);
+          if (project) {
+            setProjectId(importedId);
+            setProjectData({
+              name: project.name,
+              problem: project.problem,
+              timeLeft: project.timeLeft,
+              type: project.type || 'Online Hackathon',
+              prizeCategory: project.prizeCategory || 'AI/ML Track',
+              judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
+              teamSize: project.teamSize || '2-3 people',
+              isTeam: project.isTeam ?? true
+            });
+            setStage('selection');
+            // Cleanup URL
+            window.history.replaceState({}, '', window.location.pathname);
+          }
         }
       }
-    }
+    };
+    handleImport();
   }, []);
 
   // Project Data
@@ -82,7 +85,7 @@ function App() {
     setStage('selection');
   };
 
-  const handleSetupComplete = (data: {
+  const handleSetupComplete = async (data: {
     name: string;
     problem: string;
     timeLeft: string;
@@ -93,7 +96,7 @@ function App() {
     isTeam: boolean;
   }) => {
     const newId = crypto.randomUUID();
-    store.saveProject({
+    await store.saveProject({
       id: newId,
       ...data,
       createdAt: Date.now(),
@@ -147,7 +150,7 @@ function App() {
           stageId={selectedStageId}
           onBack={() => setStage('selection')}
           onOpenResources={() => setStage('resources')}
-          project={store.getProjects().find(p => p.id === projectId) || {
+          project={{
             id: projectId || 'temp',
             ...projectData,
             createdAt: Date.now(),

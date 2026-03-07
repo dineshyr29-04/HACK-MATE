@@ -251,10 +251,13 @@ export function StageDetail({ stageId, onBack, onOpenResources, project }: Stage
 
     // Initial load from Store
     useEffect(() => {
-        const state = store.getProjectState(projectId);
-        setCheckedItems(state.checklist[stageId] || {});
-        setCustomPrompt(state.customPrompts[stageId] || null);
-        setComments(state.comments[stageId] || []);
+        const fetchState = async () => {
+            const state = await store.getProjectState(projectId);
+            setCheckedItems(state.checklist[stageId] || {});
+            setCustomPrompt(state.customPrompts[stageId] || null);
+            setComments(state.comments[stageId] || []);
+        };
+        fetchState();
     }, [stageId, projectId]);
 
     useEffect(() => {
@@ -264,16 +267,16 @@ export function StageDetail({ stageId, onBack, onOpenResources, project }: Stage
         setProgress((checkedCount / total) * 100);
     }, [checkedItems, data]);
 
-    const handleCheck = (index: number) => {
+    const handleCheck = async (index: number) => {
         const newState = !checkedItems[index];
         setCheckedItems(prev => ({ ...prev, [index]: newState }));
-        store.updateChecklist(projectId, stageId, index, newState);
+        await store.updateChecklist(projectId, stageId, index, newState);
     };
 
-    const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handlePromptChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newVal = e.target.value;
         setCustomPrompt(newVal);
-        store.saveCustomPrompt(projectId, stageId, newVal);
+        await store.saveCustomPrompt(projectId, stageId, newVal);
     };
 
     const handleAddComment = (e: React.FormEvent) => {
@@ -282,8 +285,8 @@ export function StageDetail({ stageId, onBack, onOpenResources, project }: Stage
         setShowNamePrompt(true);
     };
 
-    const submitComment = (user: string) => {
-        store.addComment(projectId, stageId, user, newComment || "Anonymous");
+    const submitComment = async (user: string) => {
+        await store.addComment(projectId, stageId, user, newComment || "Anonymous");
         setComments(prev => [...prev, { user, text: newComment, time: Date.now() }]);
         setNewComment('');
     };

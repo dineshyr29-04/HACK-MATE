@@ -27,8 +27,29 @@ const STORAGE_KEYS = {
     STATE: 'hackathon-copilot-state',
 };
 
+import { supabase, isSupabaseConfigured } from './supabase';
+
 export const store = {
-    getProjects: (): Project[] => {
+    getProjects: async (): Promise<Project[]> => {
+        // Try Supabase first if configured
+        if (isSupabaseConfigured()) {
+            try {
+                const { data, error } = await supabase
+                    .from('projects')
+                    .select('*')
+                    .order('last_modified', { ascending: false });
+
+                if (!error && data) {
+                    // Update local cache
+                    localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(data));
+                    return data;
+                }
+            } catch (e) {
+                console.warn("Supabase fetch failed, falling back to local storage", e);
+            }
+        }
+
+        // Local Storage Fallback
         try {
             const data = localStorage.getItem(STORAGE_KEYS.PROJECTS);
             return data ? JSON.parse(data) : [];
@@ -37,18 +58,69 @@ export const store = {
         }
     },
 
-    saveProject: (project: Project) => {
-        const projects = store.getProjects();
-        const existing = projects.findIndex(p => p.id === project.id);
+    saveProject: async (project: Project) => {
+        // 1. Update Local Cache (Immediate)
+        const projects = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROJECTS) || '[]');
+        const existing = projects.findIndex((p: any) => p.id === project.id);
+        const updatedProject = { ...project, lastModified: Date.now() };
+
         if (existing >= 0) {
-            projects[existing] = { ...projects[existing], ...project, lastModified: Date.now() };
+            projects[existing] = { ...projects[existing], ...updatedProject };
         } else {
-            projects.unshift({ ...project, createdAt: Date.now(), lastModified: Date.now() });
+            projects.unshift({ ...updatedProject, createdAt: Date.now() });
         }
         localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
+
+        // 2. Sync to Supabase (Background)
+        if (isSupabaseConfigured()) {
+            try {
+                await supabase.from('projects').upsert({
+                    id: updatedProject.id,
+                    name: updatedProject.name,
+                    problem: updatedProject.problem,
+                    time_left: updatedProject.timeLeft,
+                    type: updatedProject.type,
+                    prize_category: updatedProject.prizeCategory,
+                    judging_focus: updatedProject.judgingFocus,
+                    team_size: updatedProject.teamSize,
+                    is_team: updatedProject.isTeam,
+                    last_modified: updatedProject.lastModified
+                });
+            } catch (e) {
+                console.error("Supabase sync failed", e);
+            }
+        }
     },
 
-    getProjectState: (projectId: string): ProjectState => {
+    getProjectState: async (projectId: string): Promise<ProjectState> => {
+        if (isSupabaseConfigured()) {
+            try {
+                const { data, error } = await supabase
+                    .from('project_state')
+                    .select('*')
+                    .eq('project_id', projectId)
+                    .single();
+
+                if (!error && data) {
+                    const state: ProjectState = {
+                        checklist: data.checklist || {},
+                        customPrompts: data.custom_prompts || {},
+                        comments: data.comments || {},
+                        assignments: data.assignments || {},
+                        aiInsights: data.ai_insights || {}
+                    };
+                    // Update local cache
+                    const allStates = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATE) || '{}');
+                    allStates[projectId] = state;
+                    localStorage.setItem(STORAGE_KEYS.STATE, JSON.stringify(allStates));
+                    return state;
+                }
+            } catch (e) {
+                console.warn("Supabase state fetch failed", e);
+            }
+        }
+
+        // Local Storage Fallback
         try {
             const allStates = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATE) || '{}');
             return allStates[projectId] || { checklist: {}, customPrompts: {}, comments: {}, assignments: {}, aiInsights: {} };
@@ -57,61 +129,92 @@ export const store = {
         }
     },
 
-    saveProjectState: (projectId: string, state: Partial<ProjectState>) => {
+    saveProjectState: async (projectId: string, state: Partial<ProjectState>) => {
+        // 1. Update Local Cache (Immediate)
         const allStates = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATE) || '{}');
         const currentState = allStates[projectId] || { checklist: {}, customPrompts: {}, comments: {}, assignments: {}, aiInsights: {} };
-        allStates[projectId] = { ...currentState, ...state };
+        const newState = { ...currentState, ...state };
+        allStates[projectId] = newState;
         localStorage.setItem(STORAGE_KEYS.STATE, JSON.stringify(allStates));
+
+        // 2. Sync to Supabase (Background)
+        if (isSupabaseConfigured()) {
+            try {
+                await supabase.from('project_state').upsert({
+                    project_id: projectId,
+                    checklist: newState.checklist,
+                    custom_prompts: newState.customPrompts,
+                    comments: newState.comments,
+                    assignments: newState.assignments,
+                    ai_insights: newState.aiInsights,
+                    updated_at: Date.now()
+                });
+            } catch (e) {
+                console.error("Supabase state sync failed", e);
+            }
+        }
     },
 
-    updateChecklist: (projectId: string, stageId: string, index: number, checked: boolean) => {
-        const state = store.getProjectState(projectId);
+    updateChecklist: async (projectId: string, stageId: string, index: number, checked: boolean) => {
+        // Get current state (prefer local for speed)
+        const allStates = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATE) || '{}');
+        const state = allStates[projectId] || { checklist: {}, customPrompts: {}, comments: {}, assignments: {}, aiInsights: {} };
+
         const stageChecklist = state.checklist[stageId] || {};
         stageChecklist[index] = checked;
-        store.saveProjectState(projectId, {
+
+        await store.saveProjectState(projectId, {
             checklist: { ...state.checklist, [stageId]: stageChecklist }
         });
     },
 
-    saveCustomPrompt: (projectId: string, stageId: string, content: string) => {
-        const state = store.getProjectState(projectId);
-        store.saveProjectState(projectId, {
+    saveCustomPrompt: async (projectId: string, stageId: string, content: string) => {
+        const allStates = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATE) || '{}');
+        const state = allStates[projectId] || { checklist: {}, customPrompts: {}, comments: {}, assignments: {}, aiInsights: {} };
+
+        await store.saveProjectState(projectId, {
             customPrompts: { ...state.customPrompts, [stageId]: content }
         });
     },
 
-    addComment: (projectId: string, stageId: string, user: string, text: string) => {
-        const state = store.getProjectState(projectId);
+    addComment: async (projectId: string, stageId: string, user: string, text: string) => {
+        const allStates = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATE) || '{}');
+        const state = allStates[projectId] || { checklist: {}, customPrompts: {}, comments: {}, assignments: {}, aiInsights: {} };
+
         const stageComments = state.comments[stageId] || [];
         const newComments = [...stageComments, { user, text, time: Date.now() }];
-        store.saveProjectState(projectId, {
+
+        await store.saveProjectState(projectId, {
             comments: { ...state.comments, [stageId]: newComments }
         });
     },
 
-    updateAssignment: (projectId: string, stageId: string, userName: string) => {
-        const state = store.getProjectState(projectId);
-        store.saveProjectState(projectId, {
+    updateAssignment: async (projectId: string, stageId: string, userName: string) => {
+        const allStates = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATE) || '{}');
+        const state = allStates[projectId] || { checklist: {}, customPrompts: {}, comments: {}, assignments: {}, aiInsights: {} };
+
+        await store.saveProjectState(projectId, {
             assignments: { ...state.assignments, [stageId]: userName }
         });
     },
 
-    saveAIInsight: (projectId: string, stageId: string, result: string) => {
-        const state = store.getProjectState(projectId);
-        store.saveProjectState(projectId, {
+    saveAIInsight: async (projectId: string, stageId: string, result: string) => {
+        const allStates = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATE) || '{}');
+        const state = allStates[projectId] || { checklist: {}, customPrompts: {}, comments: {}, assignments: {}, aiInsights: {} };
+
+        await store.saveProjectState(projectId, {
             aiInsights: { ...state.aiInsights, [stageId]: result }
         });
     },
 
-    exportProject: (projectId: string): string | null => {
-        const projects = store.getProjects();
+    exportProject: async (projectId: string): Promise<string | null> => {
+        const projects = await store.getProjects();
         const project = projects.find(p => p.id === projectId);
         if (!project) return null;
 
-        const state = store.getProjectState(projectId);
+        const state = await store.getProjectState(projectId);
         const payload = { project, state };
         try {
-            // Safe Base64 encoding for UTF-8
             return window.btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
         } catch (e) {
             console.error("Export failed", e);
@@ -119,20 +222,15 @@ export const store = {
         }
     },
 
-    importProject: (encoded: string): string | null => {
+    importProject: async (encoded: string): Promise<string | null> => {
         try {
-            // Safe Base64 decoding
             const json = decodeURIComponent(escape(window.atob(encoded)));
             const { project, state } = JSON.parse(json);
 
             if (!project || !project.id) return null;
 
-            // Import as a new project to avoid conflict? Or overwrite? 
-            // For a "Shared" view, let's upsert.
-            // NOTE: In a real app we might verify timestamps or ask user. 
-            // Here we silently upsert.
-            store.saveProject(project);
-            store.saveProjectState(project.id, state);
+            await store.saveProject(project);
+            await store.saveProjectState(project.id, state);
             return project.id;
         } catch (e) {
             console.error("Import failed", e);

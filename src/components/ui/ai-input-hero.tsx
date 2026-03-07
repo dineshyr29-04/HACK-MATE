@@ -19,7 +19,11 @@ export function HeroWave({ onPromptSubmit, onResumeProject, onOpenGuide, onOpenF
     const [recentProjects, setRecentProjects] = useState<Project[]>([]);
 
     useEffect(() => {
-        setRecentProjects(store.getProjects().slice(0, 3));
+        const fetchRecent = async () => {
+            const projects = await store.getProjects();
+            setRecentProjects(projects.slice(0, 3));
+        };
+        fetchRecent();
     }, []);
 
 

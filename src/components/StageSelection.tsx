@@ -53,12 +53,15 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
     const [assigningStage, setAssigningStage] = useState<string | null>(null);
 
     useEffect(() => {
-        const state = store.getProjectState(projectId);
-        setAssignments(state.assignments || {});
+        const fetchState = async () => {
+            const state = await store.getProjectState(projectId);
+            setAssignments(state.assignments || {});
+        };
+        fetchState();
     }, [projectId]);
 
-    const handleShare = () => {
-        const encoded = store.exportProject(projectId);
+    const handleShare = async () => {
+        const encoded = await store.exportProject(projectId);
         if (encoded) {
             const url = `${window.location.origin}?share=${encoded}`;
             setShareUrl(url);
@@ -72,8 +75,8 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const handleAssign = (stageId: string, name: string) => {
-        store.updateAssignment(projectId, stageId, name);
+    const handleAssign = async (stageId: string, name: string) => {
+        await store.updateAssignment(projectId, stageId, name);
         setAssignments(prev => ({ ...prev, [stageId]: name }));
     };
 
