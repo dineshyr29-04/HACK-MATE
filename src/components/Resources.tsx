@@ -6,50 +6,50 @@ export function Resources({ onBack }: { onBack: () => void }) {
             title: "Ideation & Market Research",
             icon: <Lightbulb className="w-6 h-6 text-amber-500" />,
             items: [
-                { name: "Problem Statement Format (1-page)", type: "PDF" },
-                { name: "Competitive Analysis Spreadsheet", type: "XLSX" },
-                { name: "User Persona Template", type: "FIGMA" },
-                { name: "Market Size Calculator", type: "SHEETS" }
+                { name: "Problem Statement Format", type: "MD", path: "/resources/ideation/problem-statement.md" },
+                { name: "Competitive Analysis Framework", type: "MD", path: "/resources/ideation/competitive-analysis.md" },
+                { name: "User Persona Template", type: "MD", path: "/resources/ideation/user-persona.md" },
+                { name: "Market Size Guide", type: "MD", path: "/resources/ideation/market-size.md" }
             ]
         },
         {
             title: "UI/UX Design",
             icon: <Palette className="w-6 h-6 text-gray-900" />,
             items: [
-                { name: "Mobile App Wireframe Kit", type: "FIGMA" },
-                { name: "Web Dashboard Layout", type: "FIGMA" },
-                { name: "Hackathon Color Palette Guide", type: "PDF" },
-                { name: "Free Presentation Mockups", type: "ZIP" }
+                { name: "Mobile App Wireframe Guide", type: "MD", path: "/resources/design/wireframe-kit.md" },
+                { name: "Web Dashboard Layouts", type: "MD", path: "/resources/design/dashboard-layout.md" },
+                { name: "Color Palette Guide", type: "MD", path: "/resources/design/color-palette-guide.md" },
+                { name: "Aesthetics Best Practices", type: "MD", path: "/resources/design/aesthetics.md" }
             ]
         },
         {
             title: "Developer Boilerplates",
             icon: <Code2 className="w-6 h-6 text-green-500" />,
             items: [
-                { name: "Next.js + TypeScript + Tailwind", type: "REPO" },
-                { name: "Python Flask + OpenAI Template", type: "REPO" },
-                { name: "Vite + React Starter Kit", type: "REPO" },
-                { name: "Supabase DB Schema Boilerplate", type: "SQL" }
+                { name: "Next.js + Supabase Starter", type: "MD", path: "/resources/boilerplates/nextjs-starter.md" },
+                { name: "Python Flask OpenAI Template", type: "MD", path: "/resources/boilerplates/python-flask-openai.md" },
+                { name: "Vite + React Starter Kit", type: "MD", path: "/resources/boilerplates/vite-react-starter.md" },
+                { name: "Supabase Schema Guide", type: "MD", path: "/resources/boilerplates/supabase-schema.md" }
             ]
         },
         {
             title: "Pitch & Presentation",
             icon: <Presentation className="w-6 h-6 text-red-500" />,
             items: [
-                { name: "Winning Pitch Deck (17 Slides)", type: "PPTX" },
-                { name: "Pitch Script Template (2-min)", type: "DOCX" },
-                { name: "Presentation Notes (Notion)", type: "LINK" },
-                { name: "Judge FAQ Prep Sheet", type: "PDF" }
+                { name: "Winning Pitch Structure", type: "MD", path: "/resources/pitch/winning-pitch-deck.md" },
+                { name: "2-Min Pitch Script", type: "MD", path: "/resources/pitch/pitch-script.md" },
+                { name: "Judge FAQ Prep Sheet", type: "MD", path: "/resources/pitch/judge-faq.md" },
+                { name: "Presentation Checklist", type: "MD", path: "/resources/pitch/presentation-checklist.md" }
             ]
         },
         {
             title: "Submission & Demo",
             icon: <Play className="w-6 h-6 text-gray-900" />,
             items: [
-                { name: "Demo Video Script", type: "DOCX" },
-                { name: "Devpost Submission Checklist", type: "PDF" },
-                { name: "README.md Template", type: "MD" },
-                { name: "GitHub Project Board Setup", type: "LINK" }
+                { name: "Demo Video Script", type: "MD", path: "/resources/submission/demo-video-script.md" },
+                { name: "README.md Pro Template", type: "MD", path: "/resources/submission/readme-template.md" },
+                { name: "Success Checklist", type: "MD", path: "/resources/submission/submission-checklist.md" },
+                { name: "GitHub Project Setup", type: "MD", path: "/resources/submission/github-setup.md" }
             ]
         }
     ];
@@ -100,9 +100,14 @@ export function Resources({ onBack }: { onBack: () => void }) {
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <span className="text-[10px] font-black bg-white px-2 py-1 rounded-lg border border-gray-100 text-gray-400 group-hover:border-gray-200 group-hover:text-gray-900">{item.type}</span>
-                                            <button className="p-2 bg-white rounded-lg shadow-sm border border-gray-100 hover:border-black hover:text-black transition-all">
+                                            <a
+                                                href={item.path}
+                                                download={item.name + ".md"}
+                                                className="p-2 bg-white rounded-lg shadow-sm border border-gray-100 hover:border-black hover:text-black transition-all"
+                                                title={`Download ${item.name}`}
+                                            >
                                                 <Download className="w-4 h-4" />
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                 ))}

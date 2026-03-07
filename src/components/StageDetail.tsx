@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ExternalLink, Copy, Check, ArrowLeft, GitBranch, AlertCircle, ChevronDown, ChevronUp, MessageSquare, Send } from 'lucide-react';
+import { ExternalLink, Copy, Check, ArrowLeft, GitBranch, AlertCircle, ChevronDown, ChevronUp, MessageSquare, Send, Layout } from 'lucide-react';
 import { STAGES } from './StageSelection';
 import { store, Project } from '../lib/store';
 import { AntigravityGuide } from './AntigravityGuide';
@@ -8,6 +8,7 @@ import { PromptModal } from './PromptModal';
 interface StageDetailProps {
     stageId: string;
     onBack: () => void;
+    onOpenResources: () => void;
     project: Project;
 }
 
@@ -20,6 +21,8 @@ const STAGE_DATA: Record<string, {
     promptTemplate: string;
     checklist: string[];
     docsUrl?: string;
+    resourcePath?: string;
+    resourceName?: string;
     alternatives?: { name: string; why: string; url: string }[];
     warning?: string;
 }> = {
@@ -58,6 +61,8 @@ Track/Category: [CATEGORY]
             { name: "Miro", why: "Better for visual brainstorming", url: "https://miro.com" },
             { name: "Whimsical", why: "Faster wireframing", url: "https://whimsical.com" }
         ],
+        resourcePath: "/resources/ideation/problem-statement.md",
+        resourceName: "Problem Statement Template",
         docsUrl: "https://platform.openai.com/docs/guides/prompt-engineering"
     },
     research: {
@@ -90,6 +95,8 @@ Problem: [PROBLEM]
             { name: "Google Trends", why: "Validate search volume", url: "https://trends.google.com" },
             { name: "ProductHunt", why: "Find recent launches", url: "https://producthunt.com" }
         ],
+        resourcePath: "/resources/ideation/competitive-analysis.md",
+        resourceName: "Competitive Analysis Framework",
     },
     design: {
         expl: "Create high-fidelity mockups. Judges judge the book by its cover.",
@@ -118,7 +125,9 @@ Objective: Define a clean, implementable design system for a [CATEGORY] project.
         alternatives: [
             { name: "Penpot", why: "Free Figma alternative", url: "https://penpot.app" },
             { name: "Excalidraw", why: "Great for rough sketches", url: "https://excalidraw.com" }
-        ]
+        ],
+        resourcePath: "/resources/design/color-palette-guide.md",
+        resourceName: "Color Palette & Aesthetics Guide",
     },
     build: {
         expl: "Code the frontend and connect the backend. Speed is key.",
@@ -152,7 +161,9 @@ Objective: Define the data model and API surface for [CATEGORY].
         alternatives: [
             { name: "Vercel", why: "Best for deployment", url: "https://vercel.com" },
             { name: "Firebase/Supabase", why: "Fastest backend setup", url: "https://supabase.com" }
-        ]
+        ],
+        resourcePath: "/resources/boilerplates/nextjs-starter.md",
+        resourceName: "Next.js + Supabase Starter Guide",
     },
     git: {
         expl: "Version control is mandatory. Don't lose code.",
@@ -167,7 +178,9 @@ Objective: Ensure code quality for a [SIZE] team.
         checklist: ["Initialize Repo", "First Commit", "Invite Team"],
         alternatives: [
             { name: "GitLab", why: "Built-in CI/CD", url: "https://gitlab.com" }
-        ]
+        ],
+        resourcePath: "/resources/submission/github-setup.md",
+        resourceName: "GitHub Project Setup Guide",
     },
     pitch: {
         expl: "The pitch is 50% of the score. Make it compelling.",
@@ -190,7 +203,9 @@ Objective: Create a persuasive presentation focusing on [FOCUS].
         alternatives: [
             { name: "Canva", why: "Beautiful templates", url: "https://canva.com" },
             { name: "Google Slides", why: "Best for collaboration", url: "https://slides.google.com" }
-        ]
+        ],
+        resourcePath: "/resources/pitch/winning-pitch-deck.md",
+        resourceName: "Winning Pitch Structure",
     },
     submit: {
         expl: "Record the demo and submit. Don't miss the deadline.",
@@ -211,11 +226,13 @@ Verify submission readiness for [CATEGORY] track.
         ],
         alternatives: [
             { name: "OBS Studio", why: "Pro screen recording", url: "https://obsproject.com" }
-        ]
+        ],
+        resourcePath: "/resources/submission/readme-template.md",
+        resourceName: "README.md Pro Template",
     }
 };
 
-export function StageDetail({ stageId, onBack, project }: StageDetailProps) {
+export function StageDetail({ stageId, onBack, onOpenResources, project }: StageDetailProps) {
     const data = STAGE_DATA[stageId];
     const stageInfo = STAGES.find(s => s.id === stageId);
     const projectId = project.id;
@@ -341,9 +358,14 @@ Progress: ${Math.round(progress)}%
                     <div className="flex items-center gap-2 font-bold text-lg">
                         <h1 className="text-xl font-extrabold">{stageInfo?.title}</h1>
                     </div>
-                    <button onClick={handleDownload} className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-xl text-sm font-bold transition-all">
-                        Download Plan
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button onClick={onOpenResources} className="text-gray-500 hover:text-gray-900 px-4 py-2 rounded-xl text-sm font-bold transition-all border border-gray-100 hover:border-gray-200 flex items-center gap-2 mr-2">
+                            <Layout className="w-4 h-4" /> Resource Library
+                        </button>
+                        <button onClick={handleDownload} className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-xl text-sm font-bold transition-all">
+                            Download Plan
+                        </button>
+                    </div>
                 </div>
             </nav>
 
@@ -389,6 +411,22 @@ Progress: ${Math.round(progress)}%
                                         <ExternalLink className="w-4 h-4 text-gray-300 group-hover:text-black transition-colors" />
                                     </a>
                                 ))}
+                            </div>
+                        )}
+
+                        {data.resourcePath && (
+                            <div className="mt-8 p-6 bg-gray-900 rounded-[2rem] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl shadow-gray-200">
+                                <div>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1 block">Pre-vetted Template</span>
+                                    <h4 className="text-lg font-bold">{data.resourceName}</h4>
+                                </div>
+                                <a
+                                    href={data.resourcePath}
+                                    download={data.resourceName + ".md"}
+                                    className="bg-white text-black px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-100 transition-all flex items-center gap-2 shrink-0 shadow-lg shadow-black/10"
+                                >
+                                    Download Template
+                                </a>
                             </div>
                         )}
                     </section>

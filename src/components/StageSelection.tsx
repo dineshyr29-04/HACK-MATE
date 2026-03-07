@@ -28,6 +28,7 @@ interface StageSelectionProps {
     onSelectStage: (stageId: string) => void;
     projectName: string;
     onHome: () => void;
+    onOpenResources: () => void;
     projectId: string;
 }
 
@@ -42,7 +43,7 @@ export const STAGES: Stage[] = [
     { id: 'submit', title: 'Demo & Submission', icon: <Upload className="w-6 h-6" /> },
 ];
 
-export function StageSelection({ onSelectStage, projectName, onHome, projectId }: StageSelectionProps) {
+export function StageSelection({ onSelectStage, projectName, onHome, onOpenResources, projectId }: StageSelectionProps) {
     const [showShare, setShowShare] = useState(false);
     const [shareUrl, setShareUrl] = useState('');
     const [copied, setCopied] = useState(false);
@@ -88,6 +89,12 @@ export function StageSelection({ onSelectStage, projectName, onHome, projectId }
                         <p className="text-gray-500 mt-2 font-medium">Click on a phase to start working on your roadmap.</p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <button
+                            onClick={onOpenResources}
+                            className="bg-white border border-gray-100 hover:border-gray-900 text-gray-900 px-6 py-3 rounded-2xl font-bold transition-all text-sm flex items-center gap-2"
+                        >
+                            <Layout className="w-4 h-4" /> Resources
+                        </button>
                         <button
                             onClick={onHome}
                             className="bg-gray-100 hover:bg-gray-200 text-gray-600 px-6 py-3 rounded-2xl font-bold transition-all text-sm"

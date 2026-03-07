@@ -137,6 +137,7 @@ function App() {
           projectName={projectData.name || "Your Project"}
           onSelectStage={handleSelectStage}
           onHome={() => setStage('landing')}
+          onOpenResources={() => setStage('resources')}
           projectId={projectId || ''}
         />
       )}
@@ -145,6 +146,7 @@ function App() {
         <StageDetail
           stageId={selectedStageId}
           onBack={() => setStage('selection')}
+          onOpenResources={() => setStage('resources')}
           project={store.getProjects().find(p => p.id === projectId) || {
             id: projectId || 'temp',
             ...projectData,
