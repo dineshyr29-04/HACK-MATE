@@ -39,7 +39,7 @@ export const store = {
                     .select('*')
                     .order('last_modified', { ascending: false });
 
-                if (!error && data) {
+                if (!error && Array.isArray(data)) {
                     // Update local cache
                     localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(data));
                     return data;
@@ -52,28 +52,38 @@ export const store = {
         // Local Storage Fallback
         try {
             const data = localStorage.getItem(STORAGE_KEYS.PROJECTS);
-            return data ? JSON.parse(data) : [];
+            if (!data) return [];
+            const parsed = JSON.parse(data);
+            return Array.isArray(parsed) ? parsed : [];
         } catch {
             return [];
         }
     },
 
     saveProject: async (project: Project) => {
-        // 1. Update Local Cache (Immediate)
-        const projects = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROJECTS) || '[]');
-        const existing = projects.findIndex((p: any) => p.id === project.id);
-        const updatedProject = { ...project, lastModified: Date.now() };
-
-        if (existing >= 0) {
-            projects[existing] = { ...projects[existing], ...updatedProject };
-        } else {
-            projects.unshift({ ...updatedProject, createdAt: Date.now() });
-        }
-        localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
-
-        // 2. Sync to Supabase (Background)
-        if (isSupabaseConfigured()) {
+        try {
+            // 1. Update Local Cache (Immediate)
+            const raw = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+            let projects: Project[] = [];
             try {
+                const parsed = JSON.parse(raw || '[]');
+                projects = Array.isArray(parsed) ? parsed : [];
+            } catch {
+                projects = [];
+            }
+
+            const existing = projects.findIndex((p: any) => p.id === project.id);
+            const updatedProject = { ...project, lastModified: Date.now() };
+
+            if (existing >= 0) {
+                projects[existing] = { ...projects[existing], ...updatedProject };
+            } else {
+                projects.unshift({ ...updatedProject, createdAt: Date.now() });
+            }
+            localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
+
+            // 2. Sync to Supabase (Background)
+            if (isSupabaseConfigured()) {
                 await supabase.from('projects').upsert({
                     id: updatedProject.id,
                     name: updatedProject.name,
@@ -86,9 +96,9 @@ export const store = {
                     is_team: updatedProject.isTeam,
                     last_modified: updatedProject.lastModified
                 });
-            } catch (e) {
-                console.error("Supabase sync failed", e);
             }
+        } catch (e) {
+            console.error("Save project failed", e);
         }
     },
 
@@ -110,7 +120,14 @@ export const store = {
                         aiInsights: data.ai_insights || {}
                     };
                     // Update local cache
-                    const allStates = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATE) || '{}');
+                    const raw = localStorage.getItem(STORAGE_KEYS.STATE);
+                    let allStates: any = {};
+                    try {
+                        allStates = JSON.parse(raw || '{}');
+                        if (typeof allStates !== 'object' || allStates === null) allStates = {};
+                    } catch {
+                        allStates = {};
+                    }
                     allStates[projectId] = state;
                     localStorage.setItem(STORAGE_KEYS.STATE, JSON.stringify(allStates));
                     return state;
@@ -122,7 +139,10 @@ export const store = {
 
         // Local Storage Fallback
         try {
-            const allStates = JSON.parse(localStorage.getItem(STORAGE_KEYS.STATE) || '{}');
+            const raw = localStorage.getItem(STORAGE_KEYS.STATE);
+            if (!raw) return { checklist: {}, customPrompts: {}, comments: {}, assignments: {}, aiInsights: {} };
+            const allStates = JSON.parse(raw);
+            if (!allStates || typeof allStates !== 'object') return { checklist: {}, customPrompts: {}, comments: {}, assignments: {}, aiInsights: {} };
             return allStates[projectId] || { checklist: {}, customPrompts: {}, comments: {}, assignments: {}, aiInsights: {} };
         } catch {
             return { checklist: {}, customPrompts: {}, comments: {}, assignments: {}, aiInsights: {} };
