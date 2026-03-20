@@ -67,9 +67,9 @@ export function HeroWave({ onPromptSubmit, onResumeProject, onOpenGuide, onOpenF
 
             {/* Navbar */}
             <nav className="w-full max-w-7xl mx-auto p-6 flex justify-between items-center z-50">
-                <div className="flex items-center gap-3 font-bold text-xl tracking-tight text-gray-900">
-                    <div className="w-9 h-9 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-gray-900/20">
-                        <Code2 className="w-5 h-5" />
+                <div className="flex items-center gap-3 font-bold text-lg sm:text-xl tracking-tight text-gray-900">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-gray-900/20">
+                        <Code2 className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <span>Hackathon Copilot</span>
                 </div>
@@ -96,9 +96,9 @@ export function HeroWave({ onPromptSubmit, onResumeProject, onOpenGuide, onOpenF
                 </div>
 
                 {/* Headline */}
-                <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight mb-8 animate-in fade-in slide-in-from-bottom-5 duration-1000 leading-[1.1]">
+                <h1 className="text-4xl sm:text-7xl md:text-8xl font-black tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-5 duration-1000 leading-[1.1] text-gray-900">
                     From Idea to <br className="hidden sm:block" />
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 animate-gradient-x">Winning Demo.</span>
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-600 to-gray-900">Winning Demo.</span>
                 </h1>
 
                 <p className="text-lg sm:text-2xl text-gray-500 mb-12 max-w-2xl mx-auto leading-relaxed font-normal animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
@@ -109,23 +109,23 @@ export function HeroWave({ onPromptSubmit, onResumeProject, onOpenGuide, onOpenF
                 <div className="w-full max-w-2xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 z-20">
                     <div className="absolute -inset-1 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-500"></div>
 
-                    <form onSubmit={handleSubmit} className="relative flex flex-col sm:flex-row items-center bg-white rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-gray-900/5 focus-within:border-gray-900/10 transition-all">
-                        <div className="flex-1 w-full relative">
+                    <form onSubmit={handleSubmit} className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-3xl shadow-2xl shadow-gray-200/50 border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-gray-900/5 transition-all">
+                        <div className="flex-1 relative">
                             <Box className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
                                 type="text"
                                 value={prompt}
                                 onChange={(e) => setPrompt(e.target.value)}
-                                placeholder="Paste your specific problem statement here..."
-                                className="w-full h-14 pl-12 pr-4 bg-transparent border-none text-gray-900 placeholder:text-gray-400 focus:ring-0 text-lg font-medium"
+                                placeholder="Paste your problem statement..."
+                                className="w-full h-14 sm:h-16 pl-12 pr-4 bg-transparent border-none text-gray-900 placeholder:text-gray-400 focus:ring-0 text-base sm:text-lg font-medium"
                                 autoFocus
                             />
                         </div>
                         <button
                             type="submit"
-                            className="w-full sm:w-auto mt-2 sm:mt-0 bg-gray-900 hover:bg-black text-white h-12 px-8 rounded-xl font-semibold text-base transition-all transform active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-gray-900/20"
+                            className="bg-gray-900 hover:bg-black text-white h-12 sm:h-auto py-4 px-8 rounded-xl sm:rounded-2xl font-bold text-base transition-all transform active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-gray-900/20"
                         >
-                            Start Project <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" />
+                            Start Project <ArrowRight className="w-4 h-4" />
                         </button>
                     </form>
 
@@ -241,19 +241,19 @@ export function HeroWave({ onPromptSubmit, onResumeProject, onOpenGuide, onOpenF
 
                 {/* Recent Projects (Minimal) */}
                 {recentProjects.length > 0 && (
-                    <div className="absolute top-24 right-6 sm:right-12 z-20 animate-in fade-in slide-in-from-right-4 duration-700 delay-500">
-                        <div className="bg-white/80 backdrop-blur-sm border border-gray-100 shadow-sm rounded-lg p-3 max-w-xs">
-                            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2 px-1">Resume Work</h3>
-                            <div className="space-y-1">
+                    <div className="relative sm:absolute sm:top-24 sm:right-12 z-20 mt-8 sm:mt-0 animate-in fade-in slide-in-from-right-4 duration-700 delay-500">
+                        <div className="bg-white/80 backdrop-blur-sm border border-gray-100 shadow-xl rounded-2xl p-4 max-w-sm mx-auto sm:mx-0">
+                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-1">Resume Work</h3>
+                            <div className="space-y-2">
                                 {recentProjects.map(p => (
                                     <button
                                         key={p.id}
                                         onClick={() => onResumeProject?.(p)}
-                                        className="w-full text-left px-3 py-2 rounded hover:bg-gray-50 text-sm font-medium text-gray-700 flex items-center justify-between group transition-colors"
+                                        className="w-full text-left px-4 py-3 rounded-xl hover:bg-white hover:shadow-lg hover:shadow-gray-200/50 transition-all flex items-center justify-between group bg-gray-50/50"
                                     >
-                                        <span className="truncate max-w-[120px]">{p.name || "Untitled"}</span>
-                                        <span className="text-xs text-gray-400 group-hover:text-gray-600 flex items-center gap-1">
-                                            {p.timeLeft}h <Clock className="w-3 h-3" />
+                                        <span className="truncate max-w-[150px] font-bold text-gray-800">{p.name || "Untitled"}</span>
+                                        <span className="text-xs font-bold text-gray-400 group-hover:text-gray-900 flex items-center gap-1 transition-colors">
+                                            {p.timeLeft}h <Clock className="w-3.5 h-3.5" />
                                         </span>
                                     </button>
                                 ))}

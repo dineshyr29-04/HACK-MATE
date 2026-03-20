@@ -91,22 +91,22 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                         <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">{projectName}</h1>
                         <p className="text-gray-500 mt-2 font-medium">Click on a phase to start working on your roadmap.</p>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                         <button
                             onClick={onOpenResources}
-                            className="bg-white border border-gray-100 hover:border-gray-900 text-gray-900 px-6 py-3 rounded-2xl font-bold transition-all text-sm flex items-center gap-2"
+                            className="flex-1 sm:flex-none justify-center bg-white border border-gray-100 hover:border-gray-900 text-gray-900 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all text-xs sm:text-sm flex items-center gap-2"
                         >
                             <Layout className="w-4 h-4" /> Resources
                         </button>
                         <button
                             onClick={onHome}
-                            className="bg-gray-100 hover:bg-gray-200 text-gray-600 px-6 py-3 rounded-2xl font-bold transition-all text-sm"
+                            className="flex-1 sm:flex-none justify-center bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all text-xs sm:text-sm"
                         >
                             Dashboard
                         </button>
                         <button
                             onClick={handleShare}
-                            className="bg-gray-900 hover:bg-black text-white px-6 py-3 rounded-2xl font-bold transition-all shadow-xl shadow-gray-200 flex items-center gap-2 text-sm"
+                            className="w-full sm:w-auto justify-center bg-gray-900 hover:bg-black text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all shadow-xl shadow-gray-100 flex items-center gap-2 text-xs sm:text-sm"
                         >
                             <UserPlus className="w-4 h-4" /> Invite Teammate
                         </button>
@@ -157,7 +157,7 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                     {STAGES.map((stage, i) => (
                         <div
                             key={stage.id}
-                            className="group relative bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-gray-900/10 hover:border-gray-900/20 hover:-translate-y-2 transition-all duration-500 cursor-pointer animate-in fade-in slide-in-from-bottom-6"
+                            className="group relative bg-white p-6 sm:p-8 rounded-2xl sm:rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-gray-900/10 hover:border-gray-900/10 hover:-translate-y-1 transition-all duration-500 cursor-pointer animate-in fade-in slide-in-from-bottom-6"
                             style={{ animationDelay: `${i * 100}ms` }}
                             onClick={() => onSelectStage(stage.id)}
                         >

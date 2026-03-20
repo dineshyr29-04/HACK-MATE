@@ -354,32 +354,33 @@ Progress: ${Math.round(progress)}%
     return (
         <div className="min-h-screen bg-white text-gray-900">
             <nav className="border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <button onClick={onBack} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                        <ArrowLeft className="w-5 h-5 text-gray-600" />
-                    </button>
-                    <div className="flex items-center gap-2 font-bold text-lg">
-                        <h1 className="text-xl font-extrabold">{stageInfo?.title}</h1>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <button onClick={onOpenResources} className="text-gray-500 hover:text-gray-900 px-4 py-2 rounded-xl text-sm font-bold transition-all border border-gray-100 hover:border-gray-200 flex items-center gap-2 mr-2">
-                            <Layout className="w-4 h-4" /> Resource Library
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 h-auto sm:h-20 py-4 sm:py-0 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+                        <button onClick={onBack} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                            <ArrowLeft className="w-5 h-5 text-gray-600" />
                         </button>
-                        <button onClick={handleDownload} className="bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-xl text-sm font-bold transition-all">
-                            Download Plan
+                        <h1 className="text-lg sm:text-xl font-extrabold flex-1 text-center sm:text-left">{stageInfo?.title}</h1>
+                        <div className="w-10 sm:hidden" /> {/* Spacer for centering title on mobile */}
+                    </div>
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <button onClick={onOpenResources} className="flex-1 sm:flex-none text-gray-500 hover:text-gray-900 px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all border border-gray-100 hover:border-gray-200 flex items-center justify-center gap-2">
+                            <Layout className="w-4 h-4" /> <span className="hidden xs:inline">Resources</span><span className="xs:hidden">Lib</span>
+                        </button>
+                        <button onClick={handleDownload} className="flex-1 sm:flex-none bg-gray-900 hover:bg-black text-white px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all">
+                            Download
                         </button>
                     </div>
                 </div>
             </nav>
 
-            <main className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12">
                 <div className="lg:col-span-2 space-y-12">
                     <section>
-                        <h2 className="text-3xl font-extrabold mb-4">Phase Strategy</h2>
-                        <p className="text-xl text-gray-500 leading-relaxed mb-6">{data.expl}</p>
+                        <h2 className="text-2xl sm:text-3xl font-extrabold mb-4">Phase Strategy</h2>
+                        <p className="text-lg sm:text-xl text-gray-500 leading-relaxed mb-6">{data.expl}</p>
 
                         {data.warning && (
-                            <div className="mt-6 p-4 bg-amber-50 border border-amber-100 rounded-2xl flex gap-3 text-amber-800 text-sm font-medium">
+                            <div className="mt-6 p-4 bg-amber-50 border border-amber-100 rounded-2xl flex gap-3 text-amber-800 text-xs sm:text-sm font-medium">
                                 <AlertCircle className="w-5 h-5 shrink-0" />
                                 {data.warning}
                             </div>
@@ -393,13 +394,13 @@ Progress: ${Math.round(progress)}%
                                 Open Tool <ExternalLink className="w-4 h-4" />
                             </a>
                         </div>
-                        <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm mb-6 text-center lg:text-left overflow-hidden relative">
+                        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm mb-6 text-center lg:text-left overflow-hidden relative">
                             <div className="absolute top-0 right-0 p-4 opacity-5">
-                                <GitBranch className="w-20 h-20" />
+                                <GitBranch className="w-16 sm:w-20 h-16 sm:h-20" />
                             </div>
-                            <h3 className="text-3xl font-black mb-2">{data.toolName}</h3>
-                            <p className="text-gray-500 text-lg mb-8">{data.toolWhy}</p>
-                            <button onClick={() => setShowAlternatives(!showAlternatives)} className="text-gray-400 text-sm font-bold flex items-center gap-2 hover:text-gray-600">
+                            <h3 className="text-2xl sm:text-3xl font-black mb-2">{data.toolName}</h3>
+                            <p className="text-gray-500 text-base sm:text-lg mb-8">{data.toolWhy}</p>
+                            <button onClick={() => setShowAlternatives(!showAlternatives)} className="mx-auto lg:mx-0 text-gray-400 text-sm font-bold flex items-center gap-2 hover:text-gray-600">
                                 {showAlternatives ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />} Tool Alternatives
                             </button>
                         </div>
@@ -453,10 +454,10 @@ Progress: ${Math.round(progress)}%
                             <textarea
                                 value={displayPrompt}
                                 onChange={handlePromptChange}
-                                className={`w-full h-80 p-8 rounded-[2rem] bg-gray-900 text-gray-100 font-mono text-sm leading-relaxed border-4 border-transparent focus:border-gray-700/30 selection:bg-gray-700 selection:text-white transition-all outline-none ${isEdited ? 'border-gray-700/20 shadow-2xl shadow-gray-200' : ''}`}
+                                className={`w-full h-64 sm:h-80 p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] bg-gray-900 text-gray-100 font-mono text-xs sm:text-sm leading-relaxed border-4 border-transparent focus:border-gray-700/30 selection:bg-gray-700 selection:text-white transition-all outline-none ${isEdited ? 'border-gray-700/20 shadow-2xl shadow-gray-200' : ''}`}
                             />
                             {isEdited && (
-                                <button onClick={() => setCustomPrompt(null)} className="absolute bottom-6 right-6 text-xs font-bold text-gray-400 hover:text-gray-300 underline">Reset to Default</button>
+                                <button onClick={() => setCustomPrompt(null)} className="absolute bottom-4 sm:bottom-6 right-4 sm:right-6 text-[10px] sm:text-xs font-bold text-gray-400 hover:text-gray-300 underline">Reset to Default</button>
                             )}
                         </div>
                     </section>

@@ -53,26 +53,26 @@ export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetu
     return (
         <div className="min-h-screen bg-white flex flex-col items-center py-20 px-6">
             <div className="w-full max-w-3xl bg-white">
-                <div className="text-center mb-12">
-                    <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 mb-4">Let's build your strategy.</h2>
-                    <p className="text-gray-500 text-lg">Tell us about the hackathon and your constraints.</p>
+                <div className="text-center mb-8 sm:mb-12">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 mb-4">Let's build your strategy.</h2>
+                    <p className="text-gray-500 text-sm sm:text-lg">Tell us about the hackathon and your constraints.</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-12">
 
                     {/* Project Mode Toggle */}
-                    <div className="grid grid-cols-2 gap-4 p-1.5 bg-gray-100 rounded-2xl">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 p-1.5 bg-gray-100 rounded-2xl sm:rounded-3xl">
                         <button
                             type="button"
                             onClick={() => setIsTeam(false)}
-                            className={`py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${!isTeam ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`py-3 sm:py-4 px-4 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${!isTeam ? 'bg-white text-gray-900 shadow-md transform scale-[1.02]' : 'text-gray-400 hover:text-gray-600'}`}
                         >
                             Solo Project
                         </button>
                         <button
                             type="button"
                             onClick={() => setIsTeam(true)}
-                            className={`py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${isTeam ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`py-3 sm:py-4 px-4 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${isTeam ? 'bg-white text-gray-900 shadow-md transform scale-[1.02]' : 'text-gray-400 hover:text-gray-600'}`}
                         >
                             <Users className="w-4 h-4" /> Team Project
                         </button>
@@ -173,7 +173,7 @@ export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetu
                                     key={focus}
                                     type="button"
                                     onClick={() => toggleFocus(focus)}
-                                    className={`px-4 py-2 rounded-full text-sm font-bold transition-all border ${judgingFocus.includes(focus)
+                                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-bold transition-all border ${judgingFocus.includes(focus)
                                         ? 'bg-black text-white border-black shadow-md'
                                         : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'}`}
                                 >
@@ -235,17 +235,17 @@ export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetu
                         )}
                     </div>
 
-                    <div className="pt-8 flex gap-4">
+                    <div className="pt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
                         <button
                             type="button"
                             onClick={onBack}
-                            className="flex-1 py-4 px-6 rounded-2xl text-base font-bold text-gray-500 hover:bg-gray-100 transition-colors"
+                            className="w-full sm:flex-1 py-4 px-6 rounded-2xl text-base font-bold text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-all"
                         >
                             Back
                         </button>
                         <button
                             type="submit"
-                            className="flex-[2] py-4 px-6 rounded-2xl bg-gray-900 text-white text-base font-bold hover:bg-black transition-all shadow-xl shadow-gray-200 flex items-center justify-center gap-2 group"
+                            className="w-full sm:flex-[2] py-4 px-6 rounded-2xl bg-gray-900 text-white text-base font-bold hover:bg-black transition-all shadow-xl shadow-gray-200 flex items-center justify-center gap-2 group"
                         >
                             Generate Roadmap <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </button>

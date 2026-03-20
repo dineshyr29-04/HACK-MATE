@@ -13,6 +13,30 @@
 
 <body>
   <div id="root"></div>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBCCRuXyyVaYdpWXo-Mw1lT1oisPdsxUCY",
+      authDomain: "hackbro-f307d.firebaseapp.com",
+      projectId: "hackbro-f307d",
+      storageBucket: "hackbro-f307d.firebasestorage.app",
+      messagingSenderId: "716666739822",
+      appId: "1:716666739822:web:a23355027029f501b59a7f",
+      measurementId: "G-1CHD2TXPGY"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    window.auth = auth; // Exposing globally for debugging
+    window.firebaseApp = app; 
+  </script>
   <script type="module" src="/src/index.tsx"></script>
 </body>
 
