@@ -42,6 +42,7 @@ function App() {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
       console.error("Login failed:", error);
+      throw error;
     }
   };
 
@@ -49,7 +50,8 @@ function App() {
     try {
       await signInWithEmailAndPassword(auth, email, pass);
     } catch (error) {
-       alert("Login failed: " + (error as Error).message);
+       console.error("Login failed:", error);
+       throw error;
     }
   };
 
@@ -57,7 +59,8 @@ function App() {
     try {
       await createUserWithEmailAndPassword(auth, email, pass);
     } catch (error) {
-       alert("Signup failed: " + (error as Error).message);
+       console.error("Signup failed:", error);
+       throw error;
     }
   };
 
