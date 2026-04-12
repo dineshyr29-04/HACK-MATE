@@ -113,7 +113,7 @@ export function HeroWave({
                             Sign In
                         </button>
                     )}
-                    <a href="https://github.com/anandmahadev/HackBro" target="_blank" rel="noreferrer" title="View on GitHub" className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-gray-900 group">
+                    <a href="https://github.com/anandmahadev/HACK-MATE" target="_blank" rel="noreferrer" title="View on GitHub" className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-gray-900 group">
                         <GitGraph className="w-4 h-4 group-hover:rotate-12 transition-transform" /> GitHub
                     </a>
                 </div>
