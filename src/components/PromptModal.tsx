@@ -8,23 +8,42 @@ interface PromptModalProps {
     title: string;
     placeholder: string;
     defaultValue?: string;
+    maxLength?: number;
 }
 
-export function PromptModal({ isOpen, onClose, onSubmit, title, placeholder, defaultValue = '' }: PromptModalProps) {
+export function PromptModal({ isOpen, onClose, onSubmit, title, placeholder, defaultValue = '', maxLength = 100 }: PromptModalProps) {
     const [value, setValue] = useState(defaultValue);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
-        if (isOpen) setValue(defaultValue);
+        if (isOpen) {
+            setValue(defaultValue);
+            setError(false);
+        }
     }, [isOpen, defaultValue]);
 
     if (!isOpen) return null;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (value.length > maxLength) {
+            setError(true);
+            return;
+        }
         if (value.trim()) {
             onSubmit(value);
             setValue('');
             onClose();
+        }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newVal = e.target.value;
+        setValue(newVal);
+        if (newVal.length <= maxLength) {
+            setError(false);
+        } else {
+            setError(true);
         }
     };
 
@@ -46,14 +65,24 @@ export function PromptModal({ isOpen, onClose, onSubmit, title, placeholder, def
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">{title}</h3>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="text"
-                        autoFocus
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                        placeholder={placeholder}
-                        className="w-full px-5 py-4 rounded-2xl border border-gray-200 focus:border-gray-900 focus:ring-4 focus:ring-gray-900/5 transition-all text-gray-900 font-medium outline-none"
-                    />
+                    <div className="relative">
+                        <input
+                            type="text"
+                            autoFocus
+                            value={value}
+                            onChange={handleChange}
+                            placeholder={placeholder}
+                            className={`w-full px-5 py-4 rounded-2xl border ${error ? 'border-red-500 focus:ring-red-100' : 'border-gray-200 focus:border-gray-900 focus:ring-gray-900/5'} focus:ring-4 transition-all text-gray-900 font-medium outline-none`}
+                        />
+                        <div className={`absolute right-4 bottom-2 text-[10px] font-bold ${error ? 'text-red-500' : 'text-gray-400'}`}>
+                            {value.length}/{maxLength}
+                        </div>
+                    </div>
+                    {error && (
+                        <p className="text-red-500 text-xs font-bold animate-in fade-in slide-in-from-top-1">
+                            Character limit exceeded by {value.length - maxLength}!
+                        </p>
+                    )}
                     <div className="flex gap-3 pt-2">
                         <button
                             type="button"

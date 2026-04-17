@@ -211,6 +211,7 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                     title={assigningStage && assignments[assigningStage] ? "Edit assignment" : "Assign to your mate"}
                     placeholder="Enter teammate name..."
                     defaultValue={assigningStage ? assignments[assigningStage] : ''}
+                    maxLength={30}
                 />
             </div>
         </div>

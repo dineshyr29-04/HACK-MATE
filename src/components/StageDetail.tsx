@@ -534,6 +534,7 @@ Progress: ${Math.round(progress)}%
                 onSubmit={submitComment}
                 title="Enter your name"
                 placeholder="Your name..."
+                maxLength={20}
             />
         </div>
     );
