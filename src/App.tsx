@@ -14,6 +14,7 @@ import { FAQ } from "./components/FAQ";
 import { Resources } from "./components/Resources";
 import { CaseStudies } from "./components/CaseStudies";
 import { AuthStage } from "./components/AuthStage";
+import { Footer } from "./components/Footer";
 
 import { 
   auth, 
@@ -175,37 +176,40 @@ function App() {
   return (
     <div className="font-sans antialiased text-gray-900 bg-gray-50 min-h-screen">
       {stage === 'landing' && (
-        <HeroWave
-          onPromptSubmit={handlePromptSubmit}
-          onResumeProject={handleResumeProject}
-          onOpenGuide={() => {
-            if (!user) { setPendingAction({ stage: 'guide' }); setStage('auth-required'); return; }
-            setStage('guide');
-          }}
-          onOpenFeatures={() => {
-            if (!user) { setPendingAction({ stage: 'features' }); setStage('auth-required'); return; }
-            setStage('features');
-          }}
-          onOpenHowItWorks={() => {
-            if (!user) { setPendingAction({ stage: 'how-it-works' }); setStage('auth-required'); return; }
-            setStage('how-it-works');
-          }}
-          onOpenFAQ={() => {
-            if (!user) { setPendingAction({ stage: 'faq' }); setStage('auth-required'); return; }
-            setStage('faq');
-          }}
-          onOpenResources={() => {
-            if (!user) { setPendingAction({ stage: 'resources' }); setStage('auth-required'); return; }
-            setStage('resources');
-          }}
-          onOpenCaseStudies={() => {
-            if (!user) { setPendingAction({ stage: 'case-studies' }); setStage('auth-required'); return; }
-            setStage('case-studies');
-          }}
-          user={user}
-          onLogin={handleLogin}
-          onLogout={handleLogout}
-        />
+        <>
+          <HeroWave
+            onPromptSubmit={handlePromptSubmit}
+            onResumeProject={handleResumeProject}
+            onOpenGuide={() => {
+              if (!user) { setPendingAction({ stage: 'guide' }); setStage('auth-required'); return; }
+              setStage('guide');
+            }}
+            onOpenFeatures={() => {
+              if (!user) { setPendingAction({ stage: 'features' }); setStage('auth-required'); return; }
+              setStage('features');
+            }}
+            onOpenHowItWorks={() => {
+              if (!user) { setPendingAction({ stage: 'how-it-works' }); setStage('auth-required'); return; }
+              setStage('how-it-works');
+            }}
+            onOpenFAQ={() => {
+              if (!user) { setPendingAction({ stage: 'faq' }); setStage('auth-required'); return; }
+              setStage('faq');
+            }}
+            onOpenResources={() => {
+              if (!user) { setPendingAction({ stage: 'resources' }); setStage('auth-required'); return; }
+              setStage('resources');
+            }}
+            onOpenCaseStudies={() => {
+              if (!user) { setPendingAction({ stage: 'case-studies' }); setStage('auth-required'); return; }
+              setStage('case-studies');
+            }}
+            user={user}
+            onLogin={handleLogin}
+            onLogout={handleLogout}
+          />
+          <Footer />
+        </>
       )}
 
       {stage === 'auth-required' && (
