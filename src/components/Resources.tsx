@@ -6,50 +6,50 @@ export function Resources({ onBack }: { onBack: () => void }) {
             title: "Ideation & Market Research",
             icon: <Lightbulb className="w-6 h-6 text-amber-500" />,
             items: [
-                { name: "Problem Statement Format", type: "MD", path: "/resources/ideation/problem-statement.md" },
-                { name: "Competitive Analysis Framework", type: "MD", path: "/resources/ideation/competitive-analysis.md" },
-                { name: "User Persona Template", type: "MD", path: "/resources/ideation/user-persona.md" },
-                { name: "Market Size Guide", type: "MD", path: "/resources/ideation/market-size.md" }
+                { name: "Problem Statement Format", type: "PDF", path: "/resources/ideation/problem-statement.pdf" },
+                { name: "Competitive Analysis Framework", type: "PDF", path: "/resources/ideation/competitive-analysis.pdf" },
+                { name: "User Persona Template", type: "PDF", path: "/resources/ideation/user-persona.pdf" },
+                { name: "Market Size Guide", type: "PDF", path: "/resources/ideation/market-size.pdf" }
             ]
         },
         {
             title: "UI/UX Design",
             icon: <Palette className="w-6 h-6 text-gray-900" />,
             items: [
-                { name: "Mobile App Wireframe Guide", type: "MD", path: "/resources/design/wireframe-kit.md" },
-                { name: "Web Dashboard Layouts", type: "MD", path: "/resources/design/dashboard-layout.md" },
-                { name: "Color Palette Guide", type: "MD", path: "/resources/design/color-palette-guide.md" },
-                { name: "Aesthetics Best Practices", type: "MD", path: "/resources/design/aesthetics.md" }
+                { name: "Mobile App Wireframe Guide", type: "PDF", path: "/resources/design/wireframe-kit.pdf" },
+                { name: "Web Dashboard Layouts", type: "PDF", path: "/resources/design/dashboard-layout.pdf" },
+                { name: "Color Palette Guide", type: "PDF", path: "/resources/design/color-palette-guide.pdf" },
+                { name: "Aesthetics Best Practices", type: "PDF", path: "/resources/design/aesthetics.pdf" }
             ]
         },
         {
             title: "Developer Boilerplates",
             icon: <Code2 className="w-6 h-6 text-green-500" />,
             items: [
-                { name: "Next.js + Supabase Starter", type: "MD", path: "/resources/boilerplates/nextjs-starter.md" },
-                { name: "Python Flask OpenAI Template", type: "MD", path: "/resources/boilerplates/python-flask-openai.md" },
-                { name: "Vite + React Starter Kit", type: "MD", path: "/resources/boilerplates/vite-react-starter.md" },
-                { name: "Supabase Schema Guide", type: "MD", path: "/resources/boilerplates/supabase-schema.md" }
+                { name: "Next.js + Supabase Starter", type: "PDF", path: "/resources/boilerplates/nextjs-starter.pdf" },
+                { name: "Python Flask OpenAI Template", type: "PDF", path: "/resources/boilerplates/python-flask-openai.pdf" },
+                { name: "Vite + React Starter Kit", type: "PDF", path: "/resources/boilerplates/vite-react-starter.pdf" },
+                { name: "Supabase Schema Guide", type: "PDF", path: "/resources/boilerplates/supabase-schema.pdf" }
             ]
         },
         {
             title: "Pitch & Presentation",
             icon: <Presentation className="w-6 h-6 text-red-500" />,
             items: [
-                { name: "Winning Pitch Structure", type: "MD", path: "/resources/pitch/winning-pitch-deck.md" },
-                { name: "2-Min Pitch Script", type: "MD", path: "/resources/pitch/pitch-script.md" },
-                { name: "Judge FAQ Prep Sheet", type: "MD", path: "/resources/pitch/judge-faq.md" },
-                { name: "Presentation Checklist", type: "MD", path: "/resources/pitch/presentation-checklist.md" }
+                { name: "Winning Pitch Structure", type: "PDF", path: "/resources/pitch/winning-pitch-deck.pdf" },
+                { name: "2-Min Pitch Script", type: "PDF", path: "/resources/pitch/pitch-script.pdf" },
+                { name: "Judge FAQ Prep Sheet", type: "PDF", path: "/resources/pitch/judge-faq.pdf" },
+                { name: "Presentation Checklist", type: "PDF", path: "/resources/pitch/presentation-checklist.pdf" }
             ]
         },
         {
             title: "Submission & Demo",
             icon: <Play className="w-6 h-6 text-gray-900" />,
             items: [
-                { name: "Demo Video Script", type: "MD", path: "/resources/submission/demo-video-script.md" },
-                { name: "README.md Pro Template", type: "MD", path: "/resources/submission/readme-template.md" },
-                { name: "Success Checklist", type: "MD", path: "/resources/submission/submission-checklist.md" },
-                { name: "GitHub Project Setup", type: "MD", path: "/resources/submission/github-setup.md" }
+                { name: "Demo Video Script", type: "PDF", path: "/resources/submission/demo-video-script.pdf" },
+                { name: "README.md Pro Template", type: "PDF", path: "/resources/submission/readme-template.pdf" },
+                { name: "Success Checklist", type: "PDF", path: "/resources/submission/submission-checklist.pdf" },
+                { name: "GitHub Project Setup", type: "PDF", path: "/resources/submission/github-setup.pdf" }
             ]
         }
     ];
@@ -102,7 +102,7 @@ export function Resources({ onBack }: { onBack: () => void }) {
                                             <span className="text-[10px] font-black bg-white px-2 py-1 rounded-lg border border-gray-100 text-gray-400 group-hover:border-gray-200 group-hover:text-gray-900">{item.type}</span>
                                             <a
                                                 href={item.path}
-                                                download={item.name + ".md"}
+                                                download={item.name + ".pdf"}
                                                 className="p-2 bg-white rounded-lg shadow-sm border border-gray-100 hover:border-black hover:text-black transition-all"
                                                 title={`Download ${item.name}`}
                                             >

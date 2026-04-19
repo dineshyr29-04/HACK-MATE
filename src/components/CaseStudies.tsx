@@ -58,7 +58,7 @@ export function CaseStudies({ onBack }: { onBack: () => void }) {
                 <div className="text-center mb-20 animate-in fade-in slide-in-from-top-4 duration-700">
                     <h1 className="text-4xl sm:text-6xl font-black mb-6 tracking-tight">Built with <br /><span className="text-black">Hackathon Copilot.</span></h1>
                     <p className="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">
-                        Join the students and developers who use our tool to build winning projects in record time.
+                        Join the <span className="text-gray-900 font-bold">100+ builders</span> across <span className="text-gray-900 font-bold">4+ countries</span> who joined in our <span className="text-gray-900 font-bold">first month</span> to build winning projects.
                     </p>
                 </div>
 

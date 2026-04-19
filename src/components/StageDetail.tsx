@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ExternalLink, Copy, Check, ArrowLeft, GitBranch, AlertCircle, ChevronDown, ChevronUp, MessageSquare, Send, Layout } from 'lucide-react';
 import { STAGES } from './StageSelection';
 import { store, Project } from '../lib/store';
+import { supabase } from '../lib/supabase';
 import { AntigravityGuide } from './AntigravityGuide';
 import { PromptModal } from './PromptModal';
 
@@ -259,6 +260,47 @@ export function StageDetail({ stageId, onBack, onOpenResources, project }: Stage
         };
         fetchState();
     }, [stageId, projectId]);
+
+    // Real-time Sync
+    useEffect(() => {
+        const isConfigured = typeof window !== 'undefined' && 
+                            import.meta.env.VITE_SUPABASE_URL && 
+                            import.meta.env.VITE_SUPABASE_ANON_KEY &&
+                            import.meta.env.VITE_SUPABASE_URL !== 'your_supabase_url';
+        
+        if (!isConfigured) return;
+
+        const channel = supabase
+            .channel(`collab-${projectId}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'project_state',
+                    filter: `project_id=eq.${projectId}`
+                },
+                (payload: any) => {
+                    const newState = payload.new;
+                    if (newState) {
+                        if (newState.comments?.[stageId]) {
+                            setComments(newState.comments[stageId]);
+                        }
+                        if (newState.checklist?.[stageId]) {
+                            setCheckedItems(newState.checklist[stageId]);
+                        }
+                        if (newState.custom_prompts?.[stageId]) {
+                            setCustomPrompt(newState.custom_prompts[stageId]);
+                        }
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [projectId, stageId]);
 
     useEffect(() => {
         if (!data) return;

@@ -16,6 +16,7 @@ import {
     User
 } from 'lucide-react';
 import { store } from '../lib/store';
+import { supabase } from '../lib/supabase';
 import { PromptModal } from './PromptModal';
 
 export interface Stage {
@@ -58,6 +59,39 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
             setAssignments(state.assignments || {});
         };
         fetchState();
+    }, [projectId]);
+
+    // Real-time Sync
+    useEffect(() => {
+        const isConfigured = typeof window !== 'undefined' && 
+                            import.meta.env.VITE_SUPABASE_URL && 
+                            import.meta.env.VITE_SUPABASE_ANON_KEY &&
+                            import.meta.env.VITE_SUPABASE_URL !== 'your_supabase_url';
+        
+        if (!isConfigured) return;
+
+        const channel = supabase
+            .channel(`assignments-${projectId}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'project_state',
+                    filter: `project_id=eq.${projectId}`
+                },
+                (payload: any) => {
+                    const newState = payload.new;
+                    if (newState && newState.assignments) {
+                        setAssignments(newState.assignments);
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
     }, [projectId]);
 
     const handleShare = async () => {

@@ -2,7 +2,12 @@
 
 **The secret weapon for winning hackathons.**
 
-Hackathon Copilot is a calm, opinionated, and minimal workspace designed to guide builders through the chaos of a 24-48 hour hackathon. It doesn't write the code for you; it ensures you're building the *right* thing, with the *right* tools, at the *right* speed.
+![Users](https://img.shields.io/badge/Builders-100%2B-black?style=for-the-badge&logo=rocket)
+![Countries](https://img.shields.io/badge/Countries-4%2B-blue?style=for-the-badge)
+![Launch](https://img.shields.io/badge/Launch-1_Month-green?style=for-the-badge)
+![Stars](https://img.shields.io/github/stars/anandmahadev/HACK-MATE?style=for-the-badge&color=gold)
+
+Hackathon Copilot is a calm, opinionated, and minimal workspace designed to guide builders through the chaos of a 24 hour hackathon. Currently trusted by **100+ developers** in **4+ countries** just **1 month** after launch.
 
 ---
 

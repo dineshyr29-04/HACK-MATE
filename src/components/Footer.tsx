@@ -13,7 +13,7 @@ export function Footer() {
                         <span>HackMate</span>
                     </div>
                     <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                        The ultimate Hackathon Copilot designed to help developers build and win. From ideation to submission, we've got you covered.
+                        Trusted by <span className="text-gray-900 font-bold">100+ builders</span> across <span className="text-gray-900 font-bold">4+ countries</span> since our launch 1 month ago. The ultimate Hackathon Copilot.
                     </p>
                     <div className="flex gap-4">
                         <a href="https://github.com/anandmahadev/HACK-MATE" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-gray-900 transition-colors">

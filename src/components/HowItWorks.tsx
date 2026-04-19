@@ -6,25 +6,25 @@ export function HowItWorks({ onBack }: { onBack: () => void }) {
             title: "Ideation",
             desc: "Brainstorm features, UVP, and core problem to solve.",
             icon: <Lightbulb className="w-6 h-6 text-amber-500" />,
-            sub: "Hour 0-2: Use AI to refine your vision."
+            sub: "Hour 0-1: Use AI to refine your vision."
         },
         {
             title: "Market Research",
             desc: "Understand users, competitors, and market gap.",
             icon: <Users className="w-6 h-6 text-gray-400" />,
-            sub: "Hour 2-4: Validate your assumptions."
+            sub: "Hour 1-2: Validate your assumptions."
         },
         {
             title: "UI/UX Design",
             desc: "Create wireframes, user flows, and design systems.",
             icon: <Workflow className="w-6 h-6 text-gray-900" />,
-            sub: "Hour 4-8: High-fidelity prototypes in Figma."
+            sub: "Hour 2-4: High-fidelity prototypes in Figma."
         },
         {
             title: "Website/App Build",
             desc: "Code frontend + backend and deploy instantly.",
             icon: <Code2 className="w-6 h-6 text-green-500" />,
-            sub: "Hour 8-36: The main development crunch."
+            sub: "Hour 4-18: The main development crunch."
         },
         {
             title: "Git & GitHub",
@@ -36,13 +36,13 @@ export function HowItWorks({ onBack }: { onBack: () => void }) {
             title: "PPT/Pitch Deck",
             desc: "Create a compelling 2-minute pitch for judges.",
             icon: <Presentation className="w-6 h-6 text-red-500" />,
-            sub: "Hour 36-40: Narrative and slide design."
+            sub: "Hour 18-21: Narrative and slide design."
         },
         {
             title: "Demo & Submission",
             desc: "Record demo video and submit to platform.",
             icon: <Play className="w-6 h-6 text-gray-900" />,
-            sub: "Hour 40-48: Final polish and recording."
+            sub: "Hour 21-24: Final polish and recording."
         }
     ];
 

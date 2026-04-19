@@ -89,7 +89,7 @@ function App() {
   const [projectData, setProjectData] = useState({
     name: '',
     problem: '',
-    timeLeft: '48',
+    timeLeft: '24',
     type: 'Online Hackathon',
     prizeCategory: 'AI/ML Track',
     judgingFocus: ['Innovation', 'Technical Complexity'],
