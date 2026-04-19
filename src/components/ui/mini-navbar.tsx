@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, ReactNode } from 'react';
 
-const AnimatedNavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
+const AnimatedNavLink = ({ href, children }: { href: string; children: ReactNode }) => {
     const defaultTextColor = 'text-gray-300';
     const hoverTextColor = 'text-white';
     const textSizeClass = 'text-sm';

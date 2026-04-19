@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
 interface PromptModalProps {
@@ -24,7 +24,7 @@ export function PromptModal({ isOpen, onClose, onSubmit, title, placeholder, def
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
         if (value.length > maxLength) {
             setError(true);
@@ -37,7 +37,7 @@ export function PromptModal({ isOpen, onClose, onSubmit, title, placeholder, def
         }
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: any) => {
         const newVal = e.target.value;
         setValue(newVal);
         if (newVal.length <= maxLength) {

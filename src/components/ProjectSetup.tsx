@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowRight, Clock, Trophy, Target, Globe, Users, Sparkles, Layout } from 'lucide-react';
 
 interface ProjectSetupProps {
@@ -17,18 +17,18 @@ interface ProjectSetupProps {
 }
 
 export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetupProps) {
-    const [name, setName] = React.useState('');
-    const [problem, setProblem] = React.useState(initialProblem);
-    const [timeLeft, setTimeLeft] = React.useState('24');
-    const [isCustomTime, setIsCustomTime] = React.useState(false);
+    const [name, setName] = useState('');
+    const [problem, setProblem] = useState(initialProblem);
+    const [timeLeft, setTimeLeft] = useState('24');
+    const [isCustomTime, setIsCustomTime] = useState(false);
 
-    const [type, setType] = React.useState('Online Hackathon');
-    const [prizeCategory, setPrizeCategory] = React.useState('AI/ML Track');
-    const [judgingFocus, setJudgingFocus] = React.useState<string[]>(['Innovation', 'Technical Complexity']);
-    const [teamSize, setTeamSize] = React.useState('2-3 people');
-    const [isTeam, setIsTeam] = React.useState(true);
+    const [type, setType] = useState('Online Hackathon');
+    const [prizeCategory, setPrizeCategory] = useState('AI/ML Track');
+    const [judgingFocus, setJudgingFocus] = useState<string[]>(['Innovation', 'Technical Complexity']);
+    const [teamSize, setTeamSize] = useState('2-3 people');
+    const [isTeam, setIsTeam] = useState(true);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
         onComplete({
             name,
