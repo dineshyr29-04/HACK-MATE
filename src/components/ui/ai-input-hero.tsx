@@ -121,11 +121,11 @@ export function HeroWave({
                         
                         {user ? (
                             <div className="flex items-center gap-4 pl-2">
-                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-200">
+                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-200 shadow-sm">
                                     {user.photoURL && <img src={user.photoURL} alt={user.displayName || ""} className="w-6 h-6 rounded-full" />}
                                     <span className="text-gray-900 font-bold">{user.displayName?.split(' ')[0]}</span>
                                 </div>
-                                <button onClick={onLogout} className="text-xs text-gray-400 hover:text-red-500 transition-colors uppercase tracking-wider">
+                                <button onClick={onLogout} className="text-xs text-gray-400 hover:text-red-500 transition-colors uppercase tracking-wider font-bold">
                                     Sign Out
                                 </button>
                             </div>
@@ -137,6 +137,28 @@ export function HeroWave({
                         <a href="https://github.com/anandmahadev/HACK-MATE" target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-100 transition-all text-gray-900">
                             <GitGraph className="w-5 h-5" />
                         </a>
+                    </div>
+
+                    {/* Mobile Auth Button */}
+                    <div className="lg:hidden flex items-center gap-2">
+                        {user ? (
+                            <div className="flex items-center gap-2">
+                                <div className="w-9 h-9 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden">
+                                    {user.photoURL ? (
+                                        <img src={user.photoURL} alt={user.displayName || ""} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-xs font-black text-gray-400">{user.displayName?.[0]}</span>
+                                    )}
+                                </div>
+                                <button onClick={onLogout} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                                    <ArrowRight className="w-5 h-5 rotate-180" />
+                                </button>
+                            </div>
+                        ) : (
+                            <button onClick={onLogin} className="px-5 py-2 rounded-full bg-gray-900 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-gray-900/10 active:scale-95 transition-all">
+                                Sign In
+                            </button>
+                        )}
                     </div>
                 </div>
             </nav>
