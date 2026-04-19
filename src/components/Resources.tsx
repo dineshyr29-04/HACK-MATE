@@ -55,17 +55,18 @@ export function Resources({ onBack }: { onBack: () => void }) {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50/50">
-            <nav className="border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="min-h-screen bg-transparent">
+            {/* Glassmorphic Navbar */}
+            <nav className="sticky top-0 w-full z-[100] border-b border-gray-100/50 bg-white/70 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     <button
                         onClick={onBack}
-                        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors font-medium"
+                        className="flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-all font-bold group"
                     >
-                        <ArrowLeft className="w-4 h-4" /> Back to Home
+                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back
                     </button>
-                    <div className="flex items-center gap-2 font-bold text-lg">
-                        <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center text-white">
+                    <div className="flex items-center gap-3 font-black text-xl tracking-tight text-gray-900">
+                        <div className="w-8 h-8 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg">
                             <Code2 className="w-4 h-4" />
                         </div>
                         <span>Resource Library</span>
@@ -74,37 +75,45 @@ export function Resources({ onBack }: { onBack: () => void }) {
                 </div>
             </nav>
 
-            <main className="max-w-7xl mx-auto px-6 py-20">
-                <div className="text-center mb-20">
-                    <h1 className="text-4xl sm:text-6xl font-black mb-6 tracking-tight">The Ultimate <br /><span className="text-black">Resource Library.</span></h1>
-                    <p className="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">
-                        Download pre-vetted templates, boilerplates, and guides to skip the busywork and start building.
+            <main className="max-w-7xl mx-auto px-6 py-24 relative">
+                {/* Background Decor */}
+                <div className="absolute top-20 right-0 w-64 h-64 bg-indigo-50/50 rounded-full blur-3xl -z-10 animate-float" />
+                <div className="absolute bottom-40 left-0 w-96 h-96 bg-blue-50/30 rounded-full blur-3xl -z-10 animate-float-delayed" />
+
+                <div className="text-center mb-24">
+                    <h1 className="text-5xl sm:text-7xl font-black mb-8 tracking-tighter">
+                        The Master <br />
+                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-indigo-600 to-gray-900">Resource Vault.</span>
+                    </h1>
+                    <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium">
+                        Everything you need to build at lightspeed. Download pre-vetted templates and boilerplates.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                     {resourceCategories.map((cat, i) => (
-                        <div key={i} className="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm hover:shadow-xl transition-all duration-500">
-                            <div className="flex items-center gap-4 mb-8">
-                                <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center">
+                        <div key={i} className="bg-white/40 backdrop-blur-sm border border-gray-100 p-10 rounded-[3rem] shadow-sm hover:shadow-2xl hover:bg-white hover:border-gray-200 transition-all duration-500 group">
+                            <div className="flex items-center gap-5 mb-10">
+                                <div className="w-14 h-14 rounded-2xl bg-white border border-gray-100 shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                                     {cat.icon}
                                 </div>
-                                <h2 className="text-2xl font-bold text-gray-900">{cat.title}</h2>
+                                <h2 className="text-2xl font-black text-gray-900">{cat.title}</h2>
                             </div>
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 {cat.items.map((item, j) => (
-                                    <div key={j} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl group hover:bg-gray-100 transition-colors">
-                                        <div className="flex items-center gap-4">
-                                            <FileText className="w-5 h-5 text-gray-300 group-hover:text-gray-400" />
-                                            <span className="font-bold text-gray-700 group-hover:text-black">{item.name}</span>
+                                    <div key={j} className="flex items-center justify-between p-5 bg-white/50 rounded-[2rem] border border-transparent hover:border-gray-100 hover:bg-white hover:shadow-xl hover:shadow-gray-200/20 transition-all group/item">
+                                        <div className="flex items-center gap-5">
+                                            <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-300 group-hover/item:text-gray-900 group-hover/item:bg-indigo-50 transition-colors">
+                                                <FileText className="w-5 h-5" />
+                                            </div>
+                                            <span className="font-bold text-gray-600 group-hover/item:text-gray-900 transition-colors">{item.name}</span>
                                         </div>
-                                        <div className="flex items-center gap-3">
-                                            <span className="text-[10px] font-black bg-white px-2 py-1 rounded-lg border border-gray-100 text-gray-400 group-hover:border-gray-200 group-hover:text-gray-900">{item.type}</span>
+                                        <div className="flex items-center gap-4">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-300 group-hover/item:text-indigo-400">{item.type}</span>
                                             <a
                                                 href={item.path}
-                                                download={item.name + ".pdf"}
-                                                className="p-2 bg-white rounded-lg shadow-sm border border-gray-100 hover:border-black hover:text-black transition-all"
-                                                title={`Download ${item.name}`}
+                                                download={item.name + ".md"}
+                                                className="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-gray-900/10 hover:bg-black hover:scale-110 transition-all opacity-0 group-hover/item:opacity-100"
                                             >
                                                 <Download className="w-4 h-4" />
                                             </a>
@@ -116,16 +125,16 @@ export function Resources({ onBack }: { onBack: () => void }) {
                     ))}
                 </div>
 
-                <div className="mt-20 p-12 bg-gray-900 rounded-[3rem] text-white overflow-hidden relative">
-                    <div className="absolute top-0 right-0 p-8 opacity-10">
-                        <GitBranch className="w-64 h-64 rotate-12" />
-                    </div>
-                    <div className="relative z-10">
-                        <h2 className="text-4xl font-black mb-4">Missing something?</h2>
-                        <p className="text-gray-400 text-xl mb-8 max-w-lg font-medium">We're constantly adding new templates. Request a resource or even better—contribute your own winning template to the community!</p>
-                        <div className="flex gap-4">
-                            <button className="bg-white text-gray-900 px-8 py-4 rounded-2xl font-bold hover:bg-gray-100 transition-all">Request Template</button>
-                            <button className="bg-gray-800 text-white px-8 py-4 rounded-2xl font-bold hover:bg-gray-700 transition-all">Contribute on GitHub</button>
+                <div className="mt-32 p-16 bg-gray-900 rounded-[4rem] text-white relative overflow-hidden group shadow-2xl">
+                    <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors" />
+                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+                        <div className="max-w-xl text-center md:text-left">
+                            <h2 className="text-4xl font-black mb-6">Need a custom boilerplate?</h2>
+                            <p className="text-gray-400 text-lg font-medium leading-relaxed">We're constantly updating our vault. Contribute your winning templates or request a specific stack on our GitHub.</p>
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                            <button className="px-10 py-5 bg-white text-gray-900 rounded-2xl font-black hover:bg-indigo-50 hover:scale-[1.02] transition-all shadow-xl">Contact Support</button>
+                            <a href="https://github.com/anandmahadev/HACK-MATE" target="_blank" rel="noreferrer" className="px-10 py-5 bg-gray-800 text-white rounded-2xl font-black hover:bg-gray-700 transition-all text-center">GitHub Hub</a>
                         </div>
                     </div>
                 </div>
