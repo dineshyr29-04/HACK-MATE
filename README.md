@@ -1,98 +1,90 @@
-# Hackathon Copilot
+# [HackMate] Hackathon Copilot 🚀
+### From Idea to Winning Demo. The ultimate copilot for your next hackathon.
 
-**The secret weapon for winning hackathons.**
-
-![Users](https://img.shields.io/badge/Builders-100%2B-black?style=for-the-badge&logo=rocket)
-![Countries](https://img.shields.io/badge/Countries-4%2B-blue?style=for-the-badge)
-![Launch](https://img.shields.io/badge/Launch-1_Month-green?style=for-the-badge)
-![Stars](https://img.shields.io/github/stars/anandmahadev/HACK-MATE?style=for-the-badge&color=gold)
-
-Hackathon Copilot is a calm, opinionated, and minimal workspace designed to guide builders through the chaos of a 24 hour hackathon. Currently trusted by **100+ developers** in **4+ countries** just **1 month** after launch.
+<div align="center">
+  <img src="https://img.shields.io/badge/Builders-100%2B-black?style=for-the-badge&logo=rocket" />
+  <img src="https://img.shields.io/badge/Countries-4%2B-indigo?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Launch-1_Month-green?style=for-the-badge" />
+  <img src="https://img.shields.io/github/stars/anandmahadev/HACK-MATE?style=for-the-badge&color=gold" />
+</div>
 
 ---
 
-## 🧘 Product Philosophy
+## 📽️ Preview
 
-- **Calm**: Reduces cognitive load when pressure is high.
-- **Opinionated**: Provides strong defaults so you don't waste time deciding.
-- **Handcrafted**: Every interaction is designed to feel premium and deliberate.
-- **Local-First**: No sign-ups. Your data stays in your browser.
+![HackMate Hero Page](./public/readme/hero.png)
+*Modern, minimalist, and built for speed.*
+
+---
+
+## 🌟 Why HackMate?
+
+Hackathon Copilot is a **premium, opinionated workspace** designed to guide builders through the high-stakes chaos of a 24-hour hackathon. We build the roadmap; you build the future.
+
+### 💼 Multi-Platform Dashboard
+Manage your entire hackathon lifecycle from a single, high-contrast dashboard. From ideation to submission, we've got you covered.
+
+![Selection Dashboard](./public/readme/dashboard.png)
 
 ---
 
 ## ✨ Key Features
 
-### 🚀 Strategic Workflow
-Step-by-step guidance broken down into critical stages:
-1. **Ideation**: Refine your problem statement and UVP.
-2. **Market Research**: Validate your idea against competitors.
-3. **Design**: Generate UI systems and mockups.
-4. **Build**: Get the best stack for rapid prototyping.
-5. **Git & GitHub**: Workflow commands for team collaboration.
-6. **Pitch Deck**: Craft a winning narrative.
-7. **Submission**: Don't miss the deadline.
+### 🤝 Real-Time Team Collaboration (NEW)
+Stop sharing payload-heavy links. HackMate now features a **Unique Team ID system**. 
+- **Generate a Team ID**: (e.g., `HM-A1B2C3`) and share it with your mates.
+- **Instant Join**: Teammates enter the ID and sync instantly.
+- **Real-time Sync**: Progress, assignments, and comments update live for everyone.
 
-### 🧠 10x Prompts
-Don't guess what to ask ChatGPT or Claude. We provide **engineered, role-specific prompts** (e.g., "Act as a YC Founder", "Act as a Senior UX Designer") that you can copy, edit, and use immediately to get high-quality outputs.
+### 🧠 10x AI Engineering
+Don't waste time on prompt engineering. Use our pre-vetted, role-specific "10x Prompts" for ChatGPT and Claude.
+- **Act as YC Founder**: For strategy and pitch.
+- **Act as Senior UX Designer**: For UI flows.
+- **Act as Lead Architect**: For stack selection.
 
-### 💾 Persistent Workspace
-- **Auto-Save**: Never lose your progress. Everything is saved locally.
-- **Resume Work**: Close the tab and come back later exactly where you left off.
-- **Stateful Checklists**: Track every task across every stage.
+![Phase View](./public/readme/stage.png)
 
-### 🔗 Shared Workspaces
-Collaborate effortlessly without accounts.
-- Generate a unique **read-only link** for your workspace.
-- Share with teammates or mentors to show your current plan and progress.
-- Link contains the *entire* project state (no backend required).
+### 📚 The Master Resource Vault
+A curated library of pre-vetted templates, boilerplates, and tools. Everything you need to build at lightspeed.
+
+![Resource Vault](./public/readme/resources.png)
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Framework**: React + TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS (Custom Design System)
-- **Icons**: Lucide React
-- **Persistence**: LocalStorage + URL Encoding
+- **Frontend**: [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) (Custom Design System)
+- **Backend/Real-time**: [Supabase](https://supabase.com/) (Postgres + Realtime)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/) & Tailwind Animate
 
 ---
 
 ## ⚡ Getting Started
 
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
+```bash
+# 1. Clone the repo
+git clone https://github.com/anandmahadev/HACK-MATE.git
 
-### Installation
+# 2. Install dependencies
+npm install
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/anandmahadev/HACK-MATE.git
-   cd HACK-MATE
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-
-4. **Build for production**
-   ```bash
-   npm run build
-   ```
+# 3. Spin up the dev server
+npm run dev
+```
 
 ---
 
-## 🤝 Contributing
+## 📈 Achievements & Milestones
 
-We welcome contributions that align with the **minimal** and **calm** philosophy. Please open an issue before submitting a PR.
+- 🏆 **100+ Builders** successfully launched projects using HackMate in the first 30 days.
+- 🌍 **Global Reach**: Trusted by developers across **4+ countries**.
+- ⚡ **Real-time Engine**: Switched from URL-based sharing to a robust **Supabase Real-time** synchronization layer for seamless teamwork.
 
 ---
 
-**Built with 🖤 by Hack Mate.**
+<div align="center">
+  <p>Built with 🖤 by <b>Anand Mahadev</b></p>
+  <p><i>The secret weapon for your next winning hackathon submission.</i></p>
+</div>
