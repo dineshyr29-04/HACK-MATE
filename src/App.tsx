@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { HeroWave } from "@/components/ui/ai-input-hero";
 import { ProjectSetup } from "./components/ProjectSetup";
 import { StageSelection } from "./components/StageSelection";
