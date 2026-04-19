@@ -2,17 +2,20 @@ import { Code2, Github, Twitter, Linkedin } from 'lucide-react';
 
 export function Footer() {
     return (
-        <footer className="bg-white border-t border-gray-100 pt-16 pb-8 px-6">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <footer className="bg-white border-t border-gray-100 pt-24 pb-12 px-6 relative overflow-hidden">
+            {/* Subtle background blob for footer too */}
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-50/50 rounded-full blur-3xl -z-10" />
+
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 relative">
                 <div className="col-span-1 md:col-span-1">
-                    <div className="flex items-center gap-3 font-bold text-xl tracking-tight text-gray-900 mb-6">
-                        <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center text-white">
+                    <div className="flex items-center gap-3 font-black text-xl tracking-tight text-gray-900 mb-6">
+                        <div className="w-8 h-8 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg">
                             <Code2 className="w-5 h-5" />
                         </div>
-                        <span>HackMate</span>
+                        <span>Hackathon Copilot</span>
                     </div>
-                    <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                        Trusted by <span className="text-gray-900 font-bold">100+ builders</span> across <span className="text-gray-900 font-bold">4+ countries</span> since our launch 1 month ago. The ultimate Hackathon Copilot.
+                    <p className="text-gray-400 text-sm leading-relaxed mb-8 font-medium">
+                        Empowering <span className="text-gray-900 font-bold">100+ builders</span> across <span className="text-gray-900 font-bold">4+ countries</span> to build winning projects in record time.
                     </p>
                     <div className="flex gap-4">
                         <a href="https://github.com/anandmahadev/HACK-MATE" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-gray-900 transition-colors">

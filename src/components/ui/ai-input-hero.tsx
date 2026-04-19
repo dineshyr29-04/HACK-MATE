@@ -77,123 +77,155 @@ export function HeroWave({
 
     return (
         <div className="relative min-h-screen flex flex-col overflow-hidden bg-white text-gray-900 selection:bg-gray-900 selection:text-white font-sans">
+            
+            {/* Animated Background Elements */}
+            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-indigo-50 rounded-full blur-[120px] opacity-60 animate-float" />
+                <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-blue-50 rounded-full blur-[100px] opacity-40 animate-float-delayed" />
+                <div className="absolute -bottom-[10%] left-[20%] w-[35%] h-[35%] bg-indigo-50/50 rounded-full blur-[110px] opacity-50 animate-float" />
+            </div>
 
-            <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]">
-                <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#e5e7eb,transparent)]"></div>
+            <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f8f8f8_1px,transparent_1px),linear-gradient(to_bottom,#f8f8f8_1px,transparent_1px)] bg-[size:6rem_4rem]">
+                <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,rgba(229,231,235,0.4),transparent)]"></div>
             </div>
 
             {/* Navbar */}
-            <nav className="w-full max-w-7xl mx-auto p-6 flex justify-between items-center z-50">
-                <div className="flex items-center gap-3 font-bold text-lg sm:text-xl tracking-tight text-gray-900">
-                    <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-gray-900/20">
-                        <Code2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                    </div>
-                    <span>Hackathon Copilot</span>
-                </div>
-                <div className="hidden lg:flex items-center gap-6 text-sm font-medium text-gray-600">
-                    <button onClick={onOpenHowItWorks} className="hover:text-gray-900 transition-colors">How it Works</button>
-                    <button onClick={onOpenFeatures} className="hover:text-gray-900 transition-colors">Features</button>
-                    <button onClick={onOpenResources} className="hover:text-gray-900 transition-colors">Resources</button>
-                    <button onClick={onOpenCaseStudies} className="hover:text-gray-900 transition-colors">Success Stories</button>
-                    <button onClick={onOpenGuide} className="hover:text-gray-900 transition-colors">Guide</button>
-                    <button onClick={onOpenFAQ} className="hover:text-gray-900 transition-colors">FAQ</button>
-                    <div className="h-4 w-px bg-gray-200 mx-2" />
-                    {user ? (
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                                {user.photoURL && <img src={user.photoURL} alt={user.displayName || ""} className="w-8 h-8 rounded-full border border-gray-200" />}
-                                <span className="text-gray-900 font-bold">{user.displayName?.split(' ')[0]}</span>
-                            </div>
-                            <button onClick={onLogout} className="px-4 py-2 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors text-gray-600">
-                                Sign Out
-                            </button>
+            <nav className="sticky top-0 w-full z-[100] border-b border-gray-100/50 bg-white/70 backdrop-blur-xl">
+                <div className="max-w-7xl mx-auto p-4 sm:p-6 flex justify-between items-center">
+                    <div className="flex items-center gap-3 font-bold text-lg sm:text-xl tracking-tight text-gray-900 hover:scale-[1.02] transition-transform cursor-pointer">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-gray-900/20">
+                            <Code2 className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
-                    ) : (
-                        <button onClick={onLogin} className="px-6 py-2 rounded-full bg-gray-900 hover:bg-black text-white font-bold transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-gray-900/20">
-                            Sign In
+                        <span className="bg-clip-text text-transparent bg-gradient-to-br from-gray-900 to-gray-600">Hackathon Copilot</span>
+                    </div>
+                    
+                    <div className="hidden lg:flex items-center gap-8 text-sm font-semibold text-gray-500">
+                        <button onClick={onOpenHowItWorks} className="hover:text-gray-900 transition-colors relative group">
+                            How it Works
+                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 transition-all group-hover:w-full" />
                         </button>
-                    )}
-                    <a href="https://github.com/anandmahadev/HACK-MATE" target="_blank" rel="noreferrer" title="View on GitHub" className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors text-gray-900 group">
-                        <GitGraph className="w-4 h-4 group-hover:rotate-12 transition-transform" /> GitHub
-                    </a>
+                        <button onClick={onOpenFeatures} className="hover:text-gray-900 transition-colors relative group">
+                            Features
+                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 transition-all group-hover:w-full" />
+                        </button>
+                        <button onClick={onOpenResources} className="hover:text-gray-900 transition-colors relative group">
+                            Resources
+                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 transition-all group-hover:w-full" />
+                        </button>
+                        <button onClick={onOpenCaseStudies} className="hover:text-gray-900 transition-colors relative group">
+                            Success Stories
+                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 transition-all group-hover:w-full" />
+                        </button>
+                        
+                        <div className="h-6 w-px bg-gray-200 mx-1" />
+                        
+                        {user ? (
+                            <div className="flex items-center gap-4 pl-2">
+                                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-50 border border-gray-200">
+                                    {user.photoURL && <img src={user.photoURL} alt={user.displayName || ""} className="w-6 h-6 rounded-full" />}
+                                    <span className="text-gray-900 font-bold">{user.displayName?.split(' ')[0]}</span>
+                                </div>
+                                <button onClick={onLogout} className="text-xs text-gray-400 hover:text-red-500 transition-colors uppercase tracking-wider">
+                                    Sign Out
+                                </button>
+                            </div>
+                        ) : (
+                            <button onClick={onLogin} className="px-6 py-2 rounded-full bg-gray-900 hover:bg-black text-white font-bold transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-gray-900/20">
+                                Sign In
+                            </button>
+                        )}
+                        <a href="https://github.com/anandmahadev/HACK-MATE" target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-100 transition-all text-gray-900">
+                            <GitGraph className="w-5 h-5" />
+                        </a>
+                    </div>
                 </div>
             </nav>
 
             {/* Hero Content */}
-            <main className="flex-1 w-full max-w-5xl mx-auto px-6 flex flex-col items-center justify-center text-center z-10 pt-10 pb-20">
+            <main className="flex-1 w-full max-w-5xl mx-auto px-6 flex flex-col items-center justify-center text-center z-10 pt-16 pb-32">
 
-                {/* Milestone Badge */}
-                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white border border-gray-200 shadow-xl shadow-gray-100 text-[10px] sm:text-xs font-semibold text-gray-600 mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 hover:border-gray-300 hover:shadow-2xl transition-all cursor-default group">
-                    <div className="flex -space-x-2">
+                {/* Status Indicator */}
+                <div className="mb-6 animate-in fade-in slide-in-from-bottom-3 duration-1000">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Live: 42 builders currently planning</span>
+                    </div>
+                </div>
+
+                {/* Milestone Badge (Enhanced) */}
+                <div className="inline-flex items-center gap-4 px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-md border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-xs font-semibold text-gray-600 mb-10 transition-all hover:border-gray-300 hover:shadow-xl group cursor-default">
+                    <div className="flex -space-x-2.5">
                         {[1, 2, 3, 4].map(i => (
-                            <div key={i} className="w-5 h-5 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center overflow-hidden ring-1 ring-gray-100">
+                            <div key={i} className="w-6 h-6 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center overflow-hidden shadow-sm">
                                 <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 42}`} alt="user" className="w-full h-full" />
                             </div>
                         ))}
                     </div>
-                    <div className="flex items-center gap-3 h-4">
-                        <span className="flex items-center gap-1.5">
-                            <span className="text-gray-900 font-bold">100+ Builders</span>
-                        </span>
-                        <div className="w-px h-full bg-gray-200" />
-                        <span className="flex items-center gap-1.5">
-                            <span className="text-gray-900 font-bold">4+ Countries</span>
-                        </span>
-                        <div className="w-px h-full bg-gray-200" />
-                        <span className="flex items-center gap-1.5">
-                            <span className="text-gray-900 font-bold">1 Month</span>
-                            <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-500 group-hover:rotate-12 transition-transform" />
-                        </span>
+                    <div className="flex items-center gap-4 h-4">
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-gray-900 font-black">100+</span>
+                            <span className="text-gray-400 text-[10px] uppercase font-bold tracking-tight">Builders</span>
+                        </div>
+                        <div className="w-px h-full bg-gray-100" />
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-gray-900 font-black">4+</span>
+                            <span className="text-gray-400 text-[10px] uppercase font-bold tracking-tight">Countries</span>
+                        </div>
+                        <div className="w-px h-full bg-gray-100" />
+                        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-amber-50 text-amber-600">
+                            <span className="font-black">1 Month</span>
+                            <Sparkles className="w-3 h-3 fill-amber-500" />
+                        </div>
                     </div>
                 </div>
 
                 {/* Headline */}
                 <h1 className="text-4xl sm:text-7xl md:text-8xl font-black tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-5 duration-1000 leading-[1.1] text-gray-900">
                     From Idea to <br className="hidden sm:block" />
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-600 to-gray-900">Winning Demo.</span>
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-indigo-600 to-gray-900 bg-300% animate-gradient">Winning Demo.</span>
                 </h1>
 
-                <p className="text-lg sm:text-2xl text-gray-500 mb-12 max-w-2xl mx-auto leading-relaxed font-normal animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
-                    Describe your problem statement. We'll generate the perfect workflow, tools, and prompts to build it in 24 hours.
+                <p className="text-lg sm:text-2xl text-gray-500 mb-12 max-w-2xl mx-auto leading-relaxed font-medium animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
+                    The ultimate copilot for your next hackathon. We build the roadmap, you build the future.
                 </p>
 
                 {/* Input Interactive Area */}
                 <div className="w-full max-w-2xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 z-20">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-500"></div>
+                    <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-indigo-500 rounded-[2rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
 
-                    <form onSubmit={handleSubmit} className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-3xl shadow-2xl shadow-gray-200/50 border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-gray-900/5 transition-all">
+                    <form onSubmit={handleSubmit} className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white p-2 focus-within:ring-4 focus-within:ring-indigo-500/5 transition-all">
                         <div className="flex-1 relative">
-                            <Box className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <Box className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
                                 type="text"
                                 value={prompt}
                                 onChange={(e) => setPrompt(e.target.value)}
                                 placeholder="Paste your problem statement..."
-                                className="w-full h-14 sm:h-16 pl-12 pr-4 bg-transparent border-none text-gray-900 placeholder:text-gray-400 focus:ring-0 text-base sm:text-lg font-medium"
+                                className="w-full h-14 sm:h-16 pl-14 pr-4 bg-transparent border-none text-gray-900 placeholder:text-gray-400 focus:ring-0 text-base sm:text-lg font-medium"
                                 autoFocus
                             />
                         </div>
                         <button
                             type="submit"
-                            className="bg-gray-900 hover:bg-black text-white h-12 sm:h-auto py-4 px-8 rounded-xl sm:rounded-2xl font-bold text-base transition-all transform active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-gray-900/20"
+                            className="bg-gray-900 hover:bg-black text-white h-12 sm:h-auto py-4 px-10 rounded-xl sm:rounded-full font-bold text-base transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-gray-900/20"
                         >
                             Start Project <ArrowRight className="w-4 h-4" />
                         </button>
                     </form>
 
                     {/* Category Filters */}
-                    <div className="mt-8 flex flex-wrap justify-center gap-2 opacity-0 animate-in fade-in duration-700 delay-500 fill-mode-forwards">
+                    <div className="mt-10 flex flex-wrap justify-center gap-2 opacity-0 animate-in fade-in duration-700 delay-500 fill-mode-forwards">
                         <button
                             onClick={() => setSelectedCategory(null)}
-                            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${!selectedCategory ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                            className={`px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all ${!selectedCategory ? 'bg-gray-900 text-white shadow-lg' : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600'}`}
                         >
-                            All
+                            All Categories
                         </button>
                         {categories.map(cat => (
                             <button
                                 key={cat}
                                 onClick={() => setSelectedCategory(cat)}
-                                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${selectedCategory === cat ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                                className={`px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all ${selectedCategory === cat ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600'}`}
                             >
                                 {cat}
                             </button>
@@ -201,12 +233,12 @@ export function HeroWave({
                     </div>
 
                     {/* Quick Suggestions */}
-                    <div className="mt-4 flex flex-wrap justify-center gap-2 opacity-0 animate-in fade-in duration-700 delay-500 fill-mode-forwards">
+                    <div className="mt-6 flex flex-wrap justify-center gap-2 opacity-0 animate-in fade-in duration-700 delay-500 fill-mode-forwards">
                         {displayedSuggestions.map((s, i) => (
                             <button
                                 key={i}
                                 onClick={() => setPrompt(s.label)}
-                                className="px-3 py-1.5 rounded-md bg-gray-50 border border-gray-100 text-xs font-medium text-gray-600 hover:bg-white hover:border-gray-300 hover:text-gray-900 transition-all"
+                                className="px-4 py-2 rounded-xl bg-white border border-gray-100 text-xs font-bold text-gray-500 hover:border-indigo-200 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all shadow-sm"
                             >
                                 {s.label}
                             </button>
@@ -214,23 +246,23 @@ export function HeroWave({
                         {filteredSuggestions.length > 4 && (
                             <button
                                 onClick={() => setShowAllSuggestions(!showAllSuggestions)}
-                                className="px-3 py-1.5 rounded-md bg-gray-50 border border-gray-100 text-xs font-bold text-gray-900 hover:bg-gray-100 transition-all"
+                                className="px-4 py-2 rounded-xl bg-gray-50 border border-gray-100 text-[10px] font-black uppercase text-gray-400 hover:bg-gray-100 hover:text-gray-900 transition-all"
                             >
-                                {showAllSuggestions ? "Show Less" : `+${filteredSuggestions.length - 4} More`}
+                                {showAllSuggestions ? "Less" : `+${filteredSuggestions.length - 4} Ideas`}
                             </button>
                         )}
                     </div>
                 </div>
 
-                {/* Feature Grid / Social Proof */}
-                <div className="w-full max-w-6xl mx-auto mt-24 grid grid-cols-1 sm:grid-cols-3 gap-8 px-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
+                {/* Feature Grid */}
+                <div className="w-full max-w-6xl mx-auto mt-32 grid grid-cols-1 sm:grid-cols-3 gap-8 px-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
                     <FeatureCard
-                        icon={<Zap className="w-6 h-6 text-gray-900" />}
+                        icon={<Zap className="w-6 h-6 text-indigo-600" />}
                         title="Instant Strategy"
                         desc="Get a tailored roadmap from Ideation to Pitch Deck in seconds."
                     />
                     <FeatureCard
-                        icon={<LayoutTemplate className="w-6 h-6 text-gray-900" />}
+                        icon={<LayoutTemplate className="w-6 h-6 text-blue-600" />}
                         title="Best-in-Class Tools"
                         desc="Curated recommendations for the exact tech stack you need."
                     />
@@ -242,71 +274,64 @@ export function HeroWave({
                 </div>
 
                 {/* Setup Guide Section */}
-                <div className="w-full max-w-4xl mx-auto mt-24 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-400">
-                    <div className="bg-white rounded-3xl border border-gray-200 shadow-xl overflow-hidden">
-                        <div className="p-8 md:p-12 border-b border-gray-100">
-                            <h2 className="text-3xl font-bold mb-4">Setup Guide</h2>
-                            <p className="text-gray-500 text-lg">
-                                Ready to build? Initialize the Antigravity engine in three simple steps.
+                <div className="w-full max-w-4xl mx-auto mt-32 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-400">
+                    <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-[0_20px_60px_rgba(0,0,0,0.03)] overflow-hidden">
+                        <div className="p-10 md:p-14 border-b border-gray-50">
+                            <h2 className="text-3xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-500">Fast-Track Setup</h2>
+                            <p className="text-gray-400 text-lg max-w-xl mx-auto">
+                                Initialize the Hackathon Copilot engine in three commands and start building immediately.
                             </p>
                         </div>
-                        <div className="bg-gray-900 p-8 font-mono text-sm md:text-base overflow-x-auto">
-                            <div className="flex flex-col gap-6">
-                                <div className="group">
-                                    <div className="flex items-center gap-2 text-gray-500 mb-2 select-none">
-                                        <div className="w-2 h-2 rounded-full bg-gray-600" />
-                                        <span>Step 1: Clone Repository</span>
+                        <div className="bg-gray-950 p-10 font-mono text-sm md:text-base overflow-x-auto relative">
+                            <div className="absolute top-4 right-6 flex gap-2">
+                                <div className="w-3 h-3 rounded-full bg-red-500/20" />
+                                <div className="w-3 h-3 rounded-full bg-amber-500/20" />
+                                <div className="w-3 h-3 rounded-full bg-green-500/20" />
+                            </div>
+                            <div className="flex flex-col gap-8 text-left max-w-2xl mx-auto">
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-3 text-[10px] font-black text-gray-600 uppercase tracking-widest">
+                                        <span className="w-5 h-5 rounded bg-white/5 flex items-center justify-center text-white">01</span>
+                                        Clone
                                     </div>
-                                    <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded-xl border border-gray-700/50 group-hover:border-gray-600 transition-colors">
-                                        <code className="text-blue-400">git clone https://github.com/antigravity/engine.git</code>
-                                        <button className="text-gray-500 hover:text-white transition-colors">
-                                            <Box className="w-4 h-4" />
-                                        </button>
-                                    </div>
+                                    <code className="block p-4 rounded-xl bg-white/5 text-indigo-300 border border-white/5">git clone https://github.com/hackmate/engine.git</code>
                                 </div>
-
-                                <div className="group">
-                                    <div className="flex items-center gap-2 text-gray-500 mb-2 select-none">
-                                        <div className="w-2 h-2 rounded-full bg-gray-600" />
-                                        <span>Step 2: Install</span>
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-3 text-[10px] font-black text-gray-600 uppercase tracking-widest">
+                                        <span className="w-5 h-5 rounded bg-white/5 flex items-center justify-center text-white">02</span>
+                                        Install
                                     </div>
-                                    <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded-xl border border-gray-700/50 group-hover:border-gray-600 transition-colors">
-                                        <code className="text-green-400">npm install</code>
-                                        <span className="text-gray-600 text-xs">20s</span>
-                                    </div>
+                                    <code className="block p-4 rounded-xl bg-white/5 text-emerald-400 border border-white/5">npm install <span className="text-gray-600"># takes ~20s</span></code>
                                 </div>
-
-                                <div className="group">
-                                    <div className="flex items-center gap-2 text-gray-500 mb-2 select-none">
-                                        <div className="w-2 h-2 rounded-full bg-gray-600" />
-                                        <span>Step 3: Launch</span>
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-3 text-[10px] font-black text-gray-600 uppercase tracking-widest">
+                                        <span className="w-5 h-5 rounded bg-white/5 flex items-center justify-center text-white">03</span>
+                                        Launch
                                     </div>
-                                    <div className="flex items-center justify-between p-4 bg-gray-800/50 rounded-xl border border-gray-700/50 group-hover:border-gray-600 transition-colors">
-                                        <code className="text-yellow-400">npm run dev</code>
-                                        <span className="text-gray-600 text-xs">Ready</span>
-                                    </div>
+                                    <code className="block p-4 rounded-xl bg-white/[0.08] text-amber-400 border border-white/10 shadow-[0_0_30px_rgba(251,191,36,0.1)]">npm run dev</code>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Recent Projects (Minimal) */}
+                {/* Recent Projects (Minimal Floating) */}
                 {recentProjects.length > 0 && (
-                    <div className="relative sm:absolute sm:top-24 sm:right-12 z-20 mt-8 sm:mt-0 animate-in fade-in slide-in-from-right-4 duration-700 delay-500">
-                        <div className="bg-white/80 backdrop-blur-sm border border-gray-100 shadow-xl rounded-2xl p-4 max-w-sm mx-auto sm:mx-0">
-                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-1">Resume Work</h3>
-                            <div className="space-y-2">
+                    <div className="relative sm:absolute sm:top-32 sm:right-8 z-20 mt-12 sm:mt-0 animate-in fade-in slide-in-from-right-8 duration-1000 delay-500">
+                        <div className="bg-white/90 backdrop-blur-2xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.08)] rounded-[2rem] p-6 w-full max-w-xs mx-auto sm:mx-0">
+                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 px-1">Resume Building</h3>
+                            <div className="space-y-3">
                                 {recentProjects.map(p => (
                                     <button
                                         key={p.id}
                                         onClick={() => onResumeProject?.(p)}
-                                        className="w-full text-left px-4 py-3 rounded-xl hover:bg-white hover:shadow-lg hover:shadow-gray-200/50 transition-all flex items-center justify-between group bg-gray-50/50"
+                                        className="w-full text-left px-5 py-4 rounded-2xl hover:bg-indigo-50/50 hover:shadow-xl hover:shadow-indigo-500/5 transition-all flex items-center justify-between group bg-gray-50/30 border border-transparent hover:border-indigo-100"
                                     >
-                                        <span className="truncate max-w-[150px] font-bold text-gray-800">{p.name || "Untitled"}</span>
-                                        <span className="text-xs font-bold text-gray-400 group-hover:text-gray-900 flex items-center gap-1 transition-colors">
-                                            {p.timeLeft}h <Clock className="w-3.5 h-3.5" />
-                                        </span>
+                                        <span className="truncate max-w-[140px] font-black text-gray-800 text-sm">{p.name || "New Project"}</span>
+                                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white shadow-sm border border-gray-50">
+                                            <span className="text-[10px] font-black text-indigo-600">{p.timeLeft}h</span>
+                                            <Clock className="w-2.5 h-2.5 text-indigo-400" />
+                                        </div>
                                     </button>
                                 ))}
                             </div>
@@ -321,12 +346,13 @@ export function HeroWave({
 
 function FeatureCard({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
     return (
-        <div className="flex flex-col items-center bg-gray-50/50 hover:bg-white p-6 rounded-2xl border border-transparent hover:border-gray-200 transition-all duration-300 group">
-            <div className="w-12 h-12 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+        <div className="flex flex-col items-center bg-white/40 backdrop-blur-sm hover:bg-white p-10 rounded-[2.5rem] border border-gray-50 hover:border-gray-200 transition-all duration-500 group shadow-sm hover:shadow-2xl hover:shadow-gray-200/50 hover:-translate-y-2">
+            <div className="w-16 h-16 rounded-2xl bg-white border border-gray-100 shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
                 {icon}
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
-            <p className="text-sm text-gray-500 leading-relaxed max-w-[250px]">{desc}</p>
+            <h3 className="text-xl font-black text-gray-900 mb-3">{title}</h3>
+            <p className="text-sm text-gray-500 leading-relaxed font-medium">{desc}</p>
         </div>
     );
 }
+

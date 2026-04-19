@@ -22,34 +22,50 @@ export function Resources({ onBack }: { onBack: () => void }) {
                 { name: "Aesthetics Best Practices", type: "PDF", path: "/resources/design/aesthetics.pdf" }
             ]
         },
+                { name: "Problem Statement Format", type: "MD", path: "/resources/ideation/problem-statement.md" },
+                { name: "Competitive Analysis Framework", type: "MD", path: "/resources/ideation/competitive-analysis.md" },
+                { name: "User Persona Template", type: "MD", path: "/resources/ideation/user-persona.md" },
+                { name: "Market Sizing Guide", type: "MD", path: "/resources/ideation/market-size.md" },
+            ]
+        },
         {
-            title: "Developer Boilerplates",
-            icon: <Code2 className="w-6 h-6 text-green-500" />,
+            title: "Design & Aesthetics",
+            icon: <Palette className="w-6 h-6 text-indigo-500" />,
             items: [
-                { name: "Next.js + Supabase Starter", type: "PDF", path: "/resources/boilerplates/nextjs-starter.pdf" },
-                { name: "Python Flask OpenAI Template", type: "PDF", path: "/resources/boilerplates/python-flask-openai.pdf" },
-                { name: "Vite + React Starter Kit", type: "PDF", path: "/resources/boilerplates/vite-react-starter.pdf" },
-                { name: "Supabase Schema Guide", type: "PDF", path: "/resources/boilerplates/supabase-schema.pdf" }
+                { name: "Color Palette Guide", type: "MD", path: "/resources/design/color-palette-guide.md" },
+                { name: "Dashboard Layout Rules", type: "MD", path: "/resources/design/dashboard-layout.md" },
+                { name: "Modern Aesthetics Checklist", type: "MD", path: "/resources/design/aesthetics.md" },
+                { name: "Wireframe Kit (SVG)", type: "MD", path: "/resources/design/wireframe-kit.md" },
+            ]
+        },
+        {
+            title: "Boilerplates & Schemas",
+            icon: <Code2 className="w-6 h-6 text-gray-900" />,
+            items: [
+                { name: "Vite + React Starter", type: "MD", path: "/resources/boilerplates/vite-react-starter.md" },
+                { name: "Supabase Schema Template", type: "MD", path: "/resources/boilerplates/supabase-schema.md" },
+                { name: "Next.js + Tailwind Boilerplate", type: "MD", path: "/resources/boilerplates/nextjs-tailwind.md" },
+                { name: "Python Flask + OpenAI Kit", type: "MD", path: "/resources/boilerplates/python-flask-openai.md" },
             ]
         },
         {
             title: "Pitch & Presentation",
             icon: <Presentation className="w-6 h-6 text-red-500" />,
             items: [
-                { name: "Winning Pitch Structure", type: "PDF", path: "/resources/pitch/winning-pitch-deck.pdf" },
-                { name: "2-Min Pitch Script", type: "PDF", path: "/resources/pitch/pitch-script.pdf" },
-                { name: "Judge FAQ Prep Sheet", type: "PDF", path: "/resources/pitch/judge-faq.pdf" },
-                { name: "Presentation Checklist", type: "PDF", path: "/resources/pitch/presentation-checklist.pdf" }
+                { name: "Winning Pitch Deck Structure", type: "MD", path: "/resources/pitch/winning-pitch-deck.md" },
+                { name: "3-Min Pitch Script", type: "MD", path: "/resources/pitch/pitch-script.md" },
+                { name: "Judge QA Prep Guide", type: "MD", path: "/resources/pitch/judge-faq.md" },
+                { name: "Final Presentation Checklist", type: "MD", path: "/resources/pitch/presentation-checklist.md" },
             ]
         },
         {
-            title: "Submission & Demo",
-            icon: <Play className="w-6 h-6 text-gray-900" />,
+            title: "Submission & GitHub",
+            icon: <Play className="w-6 h-6 text-emerald-500" />,
             items: [
-                { name: "Demo Video Script", type: "PDF", path: "/resources/submission/demo-video-script.pdf" },
-                { name: "README.md Pro Template", type: "PDF", path: "/resources/submission/readme-template.pdf" },
-                { name: "Success Checklist", type: "PDF", path: "/resources/submission/submission-checklist.pdf" },
-                { name: "GitHub Project Setup", type: "PDF", path: "/resources/submission/github-setup.pdf" }
+                { name: "GitHub README Template", type: "MD", path: "/resources/submission/readme-template.md" },
+                { name: "Demo Video Script", type: "MD", path: "/resources/submission/demo-video-script.md" },
+                { name: "Final Submission Checklist", type: "MD", path: "/resources/submission/submission-checklist.md" },
+                { name: "Git Workflow for Teams", type: "MD", path: "/resources/submission/github-setup.md" },
             ]
         }
     ];
