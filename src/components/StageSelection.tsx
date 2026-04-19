@@ -168,7 +168,30 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                                 <p className="text-gray-500 font-medium">Copy this link to share your project roadmap and collaborate in real-time.</p>
                             </div>
 
-                            <div className="space-y-4">
+                                <div className="p-6 bg-indigo-50/50 rounded-2xl border border-indigo-100 mb-6">
+                                    <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3">Unique Team ID</h4>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-3xl font-black tracking-tight text-indigo-700">{project.teamId || "HM-NEW"}</span>
+                                        <button 
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(project.teamId || "");
+                                                setCopied(true);
+                                                setTimeout(() => setCopied(false), 2000);
+                                            }}
+                                            className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition-all"
+                                        >
+                                            {copied && project.teamId ? 'Copied' : 'Copy ID'}
+                                        </button>
+                                    </div>
+                                    <p className="mt-3 text-[10px] text-indigo-400 font-medium leading-relaxed">Your team can enter this ID on the homepage to join instantly.</p>
+                                </div>
+
+                                <div className="relative py-4 flex items-center">
+                                    <div className="flex-grow border-t border-gray-100"></div>
+                                    <span className="flex-shrink mx-4 text-[10px] font-black text-gray-300 uppercase tracking-widest">Or use Link</span>
+                                    <div className="flex-grow border-t border-gray-100"></div>
+                                </div>
+
                                 <div className="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-200">
                                     <div className="flex-1 truncate font-mono text-sm text-gray-500">
                                         {shareUrl}
@@ -181,7 +204,7 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                                         {copied ? 'Copied' : 'Copy Link'}
                                     </button>
                                 </div>
-                                <p className="text-center text-xs text-gray-400 font-medium italic">NOTE: Link contains encoded project data. Large projects may have very long links.</p>
+                                <p className="text-center text-xs text-gray-400 font-medium italic">NOTE: Real-time syncing is enabled for both ID and Link access.</p>
                             </div>
                         </div>
                     </div>

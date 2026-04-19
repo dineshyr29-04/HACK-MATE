@@ -112,6 +112,26 @@ function App() {
     setStage('setup');
   };
 
+  const handleJoinTeam = async (teamId: string) => {
+    const project = await store.findProjectByTeamId(teamId);
+    if (project) {
+      setProjectId(project.id);
+      setProjectData({
+        name: project.name,
+        problem: project.problem,
+        timeLeft: project.timeLeft,
+        type: project.type || 'Online Hackathon',
+        prizeCategory: project.prizeCategory || 'AI/ML Track',
+        judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
+        teamSize: project.teamSize || '2-3 people',
+        isTeam: project.isTeam ?? true
+      });
+      setStage('selection');
+    } else {
+      alert("Invalid Team ID. Please check and try again.");
+    }
+  };
+
   const handleResumeProject = (project: any) => {
     if (!user) {
       setPendingAction({ stage: 'selection', data: project });
@@ -188,6 +208,7 @@ function App() {
       {stage === 'landing' && (
         <>
           <HeroWave
+            onJoinTeam={handleJoinTeam}
             onPromptSubmit={handlePromptSubmit}
             onResumeProject={handleResumeProject}
             onDeleteProject={handleDeleteProject}

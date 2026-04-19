@@ -9,6 +9,7 @@ export interface Project {
     judgingFocus?: string[];
     teamSize?: string;
     isTeam?: boolean;
+    teamId?: string;
     createdAt: number;
     lastModified: number;
 }
@@ -78,6 +79,9 @@ export const store = {
             if (existing >= 0) {
                 projects[existing] = { ...projects[existing], ...updatedProject };
             } else {
+                // Generate a unique 6-char Team ID for new projects
+                const randomId = Math.random().toString(36).substring(2, 8).toUpperCase();
+                updatedProject.teamId = `HM-${randomId}`;
                 projects.unshift({ ...updatedProject, createdAt: Date.now() });
             }
             localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
@@ -94,11 +98,46 @@ export const store = {
                     judging_focus: updatedProject.judgingFocus,
                     team_size: updatedProject.teamSize,
                     is_team: updatedProject.isTeam,
+                    team_id: updatedProject.teamId,
                     last_modified: updatedProject.lastModified
                 });
             }
         } catch (e) {
             console.error("Save project failed", e);
+        }
+    },
+
+    findProjectByTeamId: async (teamId: string): Promise<Project | null> => {
+        if (!isSupabaseConfigured()) return null;
+        try {
+            const { data, error } = await supabase
+                .from('projects')
+                .select('*')
+                .eq('team_id', teamId.toUpperCase())
+                .single();
+            
+            if (!error && data) {
+                const project: Project = {
+                    id: data.id,
+                    name: data.name,
+                    problem: data.problem,
+                    timeLeft: data.time_left,
+                    type: data.type,
+                    prizeCategory: data.prize_category,
+                    judgingFocus: data.judging_focus,
+                    teamSize: data.team_size,
+                    isTeam: data.is_team,
+                    teamId: data.team_id,
+                    createdAt: data.created_at || Date.now(),
+                    lastModified: data.last_modified || Date.now()
+                };
+                await store.saveProject(project);
+                return project;
+            }
+            return null;
+        } catch (e) {
+            console.error("Find team failed", e);
+            return null;
         }
     },
 

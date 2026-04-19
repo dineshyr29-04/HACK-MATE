@@ -16,6 +16,7 @@ export type HeroWaveProps = {
     onOpenResources?: () => void;
     onOpenCaseStudies?: () => void;
     user?: User | null;
+    onJoinTeam?: (teamId: string) => void;
     onLogin?: () => void;
     onLogout?: () => void;
 };
@@ -31,12 +32,15 @@ export function HeroWave({
     onOpenResources, 
     onOpenCaseStudies,
     user,
+    onJoinTeam,
     onLogin,
     onLogout
 }: HeroWaveProps) {
     const [prompt, setPrompt] = useState("");
     const [recentProjects, setRecentProjects] = useState<Project[]>([]);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [isJoining, setIsJoining] = useState(false);
+    const [teamIdInput, setTeamIdInput] = useState("");
 
     const fetchRecent = async () => {
         const projects = await store.getProjects();
@@ -280,25 +284,65 @@ export function HeroWave({
                 <div className="w-full max-w-2xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 z-20">
                     <div className="absolute -inset-0.5 bg-gray-200 rounded-[2rem] blur-sm opacity-20 group-hover:opacity-30 transition duration-500"></div>
 
-                    <form onSubmit={handleSubmit} className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-[2rem] shadow-xl border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-gray-100 transition-all">
-                        <div className="flex-1 relative">
-                            <Box className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                            <input
-                                type="text"
-                                value={prompt}
-                                onChange={(e) => setPrompt(e.target.value)}
-                                placeholder="Paste your problem statement..."
-                                className="w-full h-14 sm:h-16 pl-14 pr-4 bg-transparent border-none text-gray-900 placeholder:text-gray-400 focus:ring-0 text-base sm:text-lg font-medium"
-                                autoFocus
-                            />
+                    {!isJoining ? (
+                        <>
+                            <form onSubmit={handleSubmit} className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-[2rem] shadow-xl border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-gray-100 transition-all">
+                                <div className="flex-1 relative">
+                                    <Box className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        value={prompt}
+                                        onChange={(e) => setPrompt(e.target.value)}
+                                        placeholder="Paste your problem statement..."
+                                        className="w-full h-14 sm:h-16 pl-14 pr-4 bg-transparent border-none text-gray-900 placeholder:text-gray-400 focus:ring-0 text-base sm:text-lg font-medium"
+                                        autoFocus
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="bg-gray-900 hover:bg-black text-white h-12 sm:h-auto py-4 px-10 rounded-xl sm:rounded-full font-bold text-base transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-gray-900/20"
+                                >
+                                    Start Project <ArrowRight className="w-4 h-4" />
+                                </button>
+                            </form>
+                            <div className="mt-6 flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-[0.2em]">
+                                <span className="text-gray-300">Joined a team?</span>
+                                <button 
+                                    onClick={() => setIsJoining(true)}
+                                    className="text-indigo-500 hover:text-indigo-600 underline underline-offset-8"
+                                >
+                                    Enter Team ID
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="relative z-10 animate-in zoom-in-95 duration-300">
+                            <form onSubmit={(e) => { e.preventDefault(); onJoinTeam?.(teamIdInput); }} className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-[2rem] shadow-xl border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-gray-100 transition-all">
+                                <div className="flex-1 relative">
+                                    <Code2 className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                    <input 
+                                        type="text" 
+                                        value={teamIdInput}
+                                        onChange={(e) => setTeamIdInput(e.target.value.toUpperCase())}
+                                        placeholder="Enter Team ID (e.g. HM-A1B2)"
+                                        className="w-full h-14 sm:h-16 pl-14 pr-4 bg-transparent border-none text-gray-900 placeholder:text-gray-200 focus:ring-0 text-lg font-black tracking-[0.2em] uppercase"
+                                    />
+                                </div>
+                                <button 
+                                    type="submit"
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white h-12 sm:h-auto py-4 px-10 rounded-xl sm:rounded-full font-bold text-base transition-all"
+                                >
+                                    Join
+                                </button>
+                            </form>
+                            <button 
+                                onClick={() => setIsJoining(false)}
+                                className="mt-4 text-[10px] font-black text-gray-400 hover:text-gray-600 uppercase tracking-widest text-center block mx-auto"
+                            >
+                                ← Back to Project Idea
+                            </button>
                         </div>
-                        <button
-                            type="submit"
-                            className="bg-gray-900 hover:bg-black text-white h-12 sm:h-auto py-4 px-10 rounded-xl sm:rounded-full font-bold text-base transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 shadow-xl shadow-gray-900/20"
-                        >
-                            Start Project <ArrowRight className="w-4 h-4" />
-                        </button>
-                    </form>
+                    )}
 
                     {/* Category Filters */}
                     <div className="mt-10 flex flex-wrap justify-center gap-2 opacity-0 animate-in fade-in duration-700 delay-500 fill-mode-forwards">
