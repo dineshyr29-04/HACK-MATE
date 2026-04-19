@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hackmate.anandmahadev.in/sitemap.xml
+Sitemap: https://hackcopilot.ai/sitemap.xml

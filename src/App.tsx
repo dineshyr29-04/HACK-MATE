@@ -184,7 +184,7 @@ function App() {
   };
 
   return (
-    <div className="font-sans antialiased text-gray-900 bg-gray-50 min-h-screen">
+    <div className="font-sans antialiased text-gray-900 bg-white min-h-screen">
       {stage === 'landing' && (
         <>
           <HeroWave
