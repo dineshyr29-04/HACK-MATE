@@ -19,7 +19,7 @@ interface ProjectSetupProps {
 export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetupProps) {
     const [name, setName] = React.useState('');
     const [problem, setProblem] = React.useState(initialProblem);
-    const [timeLeft, setTimeLeft] = React.useState('48');
+    const [timeLeft, setTimeLeft] = React.useState('24');
     const [isCustomTime, setIsCustomTime] = React.useState(false);
 
     const [type, setType] = React.useState('Online Hackathon');
