@@ -1,5 +1,5 @@
 // Cache-busting comment: Final Verified Version 2.0
-import { ArrowLeft, FileText, Download, Code2, Presentation, Play, GitBranch, Lightbulb, Palette } from "lucide-react";
+import { ArrowLeft, FileText, Download, Code2, Presentation, Play, Lightbulb, Palette } from "lucide-react";
 
 export function Resources({ onBack }: { onBack: () => void }) {
     const resourceCategories = [

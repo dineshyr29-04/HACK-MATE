@@ -34,6 +34,7 @@ export function HeroWave({
 }: HeroWaveProps) {
     const [prompt, setPrompt] = useState("");
     const [recentProjects, setRecentProjects] = useState<Project[]>([]);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const fetchRecent = async () => {
@@ -139,25 +140,83 @@ export function HeroWave({
                         </a>
                     </div>
 
-                    {/* Mobile Auth Button */}
-                    <div className="lg:hidden flex items-center gap-2">
+                    {/* Mobile Menu Toggle & Auth */}
+                    <div className="lg:hidden flex items-center gap-4">
                         {user ? (
-                            <div className="flex items-center gap-2">
-                                <div className="w-9 h-9 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden">
+                            <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center overflow-hidden shadow-inner">
                                     {user.photoURL ? (
                                         <img src={user.photoURL} alt={user.displayName || ""} className="w-full h-full object-cover" />
                                     ) : (
-                                        <span className="text-xs font-black text-gray-400">{user.displayName?.[0]}</span>
+                                        <span className="text-xs font-black text-indigo-400">{user.displayName?.[0]}</span>
                                     )}
                                 </div>
-                                <button onClick={onLogout} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                                    <ArrowRight className="w-5 h-5 rotate-180" />
+                                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-gray-900 bg-gray-50 rounded-xl border border-gray-100">
+                                    <div className="w-5 h-4 flex flex-col justify-between">
+                                        <span className={`h-0.5 w-full bg-current rounded-full transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
+                                        <span className={`h-0.5 w-full bg-current rounded-full transition-all ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+                                        <span className={`h-0.5 w-full bg-current rounded-full transition-all ${mobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`} />
+                                    </div>
                                 </button>
                             </div>
                         ) : (
-                            <button onClick={onLogin} className="px-5 py-2 rounded-full bg-gray-900 text-white text-xs font-black uppercase tracking-wider shadow-lg shadow-gray-900/10 active:scale-95 transition-all">
-                                Sign In
+                            <div className="flex items-center gap-3">
+                                <button onClick={onLogin} className="px-5 py-2 rounded-full bg-gray-900 text-white text-xs font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all">
+                                    Sign In
+                                </button>
+                                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-gray-900 bg-gray-50 rounded-xl border border-gray-100">
+                                    <div className="w-5 h-4 flex flex-col justify-between">
+                                        <span className={`h-0.5 w-full bg-current rounded-full transition-all ${mobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
+                                        <span className={`h-0.5 w-full bg-current rounded-full transition-all ${mobileMenuOpen ? 'opacity-0' : ''}`} />
+                                        <span className={`h-0.5 w-full bg-current rounded-full transition-all ${mobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`} />
+                                    </div>
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Mobile Navigation Menu */}
+                <div className={`lg:hidden absolute top-full left-0 w-full bg-white/95 backdrop-blur-2xl border-b border-gray-100 transition-all duration-300 overflow-hidden ${mobileMenuOpen ? 'max-h-screen opacity-100 shadow-2xl' : 'max-h-0 opacity-0'}`}>
+                    <div className="p-6 space-y-2">
+                        {[
+                            { label: 'How it Works', icon: <Zap className="w-4 h-4" />, action: onOpenHowItWorks },
+                            { label: 'Features', icon: <LayoutTemplate className="w-4 h-4" />, action: onOpenFeatures },
+                            { label: 'Resources', icon: <Code2 className="w-4 h-4" />, action: onOpenResources },
+                            { label: 'Success Stories', icon: <Sparkles className="w-4 h-4" />, action: onOpenCaseStudies },
+                            { label: 'Guide', icon: <GitGraph className="w-4 h-4" />, action: onOpenGuide },
+                            { label: 'FAQ', icon: <div className="font-bold">?</div>, action: onOpenFAQ }
+                        ].map((item, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => {
+                                    item.action?.();
+                                    setMobileMenuOpen(false);
+                                }}
+                                className="w-full flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 transition-colors group"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-all">
+                                        {item.icon}
+                                    </div>
+                                    <span className="font-black text-gray-900">{item.label}</span>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
                             </button>
+                        ))}
+                        
+                        {user && (
+                            <div className="pt-6 mt-4 border-t border-gray-100">
+                                <button
+                                    onClick={onLogout}
+                                    className="w-full flex items-center gap-4 p-4 rounded-2xl text-red-500 hover:bg-red-50 transition-colors font-black"
+                                >
+                                    <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+                                        <ArrowRight className="w-5 h-5 rotate-180" />
+                                    </div>
+                                    Sign Out
+                                </button>
+                            </div>
                         )}
                     </div>
                 </div>
