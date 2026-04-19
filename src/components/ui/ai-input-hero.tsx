@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ArrowRight, Code2, Sparkles, Zap, LayoutTemplate, GitGraph, Box, Clock, Trash2, CheckCircle2, ChevronRight, ShieldCheck, PlayCircle } from "lucide-react";
+import { ArrowRight, Code2, Sparkles, Zap, Trash2, CheckCircle2, ChevronRight, ShieldCheck } from "lucide-react";
 import { store, Project } from "../../lib/store";
 import { User as FirebaseUser } from "../../lib/firebase";
 
@@ -8,10 +8,7 @@ export type HeroWaveProps = {
     onPromptSubmit?: (value: string) => void;
     onResumeProject?: (project: Project) => void;
     onDeleteProject?: (projectId: string) => void;
-    onOpenGuide?: () => void;
     onOpenFeatures?: () => void;
-    onOpenHowItWorks?: () => void;
-    onOpenFAQ?: () => void;
     onOpenResources?: () => void;
     onOpenCaseStudies?: () => void;
     user?: FirebaseUser | null;
@@ -23,10 +20,7 @@ export function HeroWave({
     onPromptSubmit, 
     onResumeProject, 
     onDeleteProject,
-    onOpenGuide, 
     onOpenFeatures, 
-    onOpenHowItWorks, 
-    onOpenFAQ, 
     onOpenResources, 
     onOpenCaseStudies,
     user,

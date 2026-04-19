@@ -191,21 +191,9 @@ function App() {
             onPromptSubmit={handlePromptSubmit}
             onResumeProject={handleResumeProject}
             onDeleteProject={handleDeleteProject}
-            onOpenGuide={() => {
-              if (!user) { setPendingAction({ stage: 'guide' }); setStage('auth-required'); return; }
-              setStage('guide');
-            }}
             onOpenFeatures={() => {
               if (!user) { setPendingAction({ stage: 'features' }); setStage('auth-required'); return; }
               setStage('features');
-            }}
-            onOpenHowItWorks={() => {
-              if (!user) { setPendingAction({ stage: 'how-it-works' }); setStage('auth-required'); return; }
-              setStage('how-it-works');
-            }}
-            onOpenFAQ={() => {
-              if (!user) { setPendingAction({ stage: 'faq' }); setStage('auth-required'); return; }
-              setStage('faq');
             }}
             onOpenResources={() => {
               if (!user) { setPendingAction({ stage: 'resources' }); setStage('auth-required'); return; }

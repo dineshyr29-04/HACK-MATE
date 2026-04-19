@@ -4,7 +4,7 @@ import {
     Search,
     Palette,
     Layout,
-    GitGraph,
+    GitBranch,
     Presentation,
     Upload,
     Share2,
