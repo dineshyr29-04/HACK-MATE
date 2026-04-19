@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HeroWave } from "@/components/ui/ai-input-hero";
 import { ProjectSetup } from "./components/ProjectSetup";
 import { StageSelection } from "./components/StageSelection";
@@ -184,16 +184,28 @@ function App() {
   };
 
   return (
-    <div className="font-sans antialiased text-gray-900 bg-white min-h-screen">
+    <div className="font-sans antialiased text-gray-900 bg-gray-50 min-h-screen">
       {stage === 'landing' && (
         <>
           <HeroWave
             onPromptSubmit={handlePromptSubmit}
             onResumeProject={handleResumeProject}
             onDeleteProject={handleDeleteProject}
+            onOpenGuide={() => {
+              if (!user) { setPendingAction({ stage: 'guide' }); setStage('auth-required'); return; }
+              setStage('guide');
+            }}
             onOpenFeatures={() => {
               if (!user) { setPendingAction({ stage: 'features' }); setStage('auth-required'); return; }
               setStage('features');
+            }}
+            onOpenHowItWorks={() => {
+              if (!user) { setPendingAction({ stage: 'how-it-works' }); setStage('auth-required'); return; }
+              setStage('how-it-works');
+            }}
+            onOpenFAQ={() => {
+              if (!user) { setPendingAction({ stage: 'faq' }); setStage('auth-required'); return; }
+              setStage('faq');
             }}
             onOpenResources={() => {
               if (!user) { setPendingAction({ stage: 'resources' }); setStage('auth-required'); return; }

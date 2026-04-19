@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Lightbulb,
     Search,
@@ -13,10 +13,7 @@ import {
     Check,
     Sparkles,
     UserPlus,
-    User,
-    CheckCircle2,
-    ArrowRight,
-    LucideIcon
+    User
 } from 'lucide-react';
 import { store } from '../lib/store';
 import { supabase } from '../lib/supabase';
@@ -25,8 +22,7 @@ import { PromptModal } from './PromptModal';
 export interface Stage {
     id: string;
     title: string;
-    description: string;
-    icon: LucideIcon;
+    icon: React.ReactNode;
 }
 
 interface StageSelectionProps {
@@ -38,14 +34,14 @@ interface StageSelectionProps {
 }
 
 export const STAGES: Stage[] = [
-    { id: 'ideation', title: 'Ideation', description: 'Brainstorm features and core UVP.', icon: Lightbulb },
-    { id: 'research', title: 'Market Research', description: 'Validate users and market gaps.', icon: Search },
-    { id: 'design', title: 'UI / UX Design', description: 'Wireframes and design systems.', icon: Palette },
-    { id: 'build', title: 'Website / App Build', description: 'Core functional code development.', icon: Layout },
-    { id: 'antigravity', title: 'AI Coding (Antigravity)', description: 'Power features with AI agents.', icon: Sparkles },
-    { id: 'git', title: 'Git & GitHub', description: 'Version control and collaboration.', icon: GitBranch },
-    { id: 'pitch', title: 'PPT / Pitch Deck', description: 'Compelling deck for the judges.', icon: Presentation },
-    { id: 'submit', title: 'Demo & Submission', description: 'Final recording and platform upload.', icon: Upload },
+    { id: 'ideation', title: 'Ideation', icon: <Lightbulb className="w-6 h-6" /> },
+    { id: 'research', title: 'Market Research', icon: <Search className="w-6 h-6" /> },
+    { id: 'design', title: 'UI / UX Design', icon: <Palette className="w-6 h-6" /> },
+    { id: 'build', title: 'Website / App Build', icon: <Layout className="w-6 h-6" /> },
+    { id: 'antigravity', title: 'AI Coding (Antigravity)', icon: <Sparkles className="w-6 h-6" /> },
+    { id: 'git', title: 'Git & GitHub', icon: <GitBranch className="w-6 h-6" /> },
+    { id: 'pitch', title: 'PPT / Pitch Deck', icon: <Presentation className="w-6 h-6" /> },
+    { id: 'submit', title: 'Demo & Submission', icon: <Upload className="w-6 h-6" /> },
 ];
 
 export function StageSelection({ onSelectStage, projectName, onHome, onOpenResources, projectId }: StageSelectionProps) {
@@ -53,16 +49,14 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
     const [shareUrl, setShareUrl] = useState('');
     const [copied, setCopied] = useState(false);
 
-    // Assignments & Checklist State
+    // Assignments State
     const [assignments, setAssignments] = useState<Record<string, string>>({});
-    const [checklist, setChecklist] = useState<Record<string, Record<number, boolean>>>({});
     const [assigningStage, setAssigningStage] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchState = async () => {
             const state = await store.getProjectState(projectId);
             setAssignments(state.assignments || {});
-            setChecklist(state.checklist || {});
         };
         fetchState();
     }, [projectId]);
@@ -88,9 +82,8 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                 },
                 (payload: any) => {
                     const newState = payload.new;
-                    if (newState) {
-                        if (newState.assignments) setAssignments(newState.assignments);
-                        if (newState.checklist) setChecklist(newState.checklist);
+                    if (newState && newState.assignments) {
+                        setAssignments(newState.assignments);
                     }
                 }
             )
@@ -100,17 +93,6 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
             supabase.removeChannel(channel);
         };
     }, [projectId]);
-
-    const overallProgress = useMemo(() => {
-        const totalPossible = STAGES.length * 3; // Assuming roughly 3 subtasks per stage for progress estimation
-        let completed = 0;
-        STAGES.forEach(s => {
-            const stageTasks = checklist[s.id] || {};
-            const doneCount = Object.values(stageTasks).filter(v => v === true).length;
-            completed += Math.min(doneCount, 3);
-        });
-        return Math.round((completed / totalPossible) * 100);
-    }, [checklist]);
 
     const handleShare = async () => {
         const encoded = await store.exportProject(projectId);
@@ -132,178 +114,126 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
         setAssignments(prev => ({ ...prev, [stageId]: name }));
     };
 
-    const getStageStatus = (stageId: string) => {
-        const stageTasks = checklist[stageId] || {};
-        const doneCount = Object.values(stageTasks).filter(v => v === true).length;
-        if (doneCount >= 3) return 'DONE'; // Simplified threshold
-        if (doneCount > 0) return 'IN_PROGRESS';
-        return 'LOCKED';
-    };
-
-    // Find the first non-completed stage to highlight
-    const nextActiveStageIndex = STAGES.findIndex(s => getStageStatus(s.id) !== 'DONE');
-
     return (
-        <div className="min-h-screen bg-white">
-            <div className="max-w-7xl mx-auto px-6 py-12">
-                <header className="mb-20 flex flex-col md:flex-row md:items-start justify-between gap-10">
-                    <div className="flex-1">
-                        <div className="flex items-center gap-3 text-emerald-600 font-black text-[10px] uppercase tracking-[0.2em] mb-4">
-                            <Sparkles className="w-3.5 h-3.5" /> Project Roadmap
+        <div className="min-h-screen bg-white p-6 sm:p-12">
+            <div className="max-w-7xl mx-auto">
+                <header className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div>
+                        <div className="flex items-center gap-2 text-gray-900 font-bold text-xs uppercase tracking-widest mb-2">
+                            <Sparkles className="w-3 h-3" /> Active Project
                         </div>
-                        <h1 className="text-5xl font-black text-gray-900 tracking-tighter mb-6">{projectName}</h1>
-                        
-                        {/* Global Progress Bar */}
-                        <div className="max-w-md">
-                            <div className="flex justify-between items-end mb-3">
-                                <span className="text-xs font-black uppercase tracking-widest text-gray-400">Overall Progress</span>
-                                <span className="text-lg font-black text-gray-900">{overallProgress}%</span>
-                            </div>
-                            <div className="h-3 w-full bg-gray-100 rounded-full overflow-hidden">
-                                <div 
-                                    className="h-full bg-gray-900 transition-all duration-1000 ease-out" 
-                                    style={{ width: `${overallProgress}%` }}
-                                />
-                            </div>
-                        </div>
+                        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">{projectName}</h1>
+                        <p className="text-gray-500 mt-2 font-medium">Click on a phase to start working on your roadmap.</p>
                     </div>
-
-                    <div className="flex flex-wrap items-center gap-4">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                         <button
                             onClick={onOpenResources}
-                            className="bg-white border-2 border-gray-100 hover:border-gray-900 text-gray-900 px-8 py-4 rounded-2xl font-black transition-all text-sm flex items-center gap-3 shadow-sm hover:shadow-xl hover:shadow-gray-900/5"
+                            className="flex-1 sm:flex-none justify-center bg-white border border-gray-100 hover:border-gray-900 text-gray-900 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all text-xs sm:text-sm flex items-center gap-2"
                         >
-                            <Layout className="w-4 h-4" /> Vault
-                        </button>
-                        <button
-                            onClick={handleShare}
-                            className="bg-gray-900 hover:bg-black text-white px-8 py-4 rounded-2xl font-black transition-all shadow-2xl shadow-gray-900/20 flex items-center gap-3 text-sm"
-                        >
-                            <UserPlus className="w-4 h-4" /> Invite Team
+                            <Layout className="w-4 h-4" /> Resources
                         </button>
                         <button
                             onClick={onHome}
-                            className="w-14 h-14 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-400 rounded-2xl transition-all"
+                            className="flex-1 sm:flex-none justify-center bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all text-xs sm:text-sm"
                         >
-                            <X className="w-6 h-6" />
+                            Dashboard
+                        </button>
+                        <button
+                            onClick={handleShare}
+                            className="w-full sm:w-auto justify-center bg-gray-900 hover:bg-black text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all shadow-xl shadow-gray-100 flex items-center gap-2 text-xs sm:text-sm"
+                        >
+                            <UserPlus className="w-4 h-4" /> Invite Teammate
                         </button>
                     </div>
                 </header>
 
                 {/* Share Modal */}
                 {showShare && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-md">
-                        <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg p-12 border border-gray-100 relative overflow-hidden">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-md animate-in fade-in duration-300">
+                        <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg p-10 border border-gray-100 relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-gray-50 rounded-full -mr-16 -mt-16 -z-10" />
+
                             <button
                                 onClick={() => setShowShare(false)}
-                                className="absolute top-8 right-8 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                className="absolute top-6 right-6 p-2 hover:bg-gray-100 rounded-full transition-colors"
                             >
                                 <X className="w-5 h-5 text-gray-400" />
                             </button>
 
-                            <div className="mb-10 text-center">
-                                <div className="w-20 h-20 bg-emerald-50 text-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                                    <Share2 className="w-10 h-10" />
+                            <div className="mb-8">
+                                <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-900 mb-6">
+                                    <Share2 className="w-8 h-8" />
                                 </div>
-                                <h3 className="text-3xl font-black text-gray-900 mb-2">Team Collaboration</h3>
-                                <p className="text-gray-400 font-medium px-4">Share this link to sync roadmaps and track progress with your mates.</p>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-2">Invite your team</h3>
+                                <p className="text-gray-500 font-medium">Copy this link to share your project roadmap and collaborate in real-time.</p>
                             </div>
 
                             <div className="space-y-4">
-                                <div className="flex items-center gap-3 bg-gray-50 p-6 rounded-2xl border border-gray-200">
-                                    <div className="flex-1 truncate font-mono text-xs text-gray-400 select-all">
+                                <div className="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-200">
+                                    <div className="flex-1 truncate font-mono text-sm text-gray-500">
                                         {shareUrl}
                                     </div>
                                     <button
                                         onClick={handleCopy}
-                                        className={`px-6 py-3 rounded-xl font-black text-sm transition-all flex items-center gap-2 ${copied ? 'bg-emerald-500 text-white' : 'bg-gray-900 text-white hover:bg-black'}`}
+                                        className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${copied ? 'bg-green-600 text-white' : 'bg-gray-900 text-white hover:bg-black'}`}
                                     >
                                         {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                                        {copied ? 'Copied' : 'Copy'}
+                                        {copied ? 'Copied' : 'Copy Link'}
                                     </button>
                                 </div>
+                                <p className="text-center text-xs text-gray-400 font-medium italic">NOTE: Link contains encoded project data. Large projects may have very long links.</p>
                             </div>
                         </div>
                     </div>
                 )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {STAGES.map((stage, i) => {
-                        const status = getStageStatus(stage.id);
-                        const isActive = i === nextActiveStageIndex;
-                        const isDone = status === 'DONE';
-                        
-                        return (
-                            <div
-                                key={stage.id}
-                                className={`group relative p-8 rounded-[2.5rem] border transition-all duration-500 cursor-pointer flex flex-col justify-between h-[360px] animate-in fade-in slide-in-from-bottom-8 ${
-                                    isActive 
-                                    ? 'bg-gray-900 border-gray-900 text-white shadow-2xl shadow-gray-900/30 scale-[1.03] ring-8 ring-gray-900/5' 
-                                    : isDone 
-                                    ? 'bg-white border-emerald-100 shadow-sm' 
-                                    : 'bg-white border-gray-100 shadow-sm hover:shadow-2xl hover:border-gray-200 hover:-translate-y-2'
-                                }`}
-                                style={{ animationDelay: `${i * 80}ms` }}
-                                onClick={() => onSelectStage(stage.id)}
-                            >
-                                <div>
-                                    <div className="flex justify-between items-start mb-8">
-                                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 ${
-                                            isActive ? 'bg-white text-gray-900' : isDone ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-50 text-gray-400 group-hover:bg-gray-900 group-hover:text-white'
-                                        }`}>
-                                            <stage.icon className="w-7 h-7" />
-                                        </div>
-                                        {assignments[stage.id] ? (
-                                            <div
-                                                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                                                    isActive ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-400'
-                                                }`}
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setAssigningStage(stage.id);
-                                                }}
-                                            >
-                                                <User className="w-3 h-3" /> {assignments[stage.id]}
-                                            </div>
-                                        ) : (
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); setAssigningStage(stage.id); }}
-                                                className={`p-2 rounded-xl border transition-all ${
-                                                    isActive ? 'border-white/20 text-white/40 hover:text-white' : 'border-gray-100 text-gray-200 hover:text-gray-900'
-                                                }`}
-                                            >
-                                                <UserPlus className="w-4 h-4" />
-                                            </button>
-                                        )}
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <div className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] ${isActive ? 'text-white/40' : 'text-gray-300'}`}>
-                                            Phase {i + 1} of 8
-                                            {isDone && <CheckCircle2 className="w-3 h-3 text-emerald-500" />}
-                                        </div>
-                                        <h3 className="text-2xl font-black tracking-tight">{stage.title}</h3>
-                                        <p className={`text-sm font-medium leading-relaxed ${isActive ? 'text-white/50' : 'text-gray-400'}`}>
-                                            {stage.description}
-                                        </p>
-                                    </div>
+                    {STAGES.map((stage, i) => (
+                        <div
+                            key={stage.id}
+                            className="group relative bg-white p-6 sm:p-8 rounded-2xl sm:rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-gray-900/10 hover:border-gray-900/10 hover:-translate-y-1 transition-all duration-500 cursor-pointer animate-in fade-in slide-in-from-bottom-6"
+                            style={{ animationDelay: `${i * 100}ms` }}
+                            onClick={() => onSelectStage(stage.id)}
+                        >
+                            <div className="flex justify-between items-start mb-6">
+                                <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-900 group-hover:bg-black group-hover:text-white transition-all duration-500 group-hover:rotate-6 group-hover:scale-110">
+                                    {stage.icon}
                                 </div>
+                                {assignments[stage.id] && (
+                                    <div
+                                        className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-900 px-3 py-1.5 rounded-full text-xs font-bold ring-4 ring-white transition-colors cursor-pointer"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setAssigningStage(stage.id);
+                                        }}
+                                        title="Click to edit assignment"
+                                    >
+                                        <User className="w-3 h-3" />
+                                        {assignments[stage.id]}
+                                    </div>
+                                )}
+                            </div>
 
-                                <div className={`pt-8 border-t flex items-center justify-between ${isActive ? 'border-white/10' : 'border-gray-50'}`}>
-                                    <span className={`text-xs font-black uppercase tracking-widest flex items-center gap-2 group-hover:gap-3 transition-all ${isActive ? 'text-white' : 'text-gray-400'}`}>
-                                        {isDone ? 'Review Phase' : isActive ? 'Start Now' : 'View Details'} <ArrowRight className="w-4 h-4" />
-                                    </span>
-                                    
-                                    {isActive && (
-                                         <div className="flex gap-1">
-                                            <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                                            <div className="w-1.5 h-1.5 bg-white/40 rounded-full" />
-                                        </div>
-                                    )}
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">{stage.title}</h3>
+                            <p className="text-gray-400 text-sm font-medium mb-6">Phase {i + 1} of 8</p>
+
+                            <div className="flex items-center justify-between pt-6 border-t border-gray-50 group-hover:border-gray-200 transition-colors">
+                                <span className="text-xs font-bold text-gray-300 group-hover:text-gray-900 transition-colors flex items-center gap-2">
+                                    View Phase <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                                </span>
+
+                                {/* Quick Assign (Simulated) */}
+                                <div className="relative group/assign" onClick={(e) => e.stopPropagation()}>
+                                    <button
+                                        onClick={() => setAssigningStage(stage.id)}
+                                        className="p-2 bg-gray-50 hover:bg-gray-100 text-gray-400 hover:text-gray-900 rounded-lg transition-all border border-transparent hover:border-gray-200"
+                                    >
+                                        <UserPlus className="w-4 h-4" />
+                                    </button>
                                 </div>
                             </div>
-                        );
-                    })}
+                        </div>
+                    ))}
                 </div>
 
                 <PromptModal
@@ -312,12 +242,16 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                     onSubmit={(name) => {
                         if (assigningStage) handleAssign(assigningStage, name);
                     }}
-                    title={assigningStage && assignments[assigningStage] ? "Update Mate" : "Assign Phase"}
-                    placeholder="Enter mate name..."
+                    title={assigningStage && assignments[assigningStage] ? "Edit assignment" : "Assign to your mate"}
+                    placeholder="Enter teammate name..."
                     defaultValue={assigningStage ? assignments[assigningStage] : ''}
-                    maxLength={20}
+                    maxLength={30}
                 />
             </div>
         </div>
     );
+}
+
+function ArrowRight({ className }: { className?: string }) {
+    return <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>;
 }
