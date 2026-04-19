@@ -256,5 +256,33 @@ export const store = {
             console.error("Import failed", e);
             return null;
         }
+    },
+
+    deleteProject: async (projectId: string) => {
+        try {
+            // 1. Update Local Cache
+            const raw = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+            if (raw) {
+                const projects = JSON.parse(raw);
+                const filtered = projects.filter((p: any) => p.id !== projectId);
+                localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(filtered));
+            }
+
+            // 2. Clear Local State
+            const rawStates = localStorage.getItem(STORAGE_KEYS.STATE);
+            if (rawStates) {
+                const states = JSON.parse(rawStates);
+                delete states[projectId];
+                localStorage.setItem(STORAGE_KEYS.STATE, JSON.stringify(states));
+            }
+
+            // 3. Delete from Supabase
+            if (isSupabaseConfigured()) {
+                await supabase.from('projects').delete().eq('id', projectId);
+                await supabase.from('project_state').delete().eq('project_id', projectId);
+            }
+        } catch (e) {
+            console.error("Delete project failed", e);
+        }
     }
 };

@@ -1,6 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
-import { ArrowRight, Code2, Sparkles, Zap, LayoutTemplate, GitGraph, Box, Clock } from "lucide-react";
+import { ArrowRight, Code2, Sparkles, Zap, LayoutTemplate, GitGraph, Box, Clock, Trash2 } from "lucide-react";
 import { store, Project } from "../../lib/store";
 
 import { User } from "../../lib/firebase";
@@ -8,6 +7,7 @@ import { User } from "../../lib/firebase";
 export type HeroWaveProps = {
     onPromptSubmit?: (value: string) => void;
     onResumeProject?: (project: Project) => void;
+    onDeleteProject?: (projectId: string) => void;
     onOpenGuide?: () => void;
     onOpenFeatures?: () => void;
     onOpenHowItWorks?: () => void;
@@ -22,6 +22,7 @@ export type HeroWaveProps = {
 export function HeroWave({ 
     onPromptSubmit, 
     onResumeProject, 
+    onDeleteProject,
     onOpenGuide, 
     onOpenFeatures, 
     onOpenHowItWorks, 
@@ -36,14 +37,18 @@ export function HeroWave({
     const [recentProjects, setRecentProjects] = useState<Project[]>([]);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchRecent = async () => {
-            const projects = await store.getProjects();
-            setRecentProjects(projects.slice(0, 3));
-        };
-        fetchRecent();
-    }, []);
+    const fetchRecent = async () => {
+        const projects = await store.getProjects();
+        setRecentProjects(projects.slice(0, 3));
+    };
 
+    useEffect(() => {
+        fetchRecent();
+        
+        // Listen for internal refresh events
+        window.addEventListener('project-list-updated', fetchRecent);
+        return () => window.removeEventListener('project-list-updated', fetchRecent);
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -81,13 +86,13 @@ export function HeroWave({
             
             {/* Animated Background Elements */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-indigo-50 rounded-full blur-[120px] opacity-60 animate-float" />
-                <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-blue-50 rounded-full blur-[100px] opacity-40 animate-float-delayed" />
-                <div className="absolute -bottom-[10%] left-[20%] w-[35%] h-[35%] bg-indigo-50/50 rounded-full blur-[110px] opacity-50 animate-float" />
+                <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-gray-50 rounded-full blur-[120px] opacity-60 animate-float" />
+                <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-gray-50 rounded-full blur-[100px] opacity-40 animate-float-delayed" />
+                <div className="absolute -bottom-[10%] left-[20%] w-[35%] h-[35%] bg-indigo-50/20 rounded-full blur-[110px] opacity-30 animate-float" />
             </div>
 
             <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f8f8f8_1px,transparent_1px),linear-gradient(to_bottom,#f8f8f8_1px,transparent_1px)] bg-[size:6rem_4rem]">
-                <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,rgba(229,231,235,0.4),transparent)]"></div>
+                <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,rgba(229,231,235,0.2),transparent)]"></div>
             </div>
 
             {/* Navbar */}
@@ -97,7 +102,7 @@ export function HeroWave({
                         <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-gray-900/20">
                             <Code2 className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
-                        <span className="bg-clip-text text-transparent bg-gradient-to-br from-gray-900 to-gray-600">Hackathon Copilot</span>
+                        <span className="bg-clip-text text-transparent bg-gradient-to-br from-gray-900 to-gray-600 font-black">Hackathon Copilot</span>
                     </div>
                     
                     <div className="hidden lg:flex items-center gap-8 text-sm font-semibold text-gray-500">
@@ -263,7 +268,7 @@ export function HeroWave({
                 {/* Headline */}
                 <h1 className="text-4xl sm:text-7xl md:text-8xl font-black tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-5 duration-1000 leading-[1.1] text-gray-900">
                     From Idea to <br className="hidden sm:block" />
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-indigo-600 to-gray-900 bg-300% animate-gradient">Winning Demo.</span>
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-600 to-gray-900 bg-300% animate-gradient">Winning Demo.</span>
                 </h1>
 
                 <p className="text-lg sm:text-2xl text-gray-500 mb-12 max-w-2xl mx-auto leading-relaxed font-medium animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
@@ -272,9 +277,9 @@ export function HeroWave({
 
                 {/* Input Interactive Area */}
                 <div className="w-full max-w-2xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 z-20">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-indigo-500 rounded-[2rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                    <div className="absolute -inset-0.5 bg-gray-200 rounded-[2rem] blur-sm opacity-20 group-hover:opacity-30 transition duration-500"></div>
 
-                    <form onSubmit={handleSubmit} className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white/80 backdrop-blur-xl rounded-2xl sm:rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white p-2 focus-within:ring-4 focus-within:ring-indigo-500/5 transition-all">
+                    <form onSubmit={handleSubmit} className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-[2rem] shadow-xl border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-gray-100 transition-all">
                         <div className="flex-1 relative">
                             <Box className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
@@ -306,7 +311,7 @@ export function HeroWave({
                             <button
                                 key={cat}
                                 onClick={() => setSelectedCategory(cat)}
-                                className={`px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all ${selectedCategory === cat ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600'}`}
+                                className={`px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all ${selectedCategory === cat ? 'bg-gray-700 text-white shadow-lg' : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600'}`}
                             >
                                 {cat}
                             </button>
@@ -319,7 +324,7 @@ export function HeroWave({
                             <button
                                 key={i}
                                 onClick={() => setPrompt(s.label)}
-                                className="px-4 py-2 rounded-xl bg-white border border-gray-100 text-xs font-bold text-gray-500 hover:border-indigo-200 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all shadow-sm"
+                                className="px-4 py-2 rounded-xl bg-white border border-gray-100 text-xs font-bold text-gray-500 hover:border-gray-300 hover:text-gray-900 hover:bg-gray-50 transition-all shadow-sm"
                             >
                                 {s.label}
                             </button>
@@ -338,12 +343,12 @@ export function HeroWave({
                 {/* Feature Grid */}
                 <div className="w-full max-w-6xl mx-auto mt-32 grid grid-cols-1 sm:grid-cols-3 gap-8 px-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
                     <FeatureCard
-                        icon={<Zap className="w-6 h-6 text-indigo-600" />}
+                        icon={<Zap className="w-6 h-6 text-gray-900" />}
                         title="Instant Strategy"
                         desc="Get a tailored roadmap from Ideation to Pitch Deck in seconds."
                     />
                     <FeatureCard
-                        icon={<LayoutTemplate className="w-6 h-6 text-blue-600" />}
+                        icon={<LayoutTemplate className="w-6 h-6 text-gray-900" />}
                         title="Best-in-Class Tools"
                         desc="Curated recommendations for the exact tech stack you need."
                     />
@@ -375,7 +380,7 @@ export function HeroWave({
                                         <span className="w-5 h-5 rounded bg-white/5 flex items-center justify-center text-white">01</span>
                                         Clone
                                     </div>
-                                    <code className="block p-4 rounded-xl bg-white/5 text-indigo-300 border border-white/5">git clone https://github.com/hackmate/engine.git</code>
+                                    <code className="block p-4 rounded-xl bg-white/5 text-gray-300 border border-white/5">git clone https://github.com/hackmate/engine.git</code>
                                 </div>
                                 <div className="space-y-3">
                                     <div className="flex items-center gap-3 text-[10px] font-black text-gray-600 uppercase tracking-widest">
@@ -399,21 +404,31 @@ export function HeroWave({
                 {/* Recent Projects (Minimal Floating) */}
                 {recentProjects.length > 0 && (
                     <div className="relative sm:absolute sm:top-32 sm:right-8 z-20 mt-12 sm:mt-0 animate-in fade-in slide-in-from-right-8 duration-1000 delay-500">
-                        <div className="bg-white/90 backdrop-blur-2xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.08)] rounded-[2rem] p-6 w-full max-w-xs mx-auto sm:mx-0">
+                        <div className="bg-white/90 backdrop-blur-2xl border border-white/20 shadow-xl rounded-[2rem] p-6 w-full max-w-xs mx-auto sm:mx-0">
                             <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 px-1">Resume Building</h3>
                             <div className="space-y-3">
                                 {recentProjects.map(p => (
-                                    <button
-                                        key={p.id}
-                                        onClick={() => onResumeProject?.(p)}
-                                        className="w-full text-left px-5 py-4 rounded-2xl hover:bg-indigo-50/50 hover:shadow-xl hover:shadow-indigo-500/5 transition-all flex items-center justify-between group bg-gray-50/30 border border-transparent hover:border-indigo-100"
-                                    >
-                                        <span className="truncate max-w-[140px] font-black text-gray-800 text-sm">{p.name || "New Project"}</span>
-                                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white shadow-sm border border-gray-50">
-                                            <span className="text-[10px] font-black text-indigo-600">{p.timeLeft}h</span>
-                                            <Clock className="w-2.5 h-2.5 text-indigo-400" />
-                                        </div>
-                                    </button>
+                                    <div key={p.id} className="group/card relative">
+                                        <button
+                                            onClick={() => onResumeProject?.(p)}
+                                            className="w-full text-left px-5 py-4 rounded-2xl hover:bg-gray-50 transition-all flex items-center justify-between group bg-gray-50/30 border border-transparent hover:border-gray-100"
+                                        >
+                                            <span className="truncate max-w-[120px] font-black text-gray-800 text-sm">{p.name || "New Project"}</span>
+                                            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white shadow-sm border border-gray-50">
+                                                <span className="text-[10px] font-black text-gray-900">{p.timeLeft}h</span>
+                                                <Clock className="w-2.5 h-2.5 text-gray-400" />
+                                            </div>
+                                        </button>
+                                        <button 
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onDeleteProject?.(p.id);
+                                            }}
+                                            className="absolute -right-2 -top-2 w-6 h-6 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-red-500 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-all active:scale-95"
+                                        >
+                                            <Trash2 className="w-3 h-3" />
+                                        </button>
+                                    </div>
                                 ))}
                             </div>
                         </div>

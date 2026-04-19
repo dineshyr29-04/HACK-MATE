@@ -132,6 +132,16 @@ function App() {
     setStage('selection');
   };
 
+  const handleDeleteProject = async (projectId: string) => {
+    if (confirm("Are you sure you want to delete this project? This action cannot be undone.")) {
+      await store.deleteProject(projectId);
+      // Force a re-render/re-fetch by staying on landing
+      setStage('landing');
+      // Trigger a refresh in components that list projects
+      window.dispatchEvent(new CustomEvent('project-list-updated'));
+    }
+  };
+
   const handleSetupComplete = async (data: {
     name: string;
     problem: string;
@@ -180,6 +190,7 @@ function App() {
           <HeroWave
             onPromptSubmit={handlePromptSubmit}
             onResumeProject={handleResumeProject}
+            onDeleteProject={handleDeleteProject}
             onOpenGuide={() => {
               if (!user) { setPendingAction({ stage: 'guide' }); setStage('auth-required'); return; }
               setStage('guide');
