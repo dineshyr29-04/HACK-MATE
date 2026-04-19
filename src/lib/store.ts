@@ -228,14 +228,10 @@ export const store = {
     },
 
     exportProject: async (projectId: string): Promise<string | null> => {
-        const projects = await store.getProjects();
-        const project = projects.find(p => p.id === projectId);
-        if (!project) return null;
-
-        const state = await store.getProjectState(projectId);
-        const payload = { project, state };
+        // Since projects are synced to Supabase, we only need to share the ID
+        // We prefix it with 'v2:' to distinguish from the old long Base64 format
         try {
-            return window.btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+            return `v2:${projectId}`;
         } catch (e) {
             console.error("Export failed", e);
             return null;
@@ -244,13 +240,36 @@ export const store = {
 
     importProject: async (encoded: string): Promise<string | null> => {
         try {
+            // Check if it's the new short format
+            if (encoded.startsWith('v2:')) {
+                const projectId = encoded.split('v2:')[1];
+                
+                if (isSupabaseConfigured()) {
+                    // Fetch the project from Supabase
+                    const { data: project, error: pError } = await supabase
+                        .from('projects')
+                        .select('*')
+                        .eq('id', projectId)
+                        .single();
+                    
+                    if (!pError && project) {
+                        // Success! Save to local storage for quick access
+                        await store.saveProject(project);
+                        // State will be fetched normally by StageSelection
+                        return project.id;
+                    }
+                }
+                return null;
+            }
+
+            // Fallback for old long links
             const json = decodeURIComponent(escape(window.atob(encoded)));
             const { project, state } = JSON.parse(json);
 
             if (!project || !project.id) return null;
 
             await store.saveProject(project);
-            await store.saveProjectState(project.id, state);
+            if (state) await store.saveProjectState(project.id, state);
             return project.id;
         } catch (e) {
             console.error("Import failed", e);
