@@ -31,6 +31,7 @@ interface StageSelectionProps {
     onHome: () => void;
     onOpenResources: () => void;
     projectId: string;
+    project: any;
 }
 
 export const STAGES: Stage[] = [
@@ -44,7 +45,7 @@ export const STAGES: Stage[] = [
     { id: 'submit', title: 'Demo & Submission', icon: <Upload className="w-6 h-6" /> },
 ];
 
-export function StageSelection({ onSelectStage, projectName, onHome, onOpenResources, projectId }: StageSelectionProps) {
+export function StageSelection({ onSelectStage, projectName, onHome, onOpenResources, projectId, project }: StageSelectionProps) {
     const [showShare, setShowShare] = useState(false);
     const [shareUrl, setShareUrl] = useState('');
     const [copied, setCopied] = useState(false);
