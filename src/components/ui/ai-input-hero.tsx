@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { ArrowRight, Code2, Sparkles, Zap, LayoutTemplate, GitGraph, Box, Clock, Trash2 } from "lucide-react";
 import { store, Project } from "../../lib/store";
 
@@ -407,7 +408,7 @@ export function HeroWave({
                         <div className="bg-white/90 backdrop-blur-2xl border border-white/20 shadow-xl rounded-[2rem] p-6 w-full max-w-xs mx-auto sm:mx-0">
                             <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 px-1">Resume Building</h3>
                             <div className="space-y-3">
-                                {recentProjects.map(p => (
+                                {recentProjects.map((p: Project) => (
                                     <div key={p.id} className="group/card relative">
                                         <button
                                             onClick={() => onResumeProject?.(p)}
