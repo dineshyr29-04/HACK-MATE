@@ -6,22 +6,6 @@ export function Resources({ onBack }: { onBack: () => void }) {
             title: "Ideation & Market Research",
             icon: <Lightbulb className="w-6 h-6 text-amber-500" />,
             items: [
-                { name: "Problem Statement Format", type: "PDF", path: "/resources/ideation/problem-statement.pdf" },
-                { name: "Competitive Analysis Framework", type: "PDF", path: "/resources/ideation/competitive-analysis.pdf" },
-                { name: "User Persona Template", type: "PDF", path: "/resources/ideation/user-persona.pdf" },
-                { name: "Market Size Guide", type: "PDF", path: "/resources/ideation/market-size.pdf" }
-            ]
-        },
-        {
-            title: "UI/UX Design",
-            icon: <Palette className="w-6 h-6 text-gray-900" />,
-            items: [
-                { name: "Mobile App Wireframe Guide", type: "PDF", path: "/resources/design/wireframe-kit.pdf" },
-                { name: "Web Dashboard Layouts", type: "PDF", path: "/resources/design/dashboard-layout.pdf" },
-                { name: "Color Palette Guide", type: "PDF", path: "/resources/design/color-palette-guide.pdf" },
-                { name: "Aesthetics Best Practices", type: "PDF", path: "/resources/design/aesthetics.pdf" }
-            ]
-        },
                 { name: "Problem Statement Format", type: "MD", path: "/resources/ideation/problem-statement.md" },
                 { name: "Competitive Analysis Framework", type: "MD", path: "/resources/ideation/competitive-analysis.md" },
                 { name: "User Persona Template", type: "MD", path: "/resources/ideation/user-persona.md" },
