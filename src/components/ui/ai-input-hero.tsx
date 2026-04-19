@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowRight, Code2, Sparkles, Zap, LayoutTemplate, GitGraph, Box, Clock, Trash2, CheckCircle2, ChevronRight, ShieldCheck, PlayCircle } from "lucide-react";
 import { store, Project } from "../../lib/store";
-import { User } from "../../lib/firebase";
+import { User as FirebaseUser } from "../../lib/firebase";
 
 export type HeroWaveProps = {
     onPromptSubmit?: (value: string) => void;
@@ -14,7 +14,7 @@ export type HeroWaveProps = {
     onOpenFAQ?: () => void;
     onOpenResources?: () => void;
     onOpenCaseStudies?: () => void;
-    user?: User | null;
+    user?: FirebaseUser | null;
     onLogin?: () => void;
     onLogout?: () => void;
 };
@@ -33,9 +33,9 @@ export function HeroWave({
     onLogin,
     onLogout
 }: HeroWaveProps) {
-    const [prompt, setPrompt] = useState("");
+    const [prompt, setPrompt] = useState<string>("");
     const [recentProjects, setRecentProjects] = useState<Project[]>([]);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
     const fetchRecent = async () => {
         const projects = await store.getProjects();
@@ -44,21 +44,15 @@ export function HeroWave({
 
     useEffect(() => {
         fetchRecent();
-        window.addEventListener('project-list-updated', fetchRecent);
-        return () => window.removeEventListener('project-list-updated', fetchRecent);
+        const handleUpdate = () => { fetchRecent(); };
+        window.addEventListener('project-list-updated', handleUpdate);
+        return () => window.removeEventListener('project-list-updated', handleUpdate);
     }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onPromptSubmit?.(prompt);
     };
-
-    const suggestions = [
-        "AI-Powered Legal Assistant",
-        "Sustainable Supply Chain Tracker",
-        "Peer-to-Peer Skill Sharing",
-        "Remote Patient Monitoring"
-    ];
 
     return (
         <div className="relative min-h-screen flex flex-col bg-white text-gray-900 selection:bg-gray-900 selection:text-white font-sans">
@@ -240,7 +234,7 @@ export function HeroWave({
                         <div className="bg-gray-900 text-white rounded-[2rem] p-6 shadow-2xl border border-white/10 w-72">
                              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500 mb-4 px-1">Active Roadmap</h4>
                              <div className="space-y-3">
-                                {recentProjects.map((p) => (
+                                {recentProjects.map((p: Project) => (
                                     <div key={p.id} className="group/item relative">
                                         <button onClick={() => onResumeProject?.(p)} className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-transparent hover:border-white/10 hover:bg-white/10 transition-all text-left">
                                             <span className="font-black text-sm truncate max-w-[140px] uppercase tracking-tighter">{p.name || "Untitled"}</span>
@@ -259,14 +253,3 @@ export function HeroWave({
         </div>
     );
 }
-
-function FeatureCard({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
-    return (
-        <div className="p-8 rounded-3xl bg-white border border-gray-100 hover:border-gray-200 transition-all">
-            <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mb-6">{icon}</div>
-            <h3 className="text-lg font-black text-gray-900 mb-2">{title}</h3>
-            <p className="text-sm text-gray-500 font-medium leading-relaxed">{desc}</p>
-        </div>
-    );
-}
-

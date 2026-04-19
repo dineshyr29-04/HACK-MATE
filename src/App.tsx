@@ -61,7 +61,7 @@ function App() {
         const importedId = await store.importProject(shareCode);
         if (importedId) {
           const projects = await store.getProjects();
-          const project = projects.find(p => p.id === importedId);
+          const project = projects.find((p: any) => p.id === importedId);
           if (project) {
             setProjectId(importedId);
             setProjectData({
