@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ArrowRight, Clock, Trophy, Target, Globe, Users, Sparkles, Layout } from 'lucide-react';
 
 interface ProjectSetupProps {
