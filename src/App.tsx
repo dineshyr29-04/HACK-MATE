@@ -120,30 +120,35 @@ function App() {
   };
 
   const handleJoinTeam = async (teamId: string) => {
-    const project = await store.findProjectByTeamId(teamId);
-    if (project) {
-      await store.saveProject(project); // Persist locally for the joining user
-      setProjectId(project.id);
-      setProjectData({
-        name: project.name,
-        problem: project.problem,
-        timeLeft: project.timeLeft,
-        type: project.type || 'Online Hackathon',
-        prizeCategory: project.prizeCategory || 'AI/ML Track',
-        judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
-        teamSize: project.teamSize || '2-3 people',
-        isTeam: project.isTeam ?? true,
-        teamId: project.teamId || ''
-      });
-      setStage('selection');
-      alert(`Successfully joined: ${project.name}`);
-    } else {
-      const isConfigured = await store.isConfigured();
-      if (!isConfigured) {
-        alert("Collaboration is not configured. Please add Supabase credentials to your .env file.");
+    try {
+      const project = await store.findProjectByTeamId(teamId);
+      if (project) {
+        await store.saveProject(project); // Persist locally for the joining user
+        setProjectId(project.id);
+        setProjectData({
+          name: project.name,
+          problem: project.problem,
+          timeLeft: project.timeLeft,
+          type: project.type || 'Online Hackathon',
+          prizeCategory: project.prizeCategory || 'AI/ML Track',
+          judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
+          teamSize: project.teamSize || '2-3 people',
+          isTeam: project.isTeam ?? true,
+          teamId: project.teamId || ''
+        });
+        setStage('selection');
+        alert(`Successfully joined: ${project.name}`);
       } else {
-        alert("Invalid Team ID. Please check the ID and try again.");
+        const isConfigured = await store.isConfigured();
+        if (!isConfigured) {
+          alert("Collaboration is not configured. Please add Supabase credentials to your .env file.");
+        } else {
+          alert("Invalid Team ID. Please check the ID and verify it exists in your Supabase 'projects' table.");
+        }
       }
+    } catch (err: any) {
+      console.error("Critical Join Error:", err);
+      alert(`Access failed: ${err.message || 'Unknown error'}`);
     }
   };
 
