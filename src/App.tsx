@@ -39,6 +39,10 @@ function App() {
   }, []);
 
   const handleLogin = async () => {
+    if (!auth) {
+      alert("Authenticaion is currently disabled. Please check your Firebase environment variables.");
+      return;
+    }
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
@@ -73,7 +77,8 @@ function App() {
               prizeCategory: project.prizeCategory || 'AI/ML Track',
               judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
               teamSize: project.teamSize || '2-3 people',
-              isTeam: project.isTeam ?? true
+              isTeam: project.isTeam ?? true,
+              teamId: project.teamId || ''
             });
             setStage('selection');
             // Cleanup URL
@@ -126,7 +131,8 @@ function App() {
         prizeCategory: project.prizeCategory || 'AI/ML Track',
         judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
         teamSize: project.teamSize || '2-3 people',
-        isTeam: project.isTeam ?? true
+        isTeam: project.isTeam ?? true,
+        teamId: project.teamId || ''
       });
       setStage('selection');
     } else {
@@ -149,7 +155,8 @@ function App() {
       prizeCategory: project.prizeCategory || 'AI/ML Track',
       judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
       teamSize: project.teamSize || '2-3 people',
-      isTeam: project.isTeam ?? true
+      isTeam: project.isTeam ?? true,
+      teamId: project.teamId || ''
     });
     setStage('selection');
   };
@@ -182,7 +189,12 @@ function App() {
       lastModified: Date.now()
     });
     setProjectId(newId);
-    setProjectData(data);
+    const allProjects = await store.getProjects();
+    const savedProject = allProjects.find(p => p.id === newId);
+    setProjectData({
+      ...data,
+      teamId: savedProject?.teamId || ''
+    });
     setStage('selection');
   };
 
