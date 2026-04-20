@@ -208,7 +208,6 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                                 <p className="text-center text-xs text-gray-400 font-medium italic">NOTE: Real-time syncing is enabled for both ID and Link access.</p>
                             </div>
                         </div>
-                    </div>
                 )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
