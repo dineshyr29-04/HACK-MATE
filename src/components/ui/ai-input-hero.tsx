@@ -254,12 +254,12 @@ export function HeroWave({
                     </div>
                     <div className="flex items-center gap-4 h-4">
                         <div className="flex items-baseline gap-1">
-                            <span className="text-gray-900 font-black">100+</span>
+                            <span className="text-gray-900 font-black">200+</span>
                             <span className="text-gray-400 text-[10px] uppercase font-bold tracking-tight">Builders</span>
                         </div>
                         <div className="w-px h-full bg-gray-100" />
                         <div className="flex items-baseline gap-1">
-                            <span className="text-gray-900 font-black">4+</span>
+                            <span className="text-gray-900 font-black">8+</span>
                             <span className="text-gray-400 text-[10px] uppercase font-bold tracking-tight">Countries</span>
                         </div>
                         <div className="w-px h-full bg-gray-100" />

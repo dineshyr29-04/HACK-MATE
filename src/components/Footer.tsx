@@ -15,7 +15,7 @@ export function Footer() {
                         <span>Hackathon Copilot</span>
                     </div>
                     <p className="text-gray-400 text-sm leading-relaxed mb-8 font-medium">
-                        Accelerating <span className="text-gray-900 font-bold">100+ builders</span> across <span className="text-gray-900 font-bold">4 countries</span> in the last month alone.
+                        Accelerating <span className="text-gray-900 font-bold">200+ builders</span> across <span className="text-gray-900 font-bold">8 countries</span> in the last month alone.
                     </p>
                     <div className="flex gap-4">
                         <a href="https://github.com/anandmahadev/HACK-MATE" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-gray-900 transition-colors">
