@@ -136,8 +136,14 @@ function App() {
         teamId: project.teamId || ''
       });
       setStage('selection');
+      alert(`Successfully joined: ${project.name}`);
     } else {
-      alert("Invalid Team ID. Please check and try again.");
+      const isConfigured = await store.isConfigured();
+      if (!isConfigured) {
+        alert("Collaboration is not configured. Please add Supabase credentials to your .env file.");
+      } else {
+        alert("Invalid Team ID. Please check the ID and try again.");
+      }
     }
   };
 

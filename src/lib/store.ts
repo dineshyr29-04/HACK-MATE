@@ -352,12 +352,22 @@ export const store = {
                 .from('projects')
                 .select('*')
                 .eq('team_id', teamId)
-                .single();
+                .limit(1)
+                .maybeSingle();
             
-            if (error || !data) return null;
+            if (error) {
+                console.error("Supabase query error:", error);
+                return null;
+            }
+            if (!data) return null;
             return data as Project;
-        } catch {
+        } catch (e) {
+            console.error("Unexpected error in findProjectByTeamId:", e);
             return null;
         }
+    },
+
+    isConfigured: async (): Promise<boolean> => {
+        return isSupabaseConfigured();
     }
 };
