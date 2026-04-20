@@ -1,4 +1,5 @@
 import { useState } from 'react';
+// UI Components for Project Setup
 import { ArrowRight, Clock, Trophy, Target, Globe, Users, Sparkles, Layout } from 'lucide-react';
 
 interface ProjectSetupProps {

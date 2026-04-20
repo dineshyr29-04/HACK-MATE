@@ -16,6 +16,7 @@ import { CaseStudies } from "./components/CaseStudies";
 import { AuthStage } from "./components/AuthStage";
 import { Footer } from "./components/Footer";
 
+// Re-verify: Google Auth + Project Logic
 import { 
   auth, 
   onAuthStateChanged, 
