@@ -94,7 +94,8 @@ function App() {
     prizeCategory: 'AI/ML Track',
     judgingFocus: ['Innovation', 'Technical Complexity'],
     teamSize: '2-3 people',
-    isTeam: true
+    isTeam: true,
+    teamId: ''
   });
 
   const [selectedStageId, setSelectedStageId] = useState<string | null>(null);
@@ -269,6 +270,7 @@ function App() {
           onHome={() => setStage('landing')}
           onOpenResources={() => setStage('resources')}
           projectId={projectId || ''}
+          project={projectData}
         />
       )}
 
