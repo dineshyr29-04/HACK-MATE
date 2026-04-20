@@ -122,6 +122,7 @@ function App() {
   const handleJoinTeam = async (teamId: string) => {
     const project = await store.findProjectByTeamId(teamId);
     if (project) {
+      await store.saveProject(project); // Persist locally for the joining user
       setProjectId(project.id);
       setProjectData({
         name: project.name,

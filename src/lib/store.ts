@@ -79,9 +79,10 @@ export const store = {
             if (existing >= 0) {
                 projects[existing] = { ...projects[existing], ...updatedProject };
             } else {
-                // Generate a unique 6-char Team ID for new projects
-                const randomId = Math.random().toString(36).substring(2, 8).toUpperCase();
-                updatedProject.teamId = `HM-${randomId}`;
+                // Generate a more robust 8-char unique Team ID (Digits + Letters)
+                const timestamp = Date.now().toString(36).slice(-3);
+                const random = Math.random().toString(36).substring(2, 7).toUpperCase();
+                updatedProject.teamId = `HM-${random}${timestamp.toUpperCase()}`;
                 projects.unshift({ ...updatedProject, createdAt: Date.now() });
             }
             localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
@@ -341,6 +342,22 @@ export const store = {
             }
         } catch (e) {
             console.error("Delete project failed", e);
+        }
+    },
+
+    findProjectByTeamId: async (teamId: string): Promise<Project | null> => {
+        if (!isSupabaseConfigured()) return null;
+        try {
+            const { data, error } = await supabase
+                .from('projects')
+                .select('*')
+                .eq('team_id', teamId)
+                .single();
+            
+            if (error || !data) return null;
+            return data as Project;
+        } catch {
+            return null;
         }
     }
 };

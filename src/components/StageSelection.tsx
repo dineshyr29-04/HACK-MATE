@@ -48,7 +48,8 @@ export const STAGES: Stage[] = [
 export function StageSelection({ onSelectStage, projectName, onHome, onOpenResources, projectId, project }: StageSelectionProps) {
     const [showShare, setShowShare] = useState(false);
     const [shareUrl, setShareUrl] = useState('');
-    const [copied, setCopied] = useState(false);
+    const [idCopied, setIdCopied] = useState(false);
+    const [linkCopied, setLinkCopied] = useState(false);
 
     // Assignments State
     const [assignments, setAssignments] = useState<Record<string, string>>({});
@@ -176,12 +177,12 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                                         <button 
                                             onClick={() => {
                                                 navigator.clipboard.writeText(project.teamId || "");
-                                                setCopied(true);
-                                                setTimeout(() => setCopied(false), 2000);
+                                                setIdCopied(true);
+                                                setTimeout(() => setIdCopied(false), 2000);
                                             }}
                                             className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition-all"
                                         >
-                                            {copied && project.teamId ? 'Copied' : 'Copy ID'}
+                                            {idCopied && project.teamId ? 'Copied' : 'Copy ID'}
                                         </button>
                                     </div>
                                     <p className="mt-3 text-[10px] text-indigo-400 font-medium leading-relaxed">Your team can enter this ID on the homepage to join instantly.</p>
@@ -198,11 +199,15 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                                         {shareUrl}
                                     </div>
                                     <button
-                                        onClick={handleCopy}
-                                        className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${copied ? 'bg-green-600 text-white' : 'bg-gray-900 text-white hover:bg-black'}`}
+                                        onClick={() => {
+                                            handleCopy();
+                                            setLinkCopied(true);
+                                            setTimeout(() => setLinkCopied(false), 2000);
+                                        }}
+                                        className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${linkCopied ? 'bg-green-600 text-white' : 'bg-gray-900 text-white hover:bg-black'}`}
                                     >
-                                        {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                                        {copied ? 'Copied' : 'Copy Link'}
+                                        {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                        {linkCopied ? 'Copied' : 'Copy Link'}
                                     </button>
                                 </div>
                                 <p className="text-center text-xs text-gray-400 font-medium italic">NOTE: Real-time syncing is enabled for both ID and Link access.</p>
