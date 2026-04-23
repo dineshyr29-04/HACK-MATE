@@ -1,105 +1,153 @@
-# [HackMate] Hackathon Copilot 🚀
-### From Idea to Winning Demo. The ultimate copilot for your next hackathon.
+# HackMate
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Builders-100%2B-black?style=for-the-badge&logo=rocket" />
-  <img src="https://img.shields.io/badge/Countries-4%2B-indigo?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Launch-1_Month-green?style=for-the-badge" />
-  <img src="https://img.shields.io/github/stars/anandmahadev/HACK-MATE?style=for-the-badge&color=gold" />
-</div>
+HackMate is a hackathon copilot that helps teams move from idea to demo with less context switching.
+It combines project planning, stage-based execution, AI-assisted guidance, and real-time collaboration in one React app.
 
----
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react&logoColor=white" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5.x-3178c6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-7-646cff?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/Supabase-Realtime-3fcf8e?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" />
+</p>
 
-## 📽️ Preview
+## Product Preview
 
-![HackMate Hero Page](./public/readme/hero.png)
-*Modern, minimalist, and built for speed.*
+![HackMate Hero](./public/readme/hero.png)
 
----
+![HackMate Dashboard](./public/readme/dashboard.png)
 
-## 🌟 Why HackMate?
+## Why HackMate
 
-Hackathon Copilot is a **premium, opinionated workspace** designed to guide builders through the high-stakes chaos of a 24-hour hackathon. We build the roadmap; you build the future.
+Hackathons are time-constrained and high-pressure. HackMate is designed to reduce friction in the most expensive parts of the process:
 
-### 💼 Multi-Platform Dashboard
-Manage your entire hackathon lifecycle from a single, high-contrast dashboard. From ideation to submission, we've got you covered.
+- Deciding what to build
+- Coordinating team execution
+- Maintaining momentum through delivery stages
+- Turning technical work into a judge-ready pitch
 
-![Selection Dashboard](./public/readme/dashboard.png)
+## Core Features
 
----
+- Stage-driven workflow from ideation to submission
+- Team collaboration with joinable Team ID sharing
+- Real-time synchronization (with local fallback)
+- AI insights for ideation, architecture, and pitch prep
+- Resource vault with templates and boilerplates
+- Checklist, assignment, comment, and project-state management
 
-## ✨ Key Features
+![HackMate Stage View](./public/readme/stage.png)
 
-### 🤝 Real-Time Team Collaboration (NEW)
-Stop sharing payload-heavy links. HackMate now features a **Unique Team ID system**. 
-- **Generate a Team ID**: (e.g., `HM-A1B2C3`) and share it with your mates.
-- **Instant Join**: Teammates enter the ID and sync instantly.
-- **Real-time Sync**: Progress, assignments, and comments update live for everyone.
+![HackMate Resources](./public/readme/resources.png)
 
-### 🧠 10x AI Engineering
-Don't waste time on prompt engineering. Use our pre-vetted, role-specific "10x Prompts" for ChatGPT and Claude.
-- **Act as YC Founder**: For strategy and pitch.
-- **Act as Senior UX Designer**: For UI flows.
-- **Act as Lead Architect**: For stack selection.
+## Tech Stack
 
-![Phase View](./public/readme/stage.png)
+- Frontend: React 19, TypeScript, Vite
+- Styling: Tailwind CSS, PostCSS
+- State and utilities: local browser storage plus shared sync logic
+- Auth and analytics: Firebase Auth and Firebase Analytics
+- Realtime and persistence: Supabase
+- AI providers: Mistral and Google Gemini
 
-### 📚 The Master Resource Vault
-A curated library of pre-vetted templates, boilerplates, and tools. Everything you need to build at lightspeed.
+## Project Structure
 
-![Resource Vault](./public/readme/resources.png)
+```text
+src/
+  components/        UI and stage components
+  lib/               Integrations (AI, Firebase, Supabase, store)
+  assets/            Static app assets
+public/
+  readme/            README screenshots
+  resources/         Template and guide content shown in-app
+```
 
----
+## Quick Start
 
-## 🛠️ Tech Stack
-
-- **Frontend**: [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) (Custom Design System)
-- **Backend/Real-time**: [Supabase](https://supabase.com/) (Postgres + Realtime)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/) & Tailwind Animate
-
----
-
-## ⚡ Getting Started
+### 1. Clone and install
 
 ```bash
-# 1. Clone the repo
 git clone https://github.com/anandmahadev/HACK-MATE.git
-
-# 2. Install dependencies
+cd HACK-MATE
 npm install
+```
 
-# 3. Spin up the dev server
+### 2. Configure environment
+
+Create a `.env` file in the project root.
+
+```env
+# Firebase
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+VITE_FIREBASE_MEASUREMENT_ID=
+
+# Supabase
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+
+# AI Providers (optional but recommended)
+VITE_MISTRAL_API_KEY=
+VITE_GEMINI_API_KEY=
+```
+
+Notes:
+- If Supabase keys are missing, app logic falls back to local storage for core flows.
+- If AI keys are missing, AI-assisted features are disabled gracefully.
+
+### 3. Run the app
+
+```bash
 npm run dev
 ```
 
----
+Open the local URL printed by Vite in your terminal.
 
-## 📈 Achievements & Milestones
+## Available Scripts
 
-- 🏆 **100+ Builders** successfully launched projects using HackMate in the first 30 days.
-- 🌍 **Global Reach**: Trusted by developers across **4+ countries**.
-- ⚡ **Real-time Engine**: Switched from URL-based sharing to a robust **Supabase Real-time** synchronization layer for seamless teamwork.
+- `npm run dev`: Start development server
+- `npm run build`: Type-check and produce production build
+- `npm run preview`: Preview the production build locally
+- `npm run lint`: Run ESLint checks
 
----
+## Data and Sync Behavior
 
-## 🤝 Contributing
+- Project and stage state are cached in local storage for fast interactions.
+- When Supabase is configured, data is synchronized to shared tables.
+- Team collaboration uses project IDs and Team IDs for lightweight sharing.
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+For schema guidance, see:
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+- `public/resources/boilerplates/supabase-schema.md`
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## Deployment
 
----
+This repository includes `vercel.json` and is ready for Vercel deployment.
 
-<div align="center">
-  <p>Built with 🖤 by <b>Anand Mahadev</b></p>
-  <p><i>The secret weapon for your next winning hackathon submission.</i></p>
-</div>
+High-level flow:
+
+1. Import repository into Vercel
+2. Add all `VITE_*` environment variables in project settings
+3. Deploy
+
+## Security
+
+Please review `SECURITY.md` before deploying to production or sharing credentials.
+
+## Contributing
+
+Contributions are welcome and appreciated.
+
+- Read `CONTRIBUTING.md` for setup, branch naming, coding guidelines, and pull request checklist.
+- Use issues for bug reports and feature proposals.
+- Keep pull requests focused and easy to review.
+
+## Support
+
+- Open an issue for bugs or feature requests
+- Include reproduction steps, expected behavior, and screenshots when relevant
+
+## Credits
+
+Built by Anand Mahadev and contributors.
