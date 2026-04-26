@@ -29,7 +29,7 @@ export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetu
     const [teamSize, setTeamSize] = useState('2-3 people');
     const [isTeam, setIsTeam] = useState(true);
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         onComplete({ name, problem, timeLeft, type, prizeCategory, judgingFocus, teamSize, isTeam });
     };
@@ -83,22 +83,13 @@ export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetu
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {/* Hackathon Name */}
                         <div className="space-y-3">
                             <label className={`block text-sm font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                 <Trophy className="w-4 h-4 text-gray-400" /> Hackathon Name
                             </label>
-                            <input
-                                type="text"
-                                required
-                                className={inputClass}
-                                placeholder="e.g. Meta Hackathon 2026"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
+                            <input type="text" required className={inputClass} placeholder="e.g. Meta Hackathon 2026" value={name} onChange={(e) => setName(e.target.value)} />
                         </div>
 
-                        {/* Hackathon Type */}
                         <div className="space-y-3">
                             <label className={`block text-sm font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                 <Globe className="w-4 h-4 text-gray-400" /> Hackathon Type
@@ -110,7 +101,6 @@ export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetu
                             </select>
                         </div>
 
-                        {/* Prize Category */}
                         <div className="space-y-3">
                             <label className={`block text-sm font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                 <Sparkles className="w-4 h-4 text-amber-500" /> Prize Category
@@ -126,7 +116,6 @@ export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetu
                             </select>
                         </div>
 
-                        {/* Team Size */}
                         <div className="space-y-3">
                             <label className={`block text-sm font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                 <Users className="w-4 h-4 text-emerald-500" /> Team Size
@@ -144,14 +133,7 @@ export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetu
                         <label className={`block text-sm font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
                             <Target className="w-4 h-4 text-red-500" /> Problem Statement
                         </label>
-                        <textarea
-                            required
-                            rows={4}
-                            className={`${inputClass} resize-none`}
-                            placeholder="Briefly describe what you're building..."
-                            value={problem}
-                            onChange={(e) => setProblem(e.target.value)}
-                        />
+                        <textarea required rows={4} className={`${inputClass} resize-none`} placeholder="Briefly describe what you're building..." value={problem} onChange={(e) => setProblem(e.target.value)} />
                     </div>
 
                     {/* Judging Focus */}
@@ -166,7 +148,9 @@ export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetu
                                     type="button"
                                     onClick={() => toggleFocus(focus)}
                                     className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-bold transition-all border ${judgingFocus.includes(focus)
-                                        ? 'bg-black text-white border-black shadow-md'
+                                        ? isDark
+                                            ? 'bg-white text-gray-900 border-white shadow-md'
+                                            : 'bg-black text-white border-black shadow-md'
                                         : isDark
                                             ? 'bg-gray-800 text-gray-300 border-gray-700 hover:border-gray-500'
                                             : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'}`}
@@ -189,7 +173,9 @@ export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetu
                                     type="button"
                                     onClick={() => { setTimeLeft(time); setIsCustomTime(false); }}
                                     className={`py-3 px-4 rounded-xl border text-sm font-bold transition-all ${!isCustomTime && timeLeft === time
-                                        ? 'border-gray-900 bg-gray-900 text-white'
+                                        ? isDark
+                                            ? 'border-white bg-white text-gray-900'
+                                            : 'border-gray-900 bg-gray-900 text-white'
                                         : isDark
                                             ? 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-500'
                                             : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}`}
@@ -201,7 +187,9 @@ export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetu
                                 type="button"
                                 onClick={() => { setTimeLeft(''); setIsCustomTime(true); }}
                                 className={`py-3 px-4 rounded-xl border text-sm font-bold transition-all ${isCustomTime
-                                    ? 'border-gray-900 bg-gray-900 text-white'
+                                    ? isDark
+                                        ? 'border-white bg-white text-gray-900'
+                                        : 'border-gray-900 bg-gray-900 text-white'
                                     : isDark
                                         ? 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-500'
                                         : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}`}
@@ -211,16 +199,7 @@ export function ProjectSetup({ initialProblem, onComplete, onBack }: ProjectSetu
                         </div>
                         {isCustomTime && (
                             <div className="animate-in fade-in slide-in-from-top-2 duration-200">
-                                <input
-                                    type="number"
-                                    required
-                                    min="1"
-                                    className={inputClass}
-                                    placeholder="Enter hours..."
-                                    value={timeLeft}
-                                    onChange={(e) => setTimeLeft(e.target.value)}
-                                    autoFocus
-                                />
+                                <input type="number" required min="1" className={inputClass} placeholder="Enter hours..." value={timeLeft} onChange={(e) => setTimeLeft(e.target.value)} autoFocus />
                             </div>
                         )}
                     </div>

@@ -89,7 +89,7 @@ export function Resources({ onBack }: { onBack: () => void }) {
                             Resource Vault.
                         </span>
                     </h1>
-                    <p className={`text-xl max-w-2xl mx-auto leading-relaxed font-medium ${isDark ? 'text-gray-400' : 'text-gray-400'}`}>
+                    <p className={`text-xl max-w-2xl mx-auto leading-relaxed font-medium ${isDark ? 'text-gray-300' : 'text-gray-400'}`}>
                         Everything you need to build at lightspeed. Download pre-vetted templates and boilerplates.
                     </p>
                 </div>

@@ -35,13 +35,17 @@ export function Footer() {
 
                 <div>
                     <h3 className={`font-bold mb-6 uppercase text-xs tracking-widest ${isDark ? 'text-gray-300' : 'text-gray-900'}`}>Platform</h3>
-                    <ul className={`space-y-4 text-sm font-medium ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
+                    <ul className="space-y-4 text-sm font-medium text-gray-500">
                         <li>
                             <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-gray-900'}`}>
                                 Start Building
                             </button>
                         </li>
-                        <li><span className="text-gray-300 cursor-not-allowed">API Access (Soon)</span></li>
+                        <li>
+                            <span className={`cursor-not-allowed ${isDark ? 'text-gray-600' : 'text-gray-300'}`}>
+                                API Access (Soon)
+                            </span>
+                        </li>
                         <li>
                             <a href="https://github.com/anandmahadev/HACK-MATE" target="_blank" rel="noreferrer" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-gray-900'}`}>
                                 Open Source
@@ -52,7 +56,7 @@ export function Footer() {
 
                 <div>
                     <h3 className={`font-bold mb-6 uppercase text-xs tracking-widest ${isDark ? 'text-gray-300' : 'text-gray-900'}`}>Resources</h3>
-                    <ul className={`space-y-4 text-sm font-medium ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
+                    <ul className="space-y-4 text-sm font-medium text-gray-500">
                         <li>
                             <a href="https://github.com/anandmahadev/HACK-MATE/tree/main/docs" target="_blank" rel="noreferrer" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-gray-900'}`}>
                                 Documentation
@@ -73,7 +77,7 @@ export function Footer() {
 
                 <div>
                     <h3 className={`font-bold mb-6 uppercase text-xs tracking-widest ${isDark ? 'text-gray-300' : 'text-gray-900'}`}>Connect</h3>
-                    <ul className={`space-y-4 text-sm font-medium ${isDark ? 'text-gray-500' : 'text-gray-500'}`}>
+                    <ul className="space-y-4 text-sm font-medium text-gray-500">
                         <li>
                             <a href="https://github.com/anandmahadev" target="_blank" rel="noreferrer" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-gray-900'}`}>
                                 GitHub

@@ -6,11 +6,13 @@ type GuideProps = {
   onBack: () => void;
 };
 
+type TabId = 'what' | 'setup' | 'github' | 'workflow' | 'prompts';
+
 export function AntigravityGuide({ onBack }: GuideProps) {
   const { isDark } = useTheme();
-  const [activeTab, setActiveTab] = useState<'what' | 'setup' | 'github' | 'workflow' | 'prompts'>('what');
+  const [activeTab, setActiveTab] = useState<TabId>('what');
 
-  const tabs = [
+  const tabs: { id: TabId; label: string; icon: React.ReactNode }[] = [
     { id: 'what', label: 'What & When', icon: <Sparkles className="w-4 h-4" /> },
     { id: 'setup', label: 'Install & Setup', icon: <Terminal className="w-4 h-4" /> },
     { id: 'github', label: 'Connect GitHub', icon: <Github className="w-4 h-4" /> },
@@ -30,10 +32,10 @@ export function AntigravityGuide({ onBack }: GuideProps) {
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <h1 className="text-xl font-bold flex items-center gap-2">Antigravity Guide</h1>
+            <h1 className="text-xl font-bold">Antigravity Guide</h1>
           </div>
           <a
-           href="https://antigravity.dev"
+            href="https://antigravity.dev"
             target="_blank"
             rel="noopener noreferrer"
             className={`text-sm font-medium hover:underline flex items-center gap-1 ${isDark ? 'text-gray-300 hover:text-white' : 'text-gray-900'}`}
@@ -49,7 +51,7 @@ export function AntigravityGuide({ onBack }: GuideProps) {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-t-lg text-sm font-medium transition-all border-b-2 ${activeTab === tab.id
                 ? isDark
                   ? 'border-white text-white bg-gray-800/50'

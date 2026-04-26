@@ -17,8 +17,10 @@ export function AuthStage({ onLogin, onBack }: AuthStageProps) {
     setError(null);
     try {
       await onLogin();
-    } catch (err: any) {
-      setError(err.message || "Failed to sign in with Google.");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to sign in with Google.";
+      setError(message);
+    } finally {
       setLoading(false);
     }
   };
@@ -45,7 +47,7 @@ export function AuthStage({ onLogin, onBack }: AuthStageProps) {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 text-red-600 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className={`mb-6 p-4 rounded-xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300 ${isDark ? 'bg-red-950/40 border border-red-800 text-red-400' : 'bg-red-50 border border-red-100 text-red-600'}`}>
             <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
             <p className="text-sm font-medium leading-relaxed">{error}</p>
           </div>

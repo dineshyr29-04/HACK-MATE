@@ -23,6 +23,13 @@ interface StageSelectionProps {
     project: any;
 }
 
+interface RealtimePayload {
+    new: {
+        assignments?: Record<string, string>;
+        [key: string]: unknown;
+    };
+}
+
 export const STAGES: Stage[] = [
     { id: 'ideation', title: 'Ideation', icon: <Lightbulb className="w-6 h-6" /> },
     { id: 'research', title: 'Market Research', icon: <Search className="w-6 h-6" /> },
@@ -64,7 +71,7 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
             .on('postgres_changes', {
                 event: '*', schema: 'public', table: 'project_state',
                 filter: `project_id=eq.${projectId}`
-            }, (payload: any) => {
+            }, (payload: RealtimePayload) => {
                 const newState = payload.new;
                 if (newState && newState.assignments) setAssignments(newState.assignments);
             })
@@ -105,19 +112,19 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                         <button
                             onClick={onOpenResources}
-                            className={`flex-1 sm:flex-none justify-center border px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all text-xs sm:text-sm flex items-center gap-2 ${isDark ? 'bg-gray-800 border-gray-700 text-white hover:border-white' : 'bg-white border-gray-100 hover:border-gray-900 text-gray-900'}`}
+                            className={`flex-1 sm:flex-none border px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all text-xs sm:text-sm flex items-center justify-center gap-2 ${isDark ? 'bg-gray-800 border-gray-700 text-white hover:border-white' : 'bg-white border-gray-100 hover:border-gray-900 text-gray-900'}`}
                         >
                             <Layout className="w-4 h-4" /> Resources
                         </button>
                         <button
                             onClick={onHome}
-                            className={`flex-1 sm:flex-none justify-center px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all text-xs sm:text-sm ${isDark ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'}`}
+                            className={`flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all text-xs sm:text-sm ${isDark ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'}`}
                         >
                             Dashboard
                         </button>
                         <button
                             onClick={handleShare}
-                            className={`w-full sm:w-auto justify-center px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all shadow-xl flex items-center gap-2 text-xs sm:text-sm ${isDark ? 'bg-white text-gray-900 hover:bg-gray-100' : 'bg-gray-900 hover:bg-black text-white shadow-gray-100'}`}
+                            className={`w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-bold transition-all shadow-xl flex items-center justify-center gap-2 text-xs sm:text-sm ${isDark ? 'bg-white text-gray-900 hover:bg-gray-100' : 'bg-gray-900 hover:bg-black text-white shadow-gray-100'}`}
                         >
                             <UserPlus className="w-4 h-4" /> Invite Teammate
                         </button>
@@ -128,11 +135,8 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                 {showShare && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-md animate-in fade-in duration-300">
                         <div className={`rounded-[2rem] shadow-2xl w-full max-w-lg p-10 border relative overflow-hidden ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`} onClick={(e) => e.stopPropagation()}>
-                            <button
-                                onClick={() => setShowShare(false)}
-                                className={`absolute top-6 right-6 p-2 rounded-full transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
-                            >
-                                <X className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-400'}`} />
+                            <button onClick={() => setShowShare(false)} className={`absolute top-6 right-6 p-2 rounded-full transition-colors ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+                                <X className="w-5 h-5 text-gray-400" />
                             </button>
 
                             <div className="mb-8">
@@ -148,11 +152,7 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                                 <div className="flex items-center justify-between">
                                     <span className={`text-3xl font-black tracking-tight ${isDark ? 'text-indigo-300' : 'text-indigo-700'}`}>{project.teamId || "HM-NEW"}</span>
                                     <button
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(project.teamId || "");
-                                            setIdCopied(true);
-                                            setTimeout(() => setIdCopied(false), 2000);
-                                        }}
+                                        onClick={() => { navigator.clipboard.writeText(project.teamId || ""); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
                                         className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition-all"
                                     >
                                         {idCopied && project.teamId ? 'Copied' : 'Copy ID'}
@@ -162,21 +162,15 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                             </div>
 
                             <div className="relative py-4 flex items-center">
-                                <div className="flex-grow border-t border-gray-100 dark:border-gray-700"></div>
+                                <div className={`flex-grow border-t ${isDark ? 'border-gray-700' : 'border-gray-100'}`}></div>
                                 <span className={`flex-shrink mx-4 text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-gray-600' : 'text-gray-300'}`}>Or use Link</span>
-                                <div className="flex-grow border-t border-gray-100 dark:border-gray-700"></div>
+                                <div className={`flex-grow border-t ${isDark ? 'border-gray-700' : 'border-gray-100'}`}></div>
                             </div>
 
                             <div className={`flex items-center gap-3 p-4 rounded-2xl border ${isDark ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
-                                <div className={`flex-1 truncate font-mono text-sm ${isDark ? 'text-gray-300' : 'text-gray-500'}`}>
-                                    {shareUrl}
-                                </div>
+                                <div className={`flex-1 truncate font-mono text-sm ${isDark ? 'text-gray-300' : 'text-gray-500'}`}>{shareUrl}</div>
                                 <button
-                                    onClick={() => {
-                                        handleCopy();
-                                        setLinkCopied(true);
-                                        setTimeout(() => setLinkCopied(false), 2000);
-                                    }}
+                                    onClick={() => { handleCopy(); setLinkCopied(true); setTimeout(() => setLinkCopied(false), 2000); }}
                                     className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${linkCopied ? 'bg-green-600 text-white' : 'bg-gray-900 text-white hover:bg-black'}`}
                                 >
                                     {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}

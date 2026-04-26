@@ -26,20 +26,23 @@ export function PromptModal({ isOpen, onClose, onSubmit, title, placeholder, def
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (value.length > maxLength) { setError(true); return; }
         if (value.trim()) { onSubmit(value); setValue(''); onClose(); }
     };
 
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newVal = e.target.value;
         setValue(newVal);
         setError(newVal.length > maxLength);
     };
 
     return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-md animate-in fade-in duration-300" onClick={onClose}>
+        <div
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-md animate-in fade-in duration-300"
+            onClick={onClose}
+        >
             <div
                 className={`rounded-[2rem] shadow-2xl w-full max-w-md p-8 border relative overflow-hidden animate-in zoom-in-95 duration-200 ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`}
                 onClick={(e) => e.stopPropagation()}

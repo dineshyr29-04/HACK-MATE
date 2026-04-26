@@ -101,7 +101,10 @@ function FAQItem({ question, answer, isDark }: { question: string; answer: strin
             >
                 <span className={`font-bold pr-8 ${isDark ? 'text-white' : 'text-gray-900'}`}>{question}</span>
                 <div className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${isDark ? 'bg-gray-700' : 'bg-gray-100'}`}>
-                    {isOpen ? <Minus className="w-4 h-4 text-gray-500" /> : <Plus className="w-4 h-4 text-gray-500" />}
+                    {isOpen
+                        ? <Minus className={`w-4 h-4 ${isDark ? 'text-gray-300' : 'text-gray-500'}`} />
+                        : <Plus className={`w-4 h-4 ${isDark ? 'text-gray-300' : 'text-gray-500'}`} />
+                    }
                 </div>
             </button>
             {isOpen && (
