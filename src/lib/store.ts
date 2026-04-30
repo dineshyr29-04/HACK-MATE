@@ -9,6 +9,7 @@ export interface Project {
     judgingFocus?: string[];
     teamSize?: string;
     isTeam?: boolean;
+    teamId?: string;
     createdAt: number;
     lastModified: number;
 }
@@ -78,6 +79,10 @@ export const store = {
             if (existing >= 0) {
                 projects[existing] = { ...projects[existing], ...updatedProject };
             } else {
+                // Generate a more robust 8-char unique Team ID (Digits + Letters)
+                const timestamp = Date.now().toString(36).slice(-3);
+                const random = Math.random().toString(36).substring(2, 7).toUpperCase();
+                updatedProject.teamId = `HM-${random}${timestamp.toUpperCase()}`;
                 projects.unshift({ ...updatedProject, createdAt: Date.now() });
             }
             localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
@@ -94,11 +99,46 @@ export const store = {
                     judging_focus: updatedProject.judgingFocus,
                     team_size: updatedProject.teamSize,
                     is_team: updatedProject.isTeam,
+                    team_id: updatedProject.teamId,
                     last_modified: updatedProject.lastModified
                 });
             }
         } catch (e) {
             console.error("Save project failed", e);
+        }
+    },
+
+    findProjectByTeamId: async (teamId: string): Promise<Project | null> => {
+        if (!isSupabaseConfigured()) return null;
+        try {
+            const { data, error } = await supabase
+                .from('projects')
+                .select('*')
+                .eq('team_id', teamId.toUpperCase())
+                .single();
+            
+            if (!error && data) {
+                const project: Project = {
+                    id: data.id,
+                    name: data.name,
+                    problem: data.problem,
+                    timeLeft: data.time_left,
+                    type: data.type,
+                    prizeCategory: data.prize_category,
+                    judgingFocus: data.judging_focus,
+                    teamSize: data.team_size,
+                    isTeam: data.is_team,
+                    teamId: data.team_id,
+                    createdAt: data.created_at || Date.now(),
+                    lastModified: data.last_modified || Date.now()
+                };
+                await store.saveProject(project);
+                return project;
+            }
+            return null;
+        } catch (e) {
+            console.error("Find team failed", e);
+            return null;
         }
     },
 
@@ -228,14 +268,10 @@ export const store = {
     },
 
     exportProject: async (projectId: string): Promise<string | null> => {
-        const projects = await store.getProjects();
-        const project = projects.find(p => p.id === projectId);
-        if (!project) return null;
-
-        const state = await store.getProjectState(projectId);
-        const payload = { project, state };
+        // Since projects are synced to Supabase, we only need to share the ID
+        // We prefix it with 'v2:' to distinguish from the old long Base64 format
         try {
-            return window.btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+            return `v2:${projectId}`;
         } catch (e) {
             console.error("Export failed", e);
             return null;
@@ -244,17 +280,72 @@ export const store = {
 
     importProject: async (encoded: string): Promise<string | null> => {
         try {
+            // Check if it's the new short format
+            if (encoded.startsWith('v2:')) {
+                const projectId = encoded.split('v2:')[1];
+                
+                if (isSupabaseConfigured()) {
+                    // Fetch the project from Supabase
+                    const { data: project, error: pError } = await supabase
+                        .from('projects')
+                        .select('*')
+                        .eq('id', projectId)
+                        .single();
+                    
+                    if (!pError && project) {
+                        // Success! Save to local storage for quick access
+                        await store.saveProject(project);
+                        // State will be fetched normally by StageSelection
+                        return project.id;
+                    }
+                }
+                return null;
+            }
+
+            // Fallback for old long links
             const json = decodeURIComponent(escape(window.atob(encoded)));
             const { project, state } = JSON.parse(json);
 
             if (!project || !project.id) return null;
 
             await store.saveProject(project);
-            await store.saveProjectState(project.id, state);
+            if (state) await store.saveProjectState(project.id, state);
             return project.id;
         } catch (e) {
             console.error("Import failed", e);
             return null;
         }
+    },
+
+    deleteProject: async (projectId: string) => {
+        try {
+            // 1. Update Local Cache
+            const raw = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+            if (raw) {
+                const projects = JSON.parse(raw);
+                const filtered = projects.filter((p: any) => p.id !== projectId);
+                localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(filtered));
+            }
+
+            // 2. Clear Local State
+            const rawStates = localStorage.getItem(STORAGE_KEYS.STATE);
+            if (rawStates) {
+                const states = JSON.parse(rawStates);
+                delete states[projectId];
+                localStorage.setItem(STORAGE_KEYS.STATE, JSON.stringify(states));
+            }
+
+            // 3. Delete from Supabase
+            if (isSupabaseConfigured()) {
+                await supabase.from('projects').delete().eq('id', projectId);
+                await supabase.from('project_state').delete().eq('project_id', projectId);
+            }
+        } catch (e) {
+            console.error("Delete project failed", e);
+        }
+    },
+
+    isConfigured: async (): Promise<boolean> => {
+        return !!isSupabaseConfigured();
     }
 };

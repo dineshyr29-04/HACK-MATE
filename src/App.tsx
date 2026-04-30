@@ -16,6 +16,7 @@ import { CaseStudies } from "./components/CaseStudies";
 import { AuthStage } from "./components/AuthStage";
 import { Footer } from "./components/Footer";
 
+// Re-verify: Google Auth + Project Logic
 import { 
   auth, 
   onAuthStateChanged, 
@@ -38,6 +39,10 @@ function App() {
   }, []);
 
   const handleLogin = async () => {
+    if (!auth) {
+      alert("Authenticaion is currently disabled. Please check your Firebase environment variables.");
+      return;
+    }
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
@@ -61,7 +66,7 @@ function App() {
         const importedId = await store.importProject(shareCode);
         if (importedId) {
           const projects = await store.getProjects();
-          const project = projects.find(p => p.id === importedId);
+          const project = projects.find((p: any) => p.id === importedId);
           if (project) {
             setProjectId(importedId);
             setProjectData({
@@ -72,7 +77,8 @@ function App() {
               prizeCategory: project.prizeCategory || 'AI/ML Track',
               judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
               teamSize: project.teamSize || '2-3 people',
-              isTeam: project.isTeam ?? true
+              isTeam: project.isTeam ?? true,
+              teamId: project.teamId || ''
             });
             setStage('selection');
             // Cleanup URL
@@ -89,12 +95,13 @@ function App() {
   const [projectData, setProjectData] = useState({
     name: '',
     problem: '',
-    timeLeft: '48',
+    timeLeft: '24',
     type: 'Online Hackathon',
     prizeCategory: 'AI/ML Track',
     judgingFocus: ['Innovation', 'Technical Complexity'],
     teamSize: '2-3 people',
-    isTeam: true
+    isTeam: true,
+    teamId: ''
   });
 
   const [selectedStageId, setSelectedStageId] = useState<string | null>(null);
@@ -112,6 +119,39 @@ function App() {
     setStage('setup');
   };
 
+  const handleJoinTeam = async (teamId: string) => {
+    try {
+      const project = await store.findProjectByTeamId(teamId);
+      if (project) {
+        await store.saveProject(project); // Persist locally for the joining user
+        setProjectId(project.id);
+        setProjectData({
+          name: project.name,
+          problem: project.problem,
+          timeLeft: project.timeLeft,
+          type: project.type || 'Online Hackathon',
+          prizeCategory: project.prizeCategory || 'AI/ML Track',
+          judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
+          teamSize: project.teamSize || '2-3 people',
+          isTeam: project.isTeam ?? true,
+          teamId: project.teamId || ''
+        });
+        setStage('selection');
+        alert(`Successfully joined: ${project.name}`);
+      } else {
+        const isConfigured = await store.isConfigured();
+        if (!isConfigured) {
+          alert("Collaboration is not configured. Please add Supabase credentials to your .env file.");
+        } else {
+          alert("Invalid Team ID. Please check the ID and verify it exists in your Supabase 'projects' table.");
+        }
+      }
+    } catch (err: any) {
+      console.error("Critical Join Error:", err);
+      alert(`Access failed: ${err.message || 'Unknown error'}`);
+    }
+  };
+
   const handleResumeProject = (project: any) => {
     if (!user) {
       setPendingAction({ stage: 'selection', data: project });
@@ -127,9 +167,20 @@ function App() {
       prizeCategory: project.prizeCategory || 'AI/ML Track',
       judgingFocus: project.judgingFocus || ['Innovation', 'Technical Complexity'],
       teamSize: project.teamSize || '2-3 people',
-      isTeam: project.isTeam ?? true
+      isTeam: project.isTeam ?? true,
+      teamId: project.teamId || ''
     });
     setStage('selection');
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    if (confirm("Are you sure you want to delete this project? This action cannot be undone.")) {
+      await store.deleteProject(projectId);
+      // Force a re-render/re-fetch by staying on landing
+      setStage('landing');
+      // Trigger a refresh in components that list projects
+      window.dispatchEvent(new CustomEvent('project-list-updated'));
+    }
   };
 
   const handleSetupComplete = async (data: {
@@ -150,7 +201,12 @@ function App() {
       lastModified: Date.now()
     });
     setProjectId(newId);
-    setProjectData(data);
+    const allProjects = await store.getProjects();
+    const savedProject = allProjects.find(p => p.id === newId);
+    setProjectData({
+      ...data,
+      teamId: savedProject?.teamId || ''
+    });
     setStage('selection');
   };
 
@@ -176,37 +232,42 @@ function App() {
   return (
     <div className="font-sans antialiased text-gray-900 bg-gray-50 min-h-screen">
       {stage === 'landing' && (
-        <HeroWave
-          onPromptSubmit={handlePromptSubmit}
-          onResumeProject={handleResumeProject}
-          onOpenGuide={() => {
-            if (!user) { setPendingAction({ stage: 'guide' }); setStage('auth-required'); return; }
-            setStage('guide');
-          }}
-          onOpenFeatures={() => {
-            if (!user) { setPendingAction({ stage: 'features' }); setStage('auth-required'); return; }
-            setStage('features');
-          }}
-          onOpenHowItWorks={() => {
-            if (!user) { setPendingAction({ stage: 'how-it-works' }); setStage('auth-required'); return; }
-            setStage('how-it-works');
-          }}
-          onOpenFAQ={() => {
-            if (!user) { setPendingAction({ stage: 'faq' }); setStage('auth-required'); return; }
-            setStage('faq');
-          }}
-          onOpenResources={() => {
-            if (!user) { setPendingAction({ stage: 'resources' }); setStage('auth-required'); return; }
-            setStage('resources');
-          }}
-          onOpenCaseStudies={() => {
-            if (!user) { setPendingAction({ stage: 'case-studies' }); setStage('auth-required'); return; }
-            setStage('case-studies');
-          }}
-          user={user}
-          onLogin={handleLogin}
-          onLogout={handleLogout}
-        />
+        <>
+          <HeroWave
+            onJoinTeam={handleJoinTeam}
+            onPromptSubmit={handlePromptSubmit}
+            onResumeProject={handleResumeProject}
+            onDeleteProject={handleDeleteProject}
+            onOpenGuide={() => {
+              if (!user) { setPendingAction({ stage: 'guide' }); setStage('auth-required'); return; }
+              setStage('guide');
+            }}
+            onOpenFeatures={() => {
+              if (!user) { setPendingAction({ stage: 'features' }); setStage('auth-required'); return; }
+              setStage('features');
+            }}
+            onOpenHowItWorks={() => {
+              if (!user) { setPendingAction({ stage: 'how-it-works' }); setStage('auth-required'); return; }
+              setStage('how-it-works');
+            }}
+            onOpenFAQ={() => {
+              if (!user) { setPendingAction({ stage: 'faq' }); setStage('auth-required'); return; }
+              setStage('faq');
+            }}
+            onOpenResources={() => {
+              if (!user) { setPendingAction({ stage: 'resources' }); setStage('auth-required'); return; }
+              setStage('resources');
+            }}
+            onOpenCaseStudies={() => {
+              if (!user) { setPendingAction({ stage: 'case-studies' }); setStage('auth-required'); return; }
+              setStage('case-studies');
+            }}
+            user={user}
+            onLogin={handleLogin}
+            onLogout={handleLogout}
+          />
+          <Footer />
+        </>
       )}
 
       {stage === 'auth-required' && (
@@ -234,6 +295,7 @@ function App() {
           onHome={() => setStage('landing')}
           onOpenResources={() => setStage('resources')}
           projectId={projectId || ''}
+          project={projectData}
         />
       )}
 

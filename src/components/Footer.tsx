@@ -1,118 +1,65 @@
 import React from 'react';
-import { 
-    Code2, 
-    Github, 
-    Twitter, 
-    Linkedin, 
-    Mail, 
-    ArrowUpRight,
-    Heart,
-    Zap,
-    ExternalLink
-} from 'lucide-react';
+import { Code2, Github, Twitter, Mail, ArrowUpRight } from 'lucide-react';
 
-interface FooterProps {
-    onOpenHowItWorks?: () => void;
-    onOpenFeatures?: () => void;
-    onOpenResources?: () => void;
-    onOpenGuide?: () => void;
-    onOpenFAQ?: () => void;
-    onOpenCaseStudies?: () => void;
-}
-
-export function Footer({ 
-    onOpenHowItWorks, 
-    onOpenFeatures, 
-    onOpenResources, 
-    onOpenGuide, 
-    onOpenFAQ,
-    onOpenCaseStudies 
-}: FooterProps) {
-    const currentYear = new Date().getFullYear();
-
+export function Footer() {
     return (
-        <footer className="bg-gray-900 text-gray-300 py-16 sm:py-24 border-t border-gray-800 selection:bg-white selection:text-gray-900">
-            <div className="max-w-7xl mx-auto px-6 sm:px-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-16 mb-16 sm:mb-24">
-                    
-                    {/* Brand Column */}
-                    <div className="space-y-8 animate-in fade-in duration-700">
-                        <div className="flex items-center gap-3 group cursor-default">
-                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-gray-900 shadow-xl shadow-white/5 group-hover:rotate-6 transition-transform">
-                                <Code2 className="w-5 h-5" />
-                            </div>
-                            <span className="text-xl font-black tracking-tight text-white">Hackathon Copilot</span>
+        <footer className="bg-white border-t border-gray-100 pt-24 pb-12 px-6 relative overflow-hidden">
+            {/* Subtle background blob */}
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gray-50 rounded-full blur-3xl -z-10" />
+
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 relative">
+                <div className="col-span-1 md:col-span-1">
+                    <div className="flex items-center gap-3 font-black text-xl tracking-tight text-gray-900 mb-6">
+                        <div className="w-8 h-8 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg">
+                            <Code2 className="w-5 h-5" />
                         </div>
-                        <p className="text-gray-400 leading-relaxed font-medium">
-                            Empowering builders to transform ideas into winning projects within 48 hours. The ultimate secret weapon for modern hackathons.
-                        </p>
-                        <div className="flex items-center gap-4">
-                            <SocialLink href="https://github.com/anandmahadev/HACK-MATE" icon={<Github className="w-5 h-5" />} />
-                            <SocialLink href="#" icon={<Twitter className="w-5 h-5" />} />
-                            <SocialLink href="#" icon={<Linkedin className="w-5 h-5" />} />
-                            <SocialLink href="mailto:hello@antigravity.ai" icon={<Mail className="w-5 h-5" />} />
-                        </div>
+                        <span>Hackathon Copilot</span>
                     </div>
-
-                    {/* Platform Column */}
-                    <div className="space-y-8 animate-in fade-in duration-700 delay-100">
-                        <h4 className="text-white font-bold uppercase tracking-widest text-xs">Platform</h4>
-                        <ul className="space-y-4">
-                            <FooterLink label="How it Works" onClick={onOpenHowItWorks} />
-                            <FooterLink label="Core Features" onClick={onOpenFeatures} />
-                            <FooterLink label="Success Stories" onClick={onOpenCaseStudies} />
-                            <FooterLink label="Setup Guide" onClick={onOpenGuide} />
-                        </ul>
+                    <p className="text-gray-400 text-sm leading-relaxed mb-8 font-medium">
+                        Accelerating <span className="text-gray-900 font-bold">200+ builders</span> across <span className="text-gray-900 font-bold">8 countries</span> in the last month alone.
+                    </p>
+                    <div className="flex gap-4">
+                        <SocialLink href="https://github.com/anandmahadev/HACK-MATE" icon={<Github className="w-5 h-5" />} />
+                        <SocialLink href="https://twitter.com" icon={<Twitter className="w-5 h-5" />} />
+                        <SocialLink href="mailto:support@hackcopilot.ai" icon={<Mail className="w-5 h-5" />} />
                     </div>
-
-                    {/* Resources Column */}
-                    <div className="space-y-8 animate-in fade-in duration-700 delay-200">
-                        <h4 className="text-white font-bold uppercase tracking-widest text-xs">Resources</h4>
-                        <ul className="space-y-4">
-                            <FooterLink label="Documentation" onClick={onOpenResources} />
-                            <FooterLink label="Help Center (FAQ)" onClick={onOpenFAQ} />
-                            <FooterLink label="GitHub Repo" href="https://github.com/anandmahadev/HACK-MATE" isExternal />
-                            <FooterLink label="Project Status" href="#" isExternal />
-                        </ul>
-                    </div>
-
-                    {/* Newsletter/CTA Column */}
-                    <div className="space-y-8 animate-in fade-in duration-700 delay-300">
-                        <h4 className="text-white font-bold uppercase tracking-widest text-xs">Join the Community</h4>
-                        <p className="text-gray-400 text-sm leading-relaxed font-medium">
-                            Stay updated with the latest tools and strategies for hackathon winners.
-                        </p>
-                        <div className="relative group">
-                            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-25 group-hover:opacity-40 transition duration-500"></div>
-                            <div className="relative flex items-center bg-gray-800 rounded-xl overflow-hidden border border-gray-700 group-hover:border-gray-600 transition-colors">
-                                <input 
-                                    type="email" 
-                                    placeholder="Enter your email" 
-                                    className="bg-transparent border-none text-white text-sm px-4 py-3 w-full focus:ring-0 placeholder:text-gray-500"
-                                />
-                                <button className="bg-white text-gray-900 p-2.5 m-1 rounded-lg hover:shadow-lg hover:shadow-white/10 transition-all active:scale-95">
-                                    <Zap className="w-4 h-4" />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
 
-                {/* Bottom Bar */}
-                <div className="pt-8 sm:pt-12 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-6 opacity-0 animate-in fade-in duration-1000 delay-500 fill-mode-forwards">
-                    <div className="flex items-center gap-6 text-sm font-medium">
-                        <p>© {currentYear} Hackathon Copilot. Built with <Heart className="w-3.5 h-3.5 inline mx-0.5 text-red-500 animate-pulse" /> by builders.</p>
-                    </div>
-                    
-                    <div className="flex items-center gap-8">
-                        <a href="#" className="text-xs font-bold text-gray-500 hover:text-white transition-colors">Privacy Policy</a>
-                        <a href="#" className="text-xs font-bold text-gray-500 hover:text-white transition-colors">Terms of Service</a>
-                        <div className="flex items-center gap-2 group cursor-default">
-                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                            <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">Systems Operational</span>
-                        </div>
-                    </div>
+                <div>
+                    <h3 className="font-bold text-gray-900 mb-6 uppercase text-xs tracking-widest">Platform</h3>
+                    <ul className="space-y-4 text-sm text-gray-500 font-medium">
+                        <FooterLink label="Start Building" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} />
+                        <li><span className="text-gray-300 cursor-not-allowed text-sm font-bold">API Access (Soon)</span></li>
+                        <FooterLink label="Open Source" href="https://github.com/anandmahadev/HACK-MATE" isExternal />
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 className="font-bold text-gray-900 mb-6 uppercase text-xs tracking-widest">Resources</h3>
+                    <ul className="space-y-4 text-sm text-gray-500 font-medium">
+                        <FooterLink label="Documentation" href="https://github.com/anandmahadev/HACK-MATE/tree/main/docs" isExternal />
+                        <FooterLink label="Strategy Guide" href="https://github.com/anandmahadev/HACK-MATE" isExternal />
+                        <FooterLink label="Templates" href="https://github.com/anandmahadev/HACK-MATE" isExternal />
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 className="font-bold text-gray-900 mb-6 uppercase text-xs tracking-widest">Connect</h3>
+                    <ul className="space-y-4 text-sm text-gray-500 font-medium">
+                        <FooterLink label="GitHub" href="https://github.com/anandmahadev" isExternal />
+                        <FooterLink label="LinkedIn" href="https://linkedin.com" isExternal />
+                        <FooterLink label="Email Us" href="mailto:hello@hackcopilot.ai" />
+                    </ul>
+                </div>
+            </div>
+            
+            <div className="max-w-7xl mx-auto pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest">
+                    © {new Date().getFullYear()} Hackathon Copilot. Build the future.
+                </p>
+                <div className="flex gap-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">
+                    <span>#HackathonCopilot</span>
+                    <span>#WinningDemo</span>
                 </div>
             </div>
         </footer>
@@ -125,7 +72,7 @@ function SocialLink({ href, icon }: { href: string; icon: React.ReactNode }) {
             href={href} 
             target="_blank" 
             rel="noreferrer"
-            className="w-10 h-10 rounded-xl bg-gray-800 flex items-center justify-center border border-gray-700 text-gray-400 hover:bg-white hover:text-gray-900 hover:border-white transition-all transform hover:-translate-y-1"
+            className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center border border-gray-200 text-gray-500 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all transform hover:-translate-y-1"
         >
             {icon}
         </a>
@@ -140,10 +87,10 @@ function FooterLink({ label, onClick, href, isExternal }: { label: string; onCli
                     href={href} 
                     target={isExternal ? "_blank" : undefined}
                     rel={isExternal ? "noreferrer" : undefined}
-                    className="group flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-white transition-colors"
+                    className="group flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
                 >
                     {label}
-                    {isExternal && <ArrowUpRight className="w-3.5 h-3.5 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" />}
+                    {isExternal && <ArrowUpRight className="w-3.5 h-3.5 opacity-0 -translate-y-0.5 translate-x-0.5 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" />}
                 </a>
             </li>
         );
@@ -153,10 +100,9 @@ function FooterLink({ label, onClick, href, isExternal }: { label: string; onCli
         <li>
             <button 
                 onClick={onClick}
-                className="group flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-white transition-colors"
+                className="group flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
             >
                 {label}
-                <div className="w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300 mt-0.5" />
             </button>
         </li>
     );

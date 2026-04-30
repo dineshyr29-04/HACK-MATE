@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Lightbulb,
     Search,
@@ -16,6 +16,7 @@ import {
     User
 } from 'lucide-react';
 import { store } from '../lib/store';
+import { supabase } from '../lib/supabase';
 import { PromptModal } from './PromptModal';
 
 export interface Stage {
@@ -30,6 +31,7 @@ interface StageSelectionProps {
     onHome: () => void;
     onOpenResources: () => void;
     projectId: string;
+    project: any;
 }
 
 export const STAGES: Stage[] = [
@@ -43,10 +45,11 @@ export const STAGES: Stage[] = [
     { id: 'submit', title: 'Demo & Submission', icon: <Upload className="w-6 h-6" /> },
 ];
 
-export function StageSelection({ onSelectStage, projectName, onHome, onOpenResources, projectId }: StageSelectionProps) {
+export function StageSelection({ onSelectStage, projectName, onHome, onOpenResources, projectId, project }: StageSelectionProps) {
     const [showShare, setShowShare] = useState(false);
     const [shareUrl, setShareUrl] = useState('');
-    const [copied, setCopied] = useState(false);
+    const [idCopied, setIdCopied] = useState(false);
+    const [linkCopied, setLinkCopied] = useState(false);
 
     // Assignments State
     const [assignments, setAssignments] = useState<Record<string, string>>({});
@@ -60,6 +63,39 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
         fetchState();
     }, [projectId]);
 
+    // Real-time Sync
+    useEffect(() => {
+        const isConfigured = typeof window !== 'undefined' && 
+                            import.meta.env.VITE_SUPABASE_URL && 
+                            import.meta.env.VITE_SUPABASE_ANON_KEY &&
+                            import.meta.env.VITE_SUPABASE_URL !== 'your_supabase_url';
+        
+        if (!isConfigured) return;
+
+        const channel = supabase
+            .channel(`assignments-${projectId}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'project_state',
+                    filter: `project_id=eq.${projectId}`
+                },
+                (payload: any) => {
+                    const newState = payload.new;
+                    if (newState && newState.assignments) {
+                        setAssignments(newState.assignments);
+                    }
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [projectId]);
+
     const handleShare = async () => {
         const encoded = await store.exportProject(projectId);
         if (encoded) {
@@ -71,8 +107,8 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
 
     const handleCopy = () => {
         navigator.clipboard.writeText(shareUrl);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        setIdCopied(true);
+        setTimeout(() => setIdCopied(false), 2000);
     };
 
     const handleAssign = async (stageId: string, name: string) => {
@@ -134,23 +170,49 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                                 <p className="text-gray-500 font-medium">Copy this link to share your project roadmap and collaborate in real-time.</p>
                             </div>
 
-                            <div className="space-y-4">
+                                <div className="p-6 bg-indigo-50/50 rounded-2xl border border-indigo-100 mb-6">
+                                    <h4 className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3">Unique Team ID</h4>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-3xl font-black tracking-tight text-indigo-700">{project.teamId || "HM-NEW"}</span>
+                                        <button 
+                                            onClick={() => {
+                                                navigator.clipboard.writeText(project.teamId || "");
+                                                setIdCopied(true);
+                                                setTimeout(() => setIdCopied(false), 2000);
+                                            }}
+                                            className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition-all"
+                                        >
+                                            {idCopied && project.teamId ? 'Copied' : 'Copy ID'}
+                                        </button>
+                                    </div>
+                                    <p className="mt-3 text-[10px] text-indigo-400 font-medium leading-relaxed">Your team can enter this ID on the homepage to join instantly.</p>
+                                </div>
+
+                                <div className="relative py-4 flex items-center">
+                                    <div className="flex-grow border-t border-gray-100"></div>
+                                    <span className="flex-shrink mx-4 text-[10px] font-black text-gray-300 uppercase tracking-widest">Or use Link</span>
+                                    <div className="flex-grow border-t border-gray-100"></div>
+                                </div>
+
                                 <div className="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-200">
                                     <div className="flex-1 truncate font-mono text-sm text-gray-500">
                                         {shareUrl}
                                     </div>
                                     <button
-                                        onClick={handleCopy}
-                                        className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${copied ? 'bg-green-600 text-white' : 'bg-gray-900 text-white hover:bg-black'}`}
+                                        onClick={() => {
+                                            handleCopy();
+                                            setLinkCopied(true);
+                                            setTimeout(() => setLinkCopied(false), 2000);
+                                        }}
+                                        className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${linkCopied ? 'bg-green-600 text-white' : 'bg-gray-900 text-white hover:bg-black'}`}
                                     >
-                                        {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                                        {copied ? 'Copied' : 'Copy Link'}
+                                        {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                        {linkCopied ? 'Copied' : 'Copy Link'}
                                     </button>
                                 </div>
-                                <p className="text-center text-xs text-gray-400 font-medium italic">NOTE: Link contains encoded project data. Large projects may have very long links.</p>
+                                <p className="text-center text-xs text-gray-400 font-medium italic">NOTE: Real-time syncing is enabled for both ID and Link access.</p>
                             </div>
                         </div>
-                    </div>
                 )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -211,6 +273,7 @@ export function StageSelection({ onSelectStage, projectName, onHome, onOpenResou
                     title={assigningStage && assignments[assigningStage] ? "Edit assignment" : "Assign to your mate"}
                     placeholder="Enter teammate name..."
                     defaultValue={assigningStage ? assignments[assigningStage] : ''}
+                    maxLength={30}
                 />
             </div>
         </div>
