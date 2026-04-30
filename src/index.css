@@ -23,17 +23,117 @@ body {
 }
 
 @layer utilities {
+  .animate-in {
+    animation-fill-mode: forwards;
+    animation-duration: 500ms;
+  }
+
+  .fade-in {
+    animation-name: fadeIn;
+  }
+
+  .slide-in-from-bottom-4 {
+    animation-name: fadeIn, slideInFromBottom4;
+  }
+
+  .slide-in-from-bottom-5 {
+    animation-name: fadeIn, slideInFromBottom5;
+  }
+
+  .slide-in-from-bottom-6 {
+    animation-name: fadeIn, slideInFromBottom6;
+  }
+
+  .slide-in-from-bottom-8 {
+    animation-name: fadeIn, slideInFromBottom8;
+  }
+
+  .slide-in-from-bottom-10 {
+    animation-name: fadeIn, slideInFromBottom10;
+  }
+
+  .slide-in-from-bottom-12 {
+    animation-name: fadeIn, slideInFromBottom12;
+  }
+
+  .duration-700 {
+    animation-duration: 700ms;
+  }
+
+  .duration-1000 {
+    animation-duration: 1000ms;
+  }
+
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+
+  .fill-mode-forwards {
+    animation-fill-mode: forwards;
+  }
+
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
+
   .animate-float-delayed {
     animation: float 8s ease-in-out infinite;
     animation-delay: 2s;
   }
-}
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 
+  @keyframes slideInFromBottom4 {
+    from { transform: translateY(1rem); }
+    to { transform: translateY(0); }
+  }
+
+  @keyframes slideInFromBottom5 {
+    from { transform: translateY(1.25rem); }
+    to { transform: translateY(0); }
+  }
+
+  @keyframes slideInFromBottom6 {
+    from { transform: translateY(1.5rem); }
+    to { transform: translateY(0); }
+  }
+
+  @keyframes slideInFromBottom8 {
+    from { transform: translateY(2rem); }
+    to { transform: translateY(0); }
+  }
+
+  @keyframes slideInFromBottom10 {
+    from { transform: translateY(2.5rem); }
+    to { transform: translateY(0); }
+  }
+
+  @keyframes slideInFromBottom12 {
+    from { transform: translateY(3rem); }
+    to { transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+}
