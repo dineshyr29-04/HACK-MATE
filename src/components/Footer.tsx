@@ -1,10 +1,26 @@
 import React from 'react';
 import { Code2, Github, Twitter, Mail, ArrowUpRight } from 'lucide-react';
 
-export function Footer() {
+// 1. Added a TypeScript interface to accept your passed props
+interface FooterProps {
+    onOpenHowItWorks?: () => void;
+    onOpenFeatures?: () => void;
+    onOpenResources?: () => void;
+    onOpenGuide?: () => void;
+    onOpenFAQ?: () => void;
+    onOpenCaseStudies?: () => void;
+}
+
+export function Footer({ 
+    onOpenHowItWorks, 
+    onOpenFeatures, 
+    onOpenResources, 
+    onOpenGuide, 
+    onOpenFAQ, 
+    onOpenCaseStudies 
+}: FooterProps) {
     return (
         <footer className="bg-white border-t border-gray-100 pt-24 pb-12 px-6 relative overflow-hidden">
-            {/* Subtle background blob */}
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-gray-50 rounded-full blur-3xl -z-10" />
 
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 relative">
@@ -19,7 +35,7 @@ export function Footer() {
                         Accelerating <span className="text-gray-900 font-bold">200+ builders</span> across <span className="text-gray-900 font-bold">8 countries</span> in the last month alone.
                     </p>
                     <div className="flex gap-4">
-                        <SocialLink href="https://github.com/anandmahadev/HACK-MATE" icon={<Github className="w-5 h-5" />} />
+                        <SocialLink href="https://github.com" icon={<Github className="w-5 h-5" />} />
                         <SocialLink href="https://twitter.com" icon={<Twitter className="w-5 h-5" />} />
                         <SocialLink href="mailto:support@hackcopilot.ai" icon={<Mail className="w-5 h-5" />} />
                     </div>
@@ -28,25 +44,26 @@ export function Footer() {
                 <div>
                     <h3 className="font-bold text-gray-900 mb-6 uppercase text-xs tracking-widest">Platform</h3>
                     <ul className="space-y-4 text-sm text-gray-500 font-medium">
-                        <FooterLink label="Start Building" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} />
-                        <li><span className="text-gray-300 cursor-not-allowed text-sm font-bold">API Access (Soon)</span></li>
-                        <FooterLink label="Open Source" href="https://github.com/anandmahadev/HACK-MATE" isExternal />
+                        {/* 2. Mapped handlers to buttons */}
+                        <FooterLink label="How It Works" onClick={onOpenHowItWorks} />
+                        <FooterLink label="Features" onClick={onOpenFeatures} />
+                        <FooterLink label="FAQ" onClick={onOpenFAQ} />
                     </ul>
                 </div>
 
                 <div>
                     <h3 className="font-bold text-gray-900 mb-6 uppercase text-xs tracking-widest">Resources</h3>
                     <ul className="space-y-4 text-sm text-gray-500 font-medium">
-                        <FooterLink label="Documentation" href="https://github.com/anandmahadev/HACK-MATE/tree/main/docs" isExternal />
-                        <FooterLink label="Strategy Guide" href="https://github.com/anandmahadev/HACK-MATE" isExternal />
-                        <FooterLink label="Templates" href="https://github.com/anandmahadev/HACK-MATE" isExternal />
+                        <FooterLink label="Resources Hub" onClick={onOpenResources} />
+                        <FooterLink label="Strategy Guide" onClick={onOpenGuide} />
+                        <FooterLink label="Case Studies" onClick={onOpenCaseStudies} />
                     </ul>
                 </div>
 
                 <div>
                     <h3 className="font-bold text-gray-900 mb-6 uppercase text-xs tracking-widest">Connect</h3>
                     <ul className="space-y-4 text-sm text-gray-500 font-medium">
-                        <FooterLink label="GitHub" href="https://github.com/anandmahadev" isExternal />
+                        <FooterLink label="GitHub" href="https://github.com" isExternal />
                         <FooterLink label="LinkedIn" href="https://linkedin.com" isExternal />
                         <FooterLink label="Email Us" href="mailto:hello@hackcopilot.ai" />
                     </ul>
