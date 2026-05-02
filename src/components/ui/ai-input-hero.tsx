@@ -303,7 +303,61 @@ export function HeroWave({
                 <div className="w-full max-w-2xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 z-20">
                     <div className="absolute -inset-0.5 bg-gray-200 rounded-[2rem] blur-sm opacity-20 group-hover:opacity-30 transition duration-500"></div>
 
-                    {!isJoining ? (
+                    {isJoining ? (
+                        <div className="relative z-30 animate-in fade-in zoom-in-95 duration-300">
+                             <div className="mb-4 text-center">
+                                <h3 className="text-xl font-black text-gray-900">Join Your Team</h3>
+                                <p className="text-sm text-gray-500">Enter the unique Team ID shared by your teammate.</p>
+                             </div>
+                             <form 
+                                onSubmit={async (e) => { 
+                                    e.preventDefault(); 
+                                    if (!teamIdInput.trim()) return;
+                                    setIsSubmitting(true);
+                                    const fullId = teamIdInput.toUpperCase().startsWith('HM-') ? teamIdInput.toUpperCase() : `HM-${teamIdInput.toUpperCase()}`;
+                                    try {
+                                        await onJoinTeam?.(fullId);
+                                    } finally {
+                                        setIsSubmitting(false);
+                                    }
+                                }} 
+                                className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-indigo-50 rounded-2xl sm:rounded-[2rem] shadow-2xl border-2 border-indigo-200 p-2 focus-within:ring-4 focus-within:ring-indigo-100 transition-all"
+                            >
+                                <div className="flex-1 relative">
+                                    <Code2 className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-indigo-400" />
+                                    <input 
+                                        type="text" 
+                                        value={teamIdInput}
+                                        onChange={(e) => setTeamIdInput(e.target.value.toUpperCase())}
+                                        placeholder="HM-XXXXXX"
+                                        disabled={isSubmitting}
+                                        className="w-full h-14 sm:h-20 pl-16 pr-4 bg-transparent border-none text-indigo-900 placeholder:text-indigo-200 focus:ring-0 text-2xl font-black tracking-widest uppercase disabled:opacity-50"
+                                        autoFocus
+                                    />
+                                </div>
+                                <button 
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white h-12 sm:h-16 py-4 px-12 rounded-xl sm:rounded-full font-black text-lg transition-all flex items-center justify-center gap-3 shadow-lg shadow-indigo-600/20"
+                                >
+                                    {isSubmitting ? (
+                                        <>
+                                            <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                                            Joining...
+                                        </>
+                                    ) : (
+                                        <>Join Team <ArrowRight className="w-5 h-5" /></>
+                                    )}
+                                </button>
+                            </form>
+                            <button 
+                                onClick={() => setIsJoining(false)}
+                                className="mt-6 text-xs font-black text-gray-400 hover:text-indigo-500 uppercase tracking-widest text-center block mx-auto py-2 px-4 rounded-xl hover:bg-gray-50 transition-all"
+                            >
+                                ← Nevermind, I'll start a new project
+                            </button>
+                        </div>
+                    ) : (
                         <>
                             <form onSubmit={handleSubmit} className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-[2rem] shadow-xl border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-gray-100 transition-all">
                                 <div className="flex-1 relative">
@@ -338,56 +392,6 @@ export function HeroWave({
                                 </button>
                             </div>
                         </>
-                    ) : (
-                        <div className="relative z-10 animate-in zoom-in-95 duration-300">
-                            <form 
-                                onSubmit={async (e) => { 
-                                    e.preventDefault(); 
-                                    if (!teamIdInput.trim()) return;
-                                    setIsSubmitting(true);
-                                    // Auto-prefix if missing
-                                    const fullId = teamIdInput.toUpperCase().startsWith('HM-') ? teamIdInput.toUpperCase() : `HM-${teamIdInput.toUpperCase()}`;
-                                    try {
-                                        await onJoinTeam?.(fullId);
-                                    } finally {
-                                        setIsSubmitting(false);
-                                    }
-                                }} 
-                                className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-[2rem] shadow-xl border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-gray-100 transition-all"
-                            >
-                                <div className="flex-1 relative">
-                                    <Code2 className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                    <input 
-                                        type="text" 
-                                        value={teamIdInput}
-                                        onChange={(e) => setTeamIdInput(e.target.value.toUpperCase())}
-                                        placeholder="Enter Team ID (e.g. HM-A1B2)"
-                                        disabled={isSubmitting}
-                                        className="w-full h-14 sm:h-16 pl-14 pr-4 bg-transparent border-none text-gray-900 placeholder:text-gray-200 focus:ring-0 text-lg font-black tracking-[0.2em] uppercase disabled:opacity-50"
-                                    />
-                                </div>
-                                <button 
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white h-12 sm:h-auto py-4 px-10 rounded-xl sm:rounded-full font-bold text-base transition-all flex items-center justify-center gap-2"
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                            Joining...
-                                        </>
-                                    ) : (
-                                        'Join'
-                                    )}
-                                </button>
-                            </form>
-                            <button 
-                                onClick={() => setIsJoining(false)}
-                                className="mt-4 text-[10px] font-black text-gray-400 hover:text-gray-600 uppercase tracking-widest text-center block mx-auto"
-                            >
-                                ← Back to Project Idea
-                            </button>
-                        </div>
                     )}
 
                     {/* Category Filters */}
