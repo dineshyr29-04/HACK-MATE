@@ -57,6 +57,15 @@ function App() {
   const handleLogout = async () => {
     await signOut(auth);
   };
+   //A reusable requireAuth helper
+   const requireAuth = (action:() => void,fallback: {stage:AppStage; data?: any}) => {
+    if (!user) {
+      setPendingAction(fallback);
+      setStage('auth-required');
+    } else {
+      action();
+    }
+   };
 
   // Handle Shared Link Import
   useEffect(() => {
@@ -111,13 +120,13 @@ function App() {
 
   // Handlers
  const handlePromptSubmit = (value: string) => {
-    if (!user) {
-      setPendingAction({ stage: 'setup', data: value });
-      setStage('auth-required');
-      return;
-    }
+    requireAuth( 
+      () => {
     setProjectData(prev => ({ ...prev, problem: value }));
     setStage('setup');
+  },
+  {stage:'setup', data: value}
+   );
   };
 
   const handleJoinTeam = async (teamId: string) => {
@@ -154,11 +163,9 @@ function App() {
   };
 
   const handleResumeProject = (project: any) => {
-    if (!user) {
-      setPendingAction({ stage: 'selection', data: project });
-      setStage('auth-required');
-      return;
-    }
+    requireAuth(
+      () => {
+   
     setProjectId(project.id);
     setProjectData({
       name: project.name,
@@ -172,6 +179,9 @@ function App() {
       teamId: project.teamId || ''
     });
     setStage('selection');
+  },
+  {stage: 'selection', data:project}
+);
   };
 
   const handleDeleteProject = async (projectId: string) => {
