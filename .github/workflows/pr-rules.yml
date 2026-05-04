@@ -1,4 +1,9 @@
+
 name: PR Rules Enforcement
+
+permissions:
+  contents: write
+  pull-requests: write
 
 on:
   pull_request:
@@ -40,11 +45,11 @@ jobs:
                 issue_number: pr.number,
                 body: messages.join("\n") + "\n\nThis PR does not meet the required guidelines and will be closed automatically."
               });
-              // Close the PR
-              await github.rest.pulls.update({
+              // Close the PR (works for both issues and PRs)
+              await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                pull_number: pr.number,
+                issue_number: pr.number,
                 state: "closed"
               });
               core.setFailed(messages.join("\n"));
