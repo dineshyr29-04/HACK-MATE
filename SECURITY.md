@@ -71,7 +71,7 @@ true
 Instead, enforce:
 auth.uid() = user_id
 
-##  API & Network Security
+## API & Network Security
 Use HTTPS in production (Vercel handles this by default)
 Never expose private APIs in frontend code
 Validate and sanitize all inputs
@@ -113,11 +113,11 @@ npm audit
 Fix vulnerabilities:
 npm audit fix
 
-##  Known Limitations
+## Known Limitations
 Local storage fallback is not secure for sensitive data
 AI responses may require validation before use
 Misconfigured Supabase policies can expose data
 
-##  Responsible Disclosure
+## Responsible Disclosure
 We appreciate responsible disclosure of security issues.
 Please allow time for fixes before making vulnerabilities public.
