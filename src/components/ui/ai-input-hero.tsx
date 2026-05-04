@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import { ArrowRight, Code2, Sparkles, Zap, LayoutTemplate, GitGraph, Box, Clock, Trash2 } from "lucide-react";
 import { store, Project } from "../../lib/store";
+import { ArrowRight, Code2, Sparkles, Zap, LayoutTemplate, GitGraph, Box, Clock, Trash2, Moon, Sun } from "lucide-react";
+import { useTheme } from '../../context/ThemeContext';
 
 import { User } from "../../lib/firebase";
 
@@ -36,6 +37,7 @@ export function HeroWave({
     onLogin,
     onLogout
 }: HeroWaveProps) {
+    const { isDark, toggleTheme } = useTheme();
     const [prompt, setPrompt] = useState("");
     const [recentProjects, setRecentProjects] = useState<Project[]>([]);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -88,30 +90,29 @@ export function HeroWave({
     const displayedSuggestions = showAllSuggestions ? filteredSuggestions : filteredSuggestions.slice(0, 4);
 
     return (
-        <div className="relative min-h-screen flex flex-col overflow-hidden bg-white text-gray-900 selection:bg-gray-900 selection:text-white font-sans">
-            
+        <div className="relative min-h-screen flex flex-col overflow-hidden bg-white dark:bg-gray-900 text-gray-900 dark:text-white selection:bg-gray-900 selection:text-white font-sans">
             {/* Animated Background Elements */}
-            <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-gray-50 rounded-full blur-[120px] opacity-60 animate-float" />
-                <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-gray-50 rounded-full blur-[100px] opacity-40 animate-float-delayed" />
-                <div className="absolute -bottom-[10%] left-[20%] w-[35%] h-[35%] bg-indigo-50/20 rounded-full blur-[110px] opacity-30 animate-float" />
-            </div>
+           <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-gray-50 dark:bg-gray-800 rounded-full blur-[120px] opacity-60 animate-float" />
+                <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-gray-50 dark:bg-gray-800 rounded-full blur-[100px] opacity-40 animate-float-delayed" />
+                <div className="absolute -bottom-[10%] left-[20%] w-[35%] h-[35%] bg-indigo-50/20 dark:bg-indigo-950/20 rounded-full blur-[110px] opacity-30 animate-float" />
+           </div>
 
-            <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f8f8f8_1px,transparent_1px),linear-gradient(to_bottom,#f8f8f8_1px,transparent_1px)] bg-[size:6rem_4rem]">
-                <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,rgba(229,231,235,0.2),transparent)]"></div>
+            <div className="absolute inset-0 -z-10 h-full w-full bg-white dark:bg-gray-900 bg-[linear-gradient(to_right,#f8f8f8_1px,transparent_1px),linear-gradient(to_bottom,#f8f8f8_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#374151_1px,transparent_1px),linear-gradient(to_bottom,#374151_1px,transparent_1px)] bg-[size:6rem_4rem]">
+                <div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,rgba(229,231,235,0.2),transparent)] dark:bg-[radial-gradient(circle_800px_at_100%_200px,rgba(55,65,81,0.3),transparent)]"></div>
             </div>
 
             {/* Navbar */}
-            <nav className="sticky top-0 w-full z-[100] border-b border-gray-100/50 bg-white/70 backdrop-blur-xl">
+            <nav className="sticky top-0 w-full z-[100] border-b border-gray-100/50 dark:border-gray-800 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto p-4 sm:p-6 flex justify-between items-center">
                     <div className="flex items-center gap-3 font-bold text-lg sm:text-xl tracking-tight text-gray-900 hover:scale-[1.02] transition-transform cursor-pointer">
                         <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gray-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-gray-900/20">
                             <Code2 className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
-                        <span className="bg-clip-text text-transparent bg-gradient-to-br from-gray-900 to-gray-600 font-black">Hackathon Copilot</span>
+                        <span className="bg-clip-text text-transparent bg-gradient-to-br from-gray-900 dark:from-white to-gray-600 dark:to-gray-300 font-black">Hackathon Copilot</span>
                     </div>
                     
-                    <div className="hidden lg:flex items-center gap-8 text-sm font-semibold text-gray-500">
+                    <div className="hidden lg:flex items-center gap-8 text-sm font-semibold text-gray-500 dark:text-gray-400">
                         <button onClick={onOpenHowItWorks} className="hover:text-gray-900 transition-colors relative group">
                             How it Works
                             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gray-900 transition-all group-hover:w-full" />
@@ -156,9 +157,16 @@ export function HeroWave({
                             Join Team
                         </button>
                         <div className="h-6 w-px bg-gray-200 mx-1" />
-                        <a href="https://github.com/anandmahadev/HACK-MATE" target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-100 transition-all text-gray-900">
-                            <GitGraph className="w-5 h-5" />
-                        </a>
+                      <button
+                        onClick={toggleTheme}
+                        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                        className="p-2 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 transition-all text-gray-900 dark:text-white"
+                    >
+                        {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                    </button>
+                    <a href="https://github.com/anandmahadev/HACK-MATE" target="_blank" rel="noreferrer" className="p-2 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 transition-all text-gray-900 dark:text-white">
+                        <GitGraph className="w-5 h-5" />
+                    </a>
                     </div>
 
                     {/* Mobile Menu Toggle & Auth */}
@@ -282,12 +290,12 @@ export function HeroWave({
                 </div>
 
                 {/* Headline */}
-                <h1 className="text-4xl sm:text-7xl md:text-8xl font-black tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-5 duration-1000 leading-[1.1] text-gray-900">
+                <h1 className="text-4xl sm:text-7xl md:text-8xl font-black tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-5 duration-1000 leading-[1.1] text-gray-900 dark:text-white">
                     From Idea to <br className="hidden sm:block" />
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-600 to-gray-900 bg-300% animate-gradient">Winning Demo.</span>
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 dark:from-white via-gray-600 dark:via-gray-300 to-gray-900 dark:to-white bg-300% animate-gradient">Winning Demo.</span>
                 </h1>
 
-                <p className="text-lg sm:text-2xl text-gray-500 mb-12 max-w-2xl mx-auto leading-relaxed font-medium animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
+                <p className="text-lg sm:text-2xl text-gray-500 dark:text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed font-medium animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
                     The ultimate copilot for your next hackathon. We build the roadmap, you build the future.
                 </p>
 
@@ -295,7 +303,61 @@ export function HeroWave({
                 <div className="w-full max-w-2xl mx-auto relative group animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 z-20">
                     <div className="absolute -inset-0.5 bg-gray-200 rounded-[2rem] blur-sm opacity-20 group-hover:opacity-30 transition duration-500"></div>
 
-                    {!isJoining ? (
+                    {isJoining ? (
+                        <div className="relative z-30 animate-in fade-in zoom-in-95 duration-300">
+                             <div className="mb-4 text-center">
+                                <h3 className="text-xl font-black text-gray-900">Join Your Team</h3>
+                                <p className="text-sm text-gray-500">Enter the unique Team ID shared by your teammate.</p>
+                             </div>
+                             <form 
+                                onSubmit={async (e) => { 
+                                    e.preventDefault(); 
+                                    if (!teamIdInput.trim()) return;
+                                    setIsSubmitting(true);
+                                    const fullId = teamIdInput.toUpperCase().startsWith('HM-') ? teamIdInput.toUpperCase() : `HM-${teamIdInput.toUpperCase()}`;
+                                    try {
+                                        await onJoinTeam?.(fullId);
+                                    } finally {
+                                        setIsSubmitting(false);
+                                    }
+                                }} 
+                                className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-indigo-50 rounded-2xl sm:rounded-[2rem] shadow-2xl border-2 border-indigo-200 p-2 focus-within:ring-4 focus-within:ring-indigo-100 transition-all"
+                            >
+                                <div className="flex-1 relative">
+                                    <Code2 className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-indigo-400" />
+                                    <input 
+                                        type="text" 
+                                        value={teamIdInput}
+                                        onChange={(e) => setTeamIdInput(e.target.value.toUpperCase())}
+                                        placeholder="HM-XXXXXX"
+                                        disabled={isSubmitting}
+                                        className="w-full h-14 sm:h-20 pl-16 pr-4 bg-transparent border-none text-indigo-900 placeholder:text-indigo-200 focus:ring-0 text-2xl font-black tracking-widest uppercase disabled:opacity-50"
+                                        autoFocus
+                                    />
+                                </div>
+                                <button 
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white h-12 sm:h-16 py-4 px-12 rounded-xl sm:rounded-full font-black text-lg transition-all flex items-center justify-center gap-3 shadow-lg shadow-indigo-600/20"
+                                >
+                                    {isSubmitting ? (
+                                        <>
+                                            <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                                            Joining...
+                                        </>
+                                    ) : (
+                                        <>Join Team <ArrowRight className="w-5 h-5" /></>
+                                    )}
+                                </button>
+                            </form>
+                            <button 
+                                onClick={() => setIsJoining(false)}
+                                className="mt-6 text-xs font-black text-gray-400 hover:text-indigo-500 uppercase tracking-widest text-center block mx-auto py-2 px-4 rounded-xl hover:bg-gray-50 transition-all"
+                            >
+                                ← Nevermind, I'll start a new project
+                            </button>
+                        </div>
+                    ) : (
                         <>
                             <form onSubmit={handleSubmit} className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-[2rem] shadow-xl border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-gray-100 transition-all">
                                 <div className="flex-1 relative">
@@ -330,56 +392,6 @@ export function HeroWave({
                                 </button>
                             </div>
                         </>
-                    ) : (
-                        <div className="relative z-10 animate-in zoom-in-95 duration-300">
-                            <form 
-                                onSubmit={async (e) => { 
-                                    e.preventDefault(); 
-                                    if (!teamIdInput.trim()) return;
-                                    setIsSubmitting(true);
-                                    // Auto-prefix if missing
-                                    const fullId = teamIdInput.toUpperCase().startsWith('HM-') ? teamIdInput.toUpperCase() : `HM-${teamIdInput.toUpperCase()}`;
-                                    try {
-                                        await onJoinTeam?.(fullId);
-                                    } finally {
-                                        setIsSubmitting(false);
-                                    }
-                                }} 
-                                className="relative flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-[2rem] shadow-xl border border-gray-100 p-2 focus-within:ring-2 focus-within:ring-gray-100 transition-all"
-                            >
-                                <div className="flex-1 relative">
-                                    <Code2 className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                    <input 
-                                        type="text" 
-                                        value={teamIdInput}
-                                        onChange={(e) => setTeamIdInput(e.target.value.toUpperCase())}
-                                        placeholder="Enter Team ID (e.g. HM-A1B2)"
-                                        disabled={isSubmitting}
-                                        className="w-full h-14 sm:h-16 pl-14 pr-4 bg-transparent border-none text-gray-900 placeholder:text-gray-200 focus:ring-0 text-lg font-black tracking-[0.2em] uppercase disabled:opacity-50"
-                                    />
-                                </div>
-                                <button 
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white h-12 sm:h-auto py-4 px-10 rounded-xl sm:rounded-full font-bold text-base transition-all flex items-center justify-center gap-2"
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                            Joining...
-                                        </>
-                                    ) : (
-                                        'Join'
-                                    )}
-                                </button>
-                            </form>
-                            <button 
-                                onClick={() => setIsJoining(false)}
-                                className="mt-4 text-[10px] font-black text-gray-400 hover:text-gray-600 uppercase tracking-widest text-center block mx-auto"
-                            >
-                                ← Back to Project Idea
-                            </button>
-                        </div>
                     )}
 
                     {/* Category Filters */}
