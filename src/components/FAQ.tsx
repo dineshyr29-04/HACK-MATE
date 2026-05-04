@@ -24,7 +24,7 @@ export function FAQ({ onBack }: { onBack: () => void }) {
         },
         {
             q: "Is this tool free?",
-            a: "Yes! All features are currently free. We may add optional premium features (team collaboration cloud-sync, advanced analytics) later."
+            a: "Yes! All features are currently free. We may add optional premium features (team collaboration cloud-sync, advanced analytics) later. Our core workflow will always be free to help hackers win."
         },
         {
             q: "Can I use this for non-hackathon projects?",
