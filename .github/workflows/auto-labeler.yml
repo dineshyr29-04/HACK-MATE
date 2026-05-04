@@ -1,0 +1,61 @@
+name: Auto-Label PR
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  auto-label:
+    runs-on: ubuntu-latest
+    name: Add Labels
+
+    steps:
+      - name: Label PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const title = (pr.title || "").toLowerCase();
+            const body = (pr.body || "").toLowerCase();
+            const labels = new Set();
+
+            // Label by title keywords
+            if (title.includes("feat") || title.includes("feature")) {
+              labels.add("enhancement");
+            }
+            if (title.includes("fix") || title.includes("bug")) {
+              labels.add("bug");
+            }
+            if (title.includes("doc")) {
+              labels.add("documentation");
+            }
+
+            // Add label by file changes
+            const files = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number
+            });
+
+            const fileCount = files.data.length;
+            let sizeLabel = "size/M";
+            if (fileCount < 10) sizeLabel = "size/XS";
+            else if (fileCount < 30) sizeLabel = "size/S";
+            else if (fileCount < 100) sizeLabel = "size/L";
+            else sizeLabel = "size/XL";
+
+            labels.add(sizeLabel);
+
+            // Add all labels
+            if (labels.size > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: Array.from(labels)
+              });
+            }

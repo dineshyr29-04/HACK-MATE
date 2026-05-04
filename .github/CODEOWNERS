@@ -1,0 +1,64 @@
+# GitHub CODEOWNERS File
+# This file defines who should be requested as reviewers for PRs that modify specific files
+# Syntax: <pattern> <owner1> <owner2> ...
+# Replace @username with actual GitHub usernames
+
+# Global owners (reviewers for any PR)
+* @owner1 @owner2
+
+# Frontend code
+src/components/** @frontend-owner @owner1
+src/pages/** @frontend-owner @owner1
+src/assets/** @frontend-owner
+src/styles/** @frontend-owner
+
+# Backend/API code
+api/** @backend-owner @owner2
+server/** @backend-owner
+functions/** @backend-owner
+
+# Documentation
+*.md @doc-owner
+docs/** @doc-owner
+README.md @owner1 @owner2
+
+# Configuration files
+.github/** @owner1
+*.json @owner1
+tsconfig*.json @owner1
+vite.config.ts @owner1
+
+# Security-related files
+.env* @security-owner
+*.pem @security-owner
+*.key @security-owner
+security/** @security-owner
+
+# Tests
+**/*.test.ts @qa-owner @owner1
+**/*.spec.ts @qa-owner
+__tests__/** @qa-owner
+
+# GitHub workflows
+.github/workflows/** @owner1
+.github/workflows/security-scan.yml @security-owner
+
+# Dependency files
+package.json @owner1 @owner2
+package-lock.json @owner1
+
+# CI/CD
+vercel.json @owner1
+docker* @devops-owner
+.gitlab-ci.yml @devops-owner
+.circleci/** @devops-owner
+
+# Database
+migrations/** @backend-owner @devops-owner
+database/** @backend-owner
+
+# Notes for reviewers:
+# - You can assign multiple owners to a path
+# - More specific paths override less specific ones
+# - Remove lines that don't apply to your project
+# - Keep this file updated as team structure changes

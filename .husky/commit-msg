@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# This hook runs commitlint to validate commit messages
+# Install dependencies first: npm install --save-dev husky @commitlint/cli @commitlint/config-conventional
+
+echo "🔍 Validating commit message..."
+
+# Get the commit message
+COMMIT_MSG=$(cat "$1")
+
+# Run commitlint
+npx commitlint --config ./commitlint.config.js --edit "$1"
+
+if [ $? -ne 0 ]; then
+  echo "❌ Commit message validation failed!"
+  echo ""
+  echo "Commit message should follow conventional commits format:"
+  echo "  <type>[optional scope]: <description>"
+  echo ""
+  echo "Examples:"
+  echo "  feat: add authentication module"
+  echo "  fix(auth): resolve login bug"
+  echo "  docs: update README"
+  echo "  test: add unit tests for auth service"
+  echo ""
+  exit 1
+fi
+
+echo "✅ Commit message is valid!"
+exit 0

@@ -1,20 +1,18 @@
-## 📄 Description
-Explain what you did.
+# Pull Request
 
----
+## Description
+<!-- What does this PR do? -->
 
-## 🔗 Related Issue
+## Issue
+<!-- Link to issue: Closes #123 or Fixes #456 -->
 Closes #
 
----
+## Screenshot / Image
+<!-- Add at least one image (required) -->
+![image](url-here)
 
-## 📸 Screenshot (Required)
-Add at least one image like:
-![image](paste-your-image-link)
-
----
-
-## 🧪 Type of Change
+## Type of Change
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Documentation
+- [ ] Other
