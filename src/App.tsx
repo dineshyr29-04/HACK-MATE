@@ -278,7 +278,6 @@ function App() {
             onLogin={handleLogin}
             onLogout={handleLogout}
           />
-          <Footer />
         </>
       )}
 
