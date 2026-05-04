@@ -1,18 +1,21 @@
-name: Enforce PR Assignment
+name: Check Issue Assignment Before PR
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, reopened, edited, synchronize]
 
 permissions:
   pull-requests: write
-  issues: write
+  issues: read
+  contents: read
 
 jobs:
   check-assignment:
+    name: Verify Author is Assigned to Linked Issue
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check issue assignment
+      - name: Check assignment and manage PR
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -20,185 +23,211 @@ jobs:
             const pr = context.payload.pull_request;
             const prAuthor = pr.user.login;
             const prNumber = pr.number;
-            const prState = pr.state;
-            const body = pr.body || '';
-            // Strip HTML comments so PR template hints don't trigger the check
-            const cleanBody = body.replace(/<!--[\s\S]*?-->/g, '');
+            const prBody = pr.body || '';
 
-            console.log(`Checking PR #${prNumber} by @${prAuthor} (state: ${prState})`);
+            console.log(`PR #${prNumber} opened by: ${prAuthor}`);
+            console.log(`PR Body:\n${prBody}`);
 
-            // Skip redundant re-checks on open PRs that were merely edited
-            const action = context.payload.action;
-            if (action === 'edited' && prState === 'open') {
-              console.log('PR is already open and was only edited — skipping redundant check.');
-              return;
-            }
+            // -------------------------------------------------------
+            // 1. Extract issue number from "Closes #123" style keywords
+            // -------------------------------------------------------
+            const closingKeywords = [
+              'close', 'closes', 'closed',
+              'fix', 'fixes', 'fixed',
+              'resolve', 'resolves', 'resolved'
+            ];
+            const keywordPattern = closingKeywords.join('|');
+            const issueRegex = new RegExp(
+              `(?:${keywordPattern})\\s+#(\\d+)`,
+              'gi'
+            );
 
-            // Check if the PR author is an admin or maintainer (exempt)
-            let permission = 'none';
-            try {
-              const { data: permissionLevel } = await github.rest.repos.getCollaboratorPermissionLevel({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                username: prAuthor,
-              });
-              permission = permissionLevel.permission;
-              console.log(`@${prAuthor} has '${permission}' permission`);
-            } catch (error) {
-              if (error && error.status === 404) {
-                console.log(`@${prAuthor} is not a collaborator; treating as non-admin (permission='none').`);
-              } else {
-                throw error;
-              }
-            }
+            const matches = [...prBody.matchAll(issueRegex)];
+            const issueNumbers = [...new Set(matches.map(m => parseInt(m[1])))];
 
-            if (permission === 'admin' || permission === 'maintain') {
-              console.log('PR author is admin/maintainer — skipping check.');
-              return;
-            }
-
-            // Extract issue numbers from the PR body
-            // Matches: Closes #123, Fixes #456, Resolves #789 (case-insensitive)
-            const issuePattern = /(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#(\d+)/gi;
-            const issueNumbers = [];
-            let match;
-            while ((match = issuePattern.exec(cleanBody)) !== null) {
-              issueNumbers.push(parseInt(match[1], 10));
-            }
+            console.log(`Linked issue numbers found: ${issueNumbers}`);
 
             if (issueNumbers.length === 0) {
-              // Only close and comment if the PR is currently open
-              if (prState === 'open') {
-                await github.rest.issues.createComment({
+              console.log('No linked issues found via closing keywords. Skipping check.');
+
+              // Add a label to indicate no issue is linked
+              try {
+                await github.rest.issues.addLabels({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: prNumber,
-                  body: `👋 Hi @${prAuthor}, thanks for your interest in contributing!\n\nThis PR doesn't appear to link to any issue. All PRs must reference an issue using a keyword like "Closes #123" in the PR description.\n\nPlease:\n1. Find or create an issue for the work you're doing\n2. Comment on the issue asking to be assigned\n3. Wait for a maintainer to assign you\n4. Update this PR's description to link the issue\n\nOnce you've updated the description, this workflow will automatically recheck and reopen the PR if everything looks good. 🙌`,
+                  labels: ['needs: issue link']
                 });
-
-                await github.rest.pulls.update({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  pull_number: prNumber,
-                  state: 'closed',
-                });
-
-                console.log(`Closed PR #${prNumber} — no linked issues found.`);
-              } else {
-                console.log(`PR #${prNumber} is already closed and still has no linked issues — skipping.`);
-              }
-              return;
-            }
-
-            console.log(`Found linked issues: ${issueNumbers.join(', ')}`);
-
-            // Check each linked issue for assignees
-            let allChecksPassed = true;
-
-            for (const issueNumber of issueNumbers) {
-              let issue;
-              try {
-                const { data } = await github.rest.issues.get({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issueNumber,
-                });
-                issue = data;
-              } catch (error) {
-                console.log(`Could not fetch issue #${issueNumber} — skipping.`);
-                continue;
+              } catch (e) {
+                console.warn('Could not add label:', e.message);
               }
 
-              const assignees = issue.assignees.map(a => a.login);
-
-              if (assignees.length === 0) {
-                allChecksPassed = false;
-
-                if (prState === 'open') {
-                  await github.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: prNumber,
-                    body: `👋 Hi @${prAuthor}, thanks for your interest in contributing!\n\nHowever, issue #${issueNumber} is not yet assigned to anyone. To avoid duplicate work, this PR has been automatically closed.\n\nPlease:\n1. Comment on the issue asking to be assigned\n2. Wait for a maintainer to assign you\n3. Update this PR's description if needed\n\nOnce you're assigned, this workflow will automatically recheck and reopen the PR. 🙌`,
-                  });
-
-                  await github.rest.pulls.update({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    pull_number: prNumber,
-                    state: 'closed',
-                  });
-
-                  console.log(`Closed PR #${prNumber} — issue #${issueNumber} is unassigned.`);
-                } else {
-                  await github.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: prNumber,
-                    body: `👋 Hi @${prAuthor}, issue #${issueNumber} is still not assigned to anyone. Please comment on the issue asking to be assigned, and once a maintainer assigns you, this workflow will automatically reopen the PR. 🙌`,
-                  });
-
-                  console.log(`Commented on closed PR #${prNumber} — issue #${issueNumber} is still unassigned.`);
-                }
-                return;
-              }
-
-              console.log(`Issue #${issueNumber} is assigned to: ${assignees.join(', ')}`);
-
-              if (!assignees.includes(prAuthor)) {
-                allChecksPassed = false;
-                const assigneeMentions = assignees.map(a => `@${a}`).join(', ');
-
-                if (prState === 'open') {
-                  await github.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: prNumber,
-                    body: `👋 Hi @${prAuthor}, thanks for your interest in contributing!\n\nHowever, issue #${issueNumber} is currently assigned to ${assigneeMentions}. To avoid duplicate work, this PR has been automatically closed.\n\nIf you'd like to work on this issue, please:\n1. Comment on the issue asking to be assigned\n2. Wait for a maintainer to assign you\n3. Update this PR's description if needed\n\nOnce you're assigned, this workflow will automatically recheck and reopen the PR. 🙌`,
-                  });
-
-                  await github.rest.pulls.update({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    pull_number: prNumber,
-                    state: 'closed',
-                  });
-
-                  console.log(`Closed PR #${prNumber} — author is not an assignee of issue #${issueNumber}.`);
-                } else {
-                  const assigneeMentionsMsg = assignees.map(a => `@${a}`).join(', ');
-                  await github.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: prNumber,
-                    body: `👋 Hi @${prAuthor}, issue #${issueNumber} is still assigned to ${assigneeMentionsMsg} and not to you. Please comment on the issue asking to be assigned, and once a maintainer assigns you, this workflow will automatically reopen the PR. 🙌`,
-                  });
-
-                  console.log(`Commented on closed PR #${prNumber} — author still not assigned to issue #${issueNumber}.`);
-                }
-                return;
-              }
-
-              console.log(`@${prAuthor} is an assignee of issue #${issueNumber} — allowed.`);
-            }
-
-            // All checks passed — reopen if the PR was previously closed
-            if (allChecksPassed && prState === 'closed') {
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber,
-                state: 'open',
-              });
-
+              // Post a comment guiding the contributor
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: prNumber,
-                body: `🎉 Great news @${prAuthor}! Your PR has been automatically reopened — you're properly assigned to the linked issue(s). Thanks for following the contribution process!`,
+                body: [
+                  '## ⚠️ No Linked Issue Found',
+                  '',
+                  `Hi @${prAuthor}, thank you for your contribution!`,
+                  '',
+                  'This PR does not appear to reference a linked issue using a closing keyword.',
+                  'Please update the PR description to include one of the following formats:',
+                  '',
+                  '```',
+                  'Closes #<issue-number>',
+                  'Fixes #<issue-number>',
+                  'Resolves #<issue-number>',
+                  '```',
+                  '',
+                  'Also make sure you are **assigned to the issue** before submitting a PR.',
+                  '',
+                  '> This check helps us maintain an organised contribution workflow. 🙏'
+                ].join('\n')
               });
 
-              console.log(`Reopened PR #${prNumber} — all assignment checks now pass.`);
-            } else if (allChecksPassed) {
-              console.log('All checks passed — PR is allowed.');
+              return;
+            }
+
+            // -------------------------------------------------------
+            // 2. For each linked issue, verify author is assigned
+            // -------------------------------------------------------
+            let allAssigned = true;
+            const unassignedIssues = [];
+
+            for (const issueNumber of issueNumbers) {
+              console.log(`Checking issue #${issueNumber}...`);
+
+              let issue;
+              try {
+                const response = await github.rest.issues.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber
+                });
+                issue = response.data;
+              } catch (e) {
+                console.error(`Could not fetch issue #${issueNumber}: ${e.message}`);
+                unassignedIssues.push(issueNumber);
+                allAssigned = false;
+                continue;
+              }
+
+              const assignees = issue.assignees.map(a => a.login);
+              console.log(`Issue #${issueNumber} assignees: ${assignees}`);
+
+              if (!assignees.includes(prAuthor)) {
+                console.log(`${prAuthor} is NOT assigned to issue #${issueNumber}`);
+                allAssigned = false;
+                unassignedIssues.push(issueNumber);
+              } else {
+                console.log(`${prAuthor} IS assigned to issue #${issueNumber} ✓`);
+              }
+            }
+
+            // -------------------------------------------------------
+            // 3a. Author is NOT assigned → close PR + label + comment
+            // -------------------------------------------------------
+            if (!allAssigned) {
+              console.log('Closing PR due to missing assignment(s).');
+
+              // Remove approval label if present
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  name: 'status: approved to merge'
+                });
+              } catch (_) { /* label may not exist */ }
+
+              // Add relevant labels
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  labels: ['status: invalid', 'needs: assignment']
+                });
+              } catch (e) {
+                console.warn('Could not add labels:', e.message);
+              }
+
+              const issueList = unassignedIssues.map(n => `#${n}`).join(', ');
+
+              // Post explanation comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: [
+                  '## ❌ PR Closed — Assignment Required',
+                  '',
+                  `Hi @${prAuthor}, thank you for your interest in contributing!`,
+                  '',
+                  `This PR has been **automatically closed** because you are not assigned to the linked issue(s): **${issueList}**.`,
+                  '',
+                  '### How to get assigned:',
+                  '1. Go to the issue(s) listed above.',
+                  '2. Leave a comment like: *"I would like to work on this."*',
+                  '3. Wait for a maintainer to assign you.',
+                  '4. Once assigned, reopen this PR or create a new one.',
+                  '',
+                  '### Why do we require this?',
+                  'Assignment ensures no two contributors duplicate effort on the same issue.',
+                  '',
+                  'Thank you for understanding! We look forward to your contribution. 🙏'
+                ].join('\n')
+              });
+
+              // Close the PR
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                state: 'closed'
+              });
+
+            // -------------------------------------------------------
+            // 3b. Author IS assigned → ensure PR is open + label it
+            // -------------------------------------------------------
+            } else {
+              console.log('Author is assigned. Ensuring PR is open.');
+
+              // Reopen if it was closed by this workflow previously
+              if (pr.state === 'closed') {
+                await github.rest.pulls.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prNumber,
+                  state: 'open'
+                });
+              }
+
+              // Remove blocking labels if present
+              for (const label of ['status: invalid', 'needs: assignment']) {
+                try {
+                  await github.rest.issues.removeLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: prNumber,
+                    name: label
+                  });
+                } catch (_) { /* label may not exist */ }
+              }
+
+              // Add progress label
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  labels: ['status: in review']
+                });
+              } catch (e) {
+                console.warn('Could not add label:', e.message);
+              }
+
+              console.log('PR is valid. Assignment check passed ✓');
             }
