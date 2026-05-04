@@ -1,0 +1,168 @@
+name: Auto-Assign Reviewers
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  auto-assign:
+    runs-on: ubuntu-latest
+    name: Assign Reviewers Based on Code
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Auto-assign reviewers
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const codeowners = {};
+
+            // Define code owners by file pattern
+            // You can customize this based on your team structure
+            const ownershipMap = {
+              'frontend': ['@github-handle-1', '@github-handle-2'],  // Replace with actual GitHub handles
+              'backend': ['@github-handle-3', '@github-handle-4'],
+              'docs': ['@github-handle-1'],
+              'security': ['@github-handle-5'],
+              'infrastructure': ['@github-handle-4', '@github-handle-5']
+            };
+
+            // Get changed files
+            const files = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              per_page: 100
+            });
+
+            const assignees = new Set();
+            
+            files.data.forEach(file => {
+              if (file.filename.match(/^src\/(components|pages|assets|hooks|styles)/i)) {
+                // Assign frontend reviewers
+                (ownershipMap.frontend || []).forEach(r => assignees.add(r));
+              }
+              if (file.filename.match(/^(api|server|backend|functions)/i)) {
+                // Assign backend reviewers
+                (ownershipMap.backend || []).forEach(r => assignees.add(r));
+              }
+              if (file.filename.match(/\.(md|txt)$|^docs/i)) {
+                // Assign documentation reviewers
+                (ownershipMap.docs || []).forEach(r => assignees.add(r));
+              }
+              if (file.filename.match(/security|auth|\.(pem|key|secret)/i)) {
+                // Assign security reviewers
+                (ownershipMap.security || []).forEach(r => assignees.add(r));
+              }
+              if (file.filename.match(/^(docker|\.github|\.env|terraform|k8s)/i)) {
+                // Assign infrastructure reviewers
+                (ownershipMap.infrastructure || []).forEach(r => assignees.add(r));
+              }
+            });
+
+            // Don't assign the PR author to themselves
+            assignees.delete(`@${pr.user.login}`);
+
+            if (assignees.size > 0) {
+              // Convert GitHub handles to usernames (remove @)
+              const usernames = Array.from(assignees)
+                .map(u => u.replace('@', ''))
+                .slice(0, 5); // Limit to 5 reviewers
+
+              try {
+                await github.rest.pulls.requestReviewers({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  reviewers: usernames
+                });
+                console.log(`Assigned reviewers: ${usernames.join(', ')}`);
+              } catch (error) {
+                console.log(`Could not assign reviewers: ${error.message}`);
+              }
+            } else {
+              console.log("No specific reviewers matched for this PR");
+            }
+
+  label-first-time:
+    runs-on: ubuntu-latest
+    name: Label First-Time Contributors
+
+    steps:
+      - name: Check if first-time contributor
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const author = pr.user.login;
+
+            // Check if this is author's first PR
+            const commits = await github.rest.repos.listCommits({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              author: author,
+              per_page: 1
+            });
+
+            if (commits.data.length === 0) {
+              // This is likely their first contribution
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: ['good-first-issue']
+              });
+
+              console.log(`${author} is a first-time contributor!`);
+            }
+
+  comment-help-info:
+    runs-on: ubuntu-latest
+    name: Welcome and Guide
+
+    steps:
+      - name: Post welcome comment for new contributors
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            
+            // Check if this is a new PR (just opened)
+            if (context.action === 'opened') {
+              const welcomeComment = `## 👋 Welcome to our project!
+
+Thank you for your contribution! Here's a quick checklist to ensure your PR gets reviewed quickly:
+
+### ✅ PR Checklist
+- [ ] PR title follows [conventional commits](https://www.conventionalcommits.org/) format
+- [ ] Description clearly explains the changes
+- [ ] At least one screenshot/image is included (for UI changes)
+- [ ] Links to related issue(s) using \`Closes #123\` or \`Fixes #456\`
+- [ ] Tests are added or updated
+- [ ] No hardcoded secrets or sensitive data
+
+### 📚 Resources
+- [Contributing Guide](../../CONTRIBUTING.md)
+- [Code of Conduct](../../CODE_OF_CONDUCT.md)
+- [Development Setup](../../README.md#development)
+
+### 🔍 Review Process
+Our maintainers will review your PR as soon as possible. We appreciate your patience!
+
+Feel free to reach out if you have any questions. Happy contributing! 🎉
+`;
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: welcomeComment
+              });
+            }
