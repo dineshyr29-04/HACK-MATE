@@ -14,3 +14,4 @@
 [2026-05-04 19:33:08] Update dependency version comments
 [2026-05-04 19:33:08] Adjust z-index for modal overlay
 [2026-05-04 19:33:09] Fix minor console warning
+[2026-05-04 19:33:09] Enhance accessibility with aria labels
