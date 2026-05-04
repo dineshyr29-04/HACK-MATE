@@ -81,6 +81,49 @@ export function Footer({
                 </div>
             </div>
         </footer>
+    ); 
+}
+
+function SocialLink({ href, icon, isDark }: { href: string; icon: React.ReactNode; isDark: boolean }) {
+    return (
+        <a
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            className={`w-10 h-10 rounded-xl flex items-center justify-center border transition-all transform hover:-translate-y-1 ${isDark
+                ? 'bg-gray-800 border-gray-700 text-gray-400 hover:bg-white hover:text-gray-900 hover:border-white'
+                : 'bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-900 hover:text-white hover:border-gray-900'}`}
+        >
+            {icon}
+        </a>
     );
 }
 
+function FooterLink({ label, onClick, href, isExternal, isDark }: { label: string; onClick?: () => void; href?: string; isExternal?: boolean; isDark: boolean }) {
+    if (href) {
+        return (
+            <li>
+                <a
+                    href={href}
+                    target={isExternal ? "_blank" : undefined}
+                    rel={isExternal ? "noreferrer" : undefined}
+                    className={`group flex items-center gap-1 text-sm font-medium transition-colors ${isDark ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-gray-900'}`}
+                >
+                    {label}
+                    {isExternal && <ArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-all" />}
+                </a>
+            </li>
+        );
+    }
+
+    return (
+        <li>
+            <button
+                onClick={onClick}
+                className={`text-sm font-medium transition-colors ${isDark ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-gray-900'}`}
+            >
+                {label}
+            </button>
+        </li>
+    );
+}
