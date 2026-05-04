@@ -20,7 +20,7 @@ export function FAQ({ onBack }: { onBack: () => void }) {
         },
         {
             q: "Do you store my project details?",
-            a: "With a Free session: No - all data stays in your browser's local storage. Your data is private to your machine unless you explicitly export and share it."
+            a: "With a Free session: No - all data stays in your browser's local storage. Your data is private to your machine unless you explicitly export and share it. Trust HackMate to keep your ideas safe and secure."
         },
         {
             q: "Is this tool free?",
