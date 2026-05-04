@@ -2,14 +2,102 @@
 
 ## 1. Zero-Friction Structure
 ```text
-/public       (Images, Icons, Fonts)
-/src/app      (Layouts, Pages)
-/src/components (Reusable UI)
-/src/lib      (AI, DB, Auth Helpers)
-/src/types    (Type Definitions)
-/scripts      (Seed scripts, Migration)
-.env.example  (List of ALL required keys)
-README.md     (Professional Documentation)
+my-project/
+├── .github/
+│   ├── workflows/
+│   │   ├── ci.yml
+│   │   └── deploy.yml
+│   └── PULL_REQUEST_TEMPLATE.md
+│
+├── docs/
+│   ├── architecture.md
+│   ├── api.md
+│   └── setup.md
+│
+├── src/
+│   ├── assets/
+│   │   ├── images/
+│   │   ├── fonts/
+│   │   └── icons/
+│   │
+│   ├── components/
+│   │   ├── common/
+│   │   │   ├── Button/
+│   │   │   │   ├── Button.jsx
+│   │   │   │   ├── Button.test.js
+│   │   │   │   └── Button.module.css
+│   │   │   └── Input/
+│   │   │       ├── Input.jsx
+│   │   │       ├── Input.test.js
+│   │   │       └── Input.module.css
+│   │   └── layout/
+│   │       ├── Header/
+│   │       ├── Footer/
+│   │       └── Sidebar/
+│   │
+│   ├── pages/
+│   │   ├── Home/
+│   │   │   ├── index.jsx
+│   │   │   └── Home.module.css
+│   │   ├── About/
+│   │   └── Dashboard/
+│   │
+│   ├── hooks/
+│   │   ├── useAuth.js
+│   │   └── useFetch.js
+│   │
+│   ├── services/
+│   │   ├── api.js
+│   │   ├── auth.service.js
+│   │   └── user.service.js
+│   │
+│   ├── store/
+│   │   ├── slices/
+│   │   │   ├── authSlice.js
+│   │   │   └── userSlice.js
+│   │   └── index.js
+│   │
+│   ├── utils/
+│   │   ├── constants.js
+│   │   ├── helpers.js
+│   │   └── validators.js
+│   │
+│   ├── styles/
+│   │   ├── globals.css
+│   │   ├── variables.css
+│   │   └── mixins.css
+│   │
+│   ├── types/
+│   │   └── index.d.ts
+│   │
+│   ├── config/
+│   │   └── index.js
+│   │
+│   └── App.jsx
+│
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
+│
+├── scripts/
+│   ├── build.sh
+│   └── deploy.sh
+│
+├── public/
+│   ├── index.html
+│   ├── favicon.ico
+│   └── robots.txt
+│
+├── .env
+├── .env.example
+├── .gitignore
+├── .eslintrc.js
+├── .prettierrc
+├── jest.config.js
+├── package.json
+├── README.md
+└── tsconfig.json
 ```
 
 ## 2. Professional Commits

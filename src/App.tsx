@@ -15,6 +15,7 @@ import { Resources } from "./components/Resources";
 import { CaseStudies } from "./components/CaseStudies";
 import { AuthStage } from "./components/AuthStage";
 import { Footer } from "./components/Footer";
+import { ThemeProvider } from './context/ThemeContext';
 
 // Re-verify: Google Auth + Project Logic
 import { 
@@ -56,6 +57,15 @@ function App() {
   const handleLogout = async () => {
     await signOut(auth);
   };
+   //A reusable requireAuth helper
+   const requireAuth = (action:() => void,fallback: {stage:AppStage; data?: any}) => {
+    if (!user) {
+      setPendingAction(fallback);
+      setStage('auth-required');
+    } else {
+      action();
+    }
+   };
 
   // Handle Shared Link Import
   useEffect(() => {
@@ -109,14 +119,14 @@ function App() {
   const [pendingAction, setPendingAction] = useState<{ stage: AppStage; data?: any } | null>(null);
 
   // Handlers
-  const handlePromptSubmit = (value: string) => {
-    if (!user) {
-      setPendingAction({ stage: 'setup', data: value });
-      setStage('auth-required');
-      return;
-    }
+ const handlePromptSubmit = (value: string) => {
+    requireAuth( 
+      () => {
     setProjectData(prev => ({ ...prev, problem: value }));
     setStage('setup');
+  },
+  {stage:'setup', data: value}
+   );
   };
 
   const handleJoinTeam = async (teamId: string) => {
@@ -153,11 +163,9 @@ function App() {
   };
 
   const handleResumeProject = (project: any) => {
-    if (!user) {
-      setPendingAction({ stage: 'selection', data: project });
-      setStage('auth-required');
-      return;
-    }
+    requireAuth(
+      () => {
+   
     setProjectId(project.id);
     setProjectData({
       name: project.name,
@@ -171,6 +179,9 @@ function App() {
       teamId: project.teamId || ''
     });
     setStage('selection');
+  },
+  {stage: 'selection', data:project}
+);
   };
 
   const handleDeleteProject = async (projectId: string) => {
@@ -230,7 +241,8 @@ function App() {
   };
 
   return (
-    <div className="font-sans antialiased text-gray-900 bg-gray-50 min-h-screen">
+    <ThemeProvider>
+    <div className="font-sans antialiased min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       {stage === 'landing' && (
         <>
           <HeroWave
@@ -348,7 +360,21 @@ function App() {
           onBack={() => setStage('landing')}
         />
       )}
+
+      {/* Persistent Footer for Landing and Info Stages */}
+      {(stage === 'landing' || stage === 'how-it-works' || stage === 'features' || stage === 'faq' || stage === 'resources' || stage === 'case-studies') && (
+       <Footer
+          onOpenHowItWorks={() => setStage('how-it-works')}
+          onOpenFeatures={() => setStage('features')}
+          onOpenResources={() => setStage('resources')}
+          onOpenGuide={() => setStage('guide')}
+          onOpenFAQ={() => setStage('faq')}
+          onOpenCaseStudies={() => setStage('case-studies')}
+        />
+       
+      )}
     </div>
+    </ThemeProvider>
   );
 }
 

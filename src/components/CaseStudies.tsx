@@ -1,6 +1,9 @@
 import { ArrowLeft, ExternalLink, Trophy, Code2, Play } from "lucide-react";
+import { useTheme } from '../context/ThemeContext';
 
 export function CaseStudies({ onBack }: { onBack: () => void }) {
+    const { isDark } = useTheme();
+
     const cases = [
         {
             name: "Smart Agriculture AI",
@@ -35,17 +38,18 @@ export function CaseStudies({ onBack }: { onBack: () => void }) {
     ];
 
     return (
-        <div className="min-h-screen bg-white">
-            <nav className="border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
+        <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
+            {/* Navbar */}
+            <nav className={`border-b sticky top-0 z-50 backdrop-blur-md ${isDark ? 'border-gray-700 bg-gray-900/80' : 'border-gray-100 bg-white/80'}`}>
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     <button
                         onClick={onBack}
-                        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors font-medium"
+                        className={`flex items-center gap-2 transition-colors font-medium ${isDark ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
                     >
                         <ArrowLeft className="w-4 h-4" /> Back to Home
                     </button>
                     <div className="flex items-center gap-2 font-bold text-lg">
-                        <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center text-white">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDark ? 'bg-white text-gray-900' : 'bg-gray-900 text-white'}`}>
                             <Code2 className="w-4 h-4" />
                         </div>
                         <span>Case Studies</span>
@@ -56,9 +60,14 @@ export function CaseStudies({ onBack }: { onBack: () => void }) {
 
             <main className="max-w-7xl mx-auto px-6 py-20">
                 <div className="text-center mb-20 animate-in fade-in slide-in-from-top-4 duration-700">
-                    <h1 className="text-4xl sm:text-6xl font-black mb-6 tracking-tight">Built with <br /><span className="text-black">Hackathon Copilot.</span></h1>
-                    <p className="text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">
-                        Join the <span className="text-gray-900 font-bold">200+ builders</span> across <span className="text-gray-900 font-bold">8+ countries</span> who joined in our <span className="text-gray-900 font-bold">first month</span> to build winning projects.
+                    <h1 className="text-4xl sm:text-6xl font-black mb-6 tracking-tight">
+                        Built with <br />
+                        <span className={isDark ? 'text-white' : 'text-black'}>Hackathon Copilot.</span>
+                    </h1>
+                    <p className={`text-xl max-w-2xl mx-auto leading-relaxed font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                        Join the <span className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>200+ builders</span> across{' '}
+                        <span className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>8+ countries</span> who joined in our{' '}
+                        <span className={`font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>first month</span> to build winning projects.
                     </p>
                 </div>
 
@@ -79,18 +88,21 @@ export function CaseStudies({ onBack }: { onBack: () => void }) {
                                 </div>
                             </div>
                             <div className="px-4">
-                                <h3 className="text-2xl font-black text-gray-900 mb-1">{c.name}</h3>
-                                <p className="text-gray-400 font-bold text-sm mb-4">{c.hackathon} • {c.team}</p>
-                                <div className="p-6 bg-gray-50 rounded-2xl mb-6 relative italic text-gray-600 font-medium text-sm border border-gray-100">
+                                <h3 className={`text-2xl font-black mb-1 ${isDark ? 'text-white' : 'text-gray-900'}`}>{c.name}</h3>
+                                <p className={`font-bold text-sm mb-4 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>{c.hackathon} • {c.team}</p>
+                                <div className={`p-6 rounded-2xl mb-6 relative italic text-sm border ${isDark
+                                    ? 'bg-gray-800 border-gray-700 text-gray-300'
+                                    : 'bg-gray-50 border-gray-100 text-gray-600'}`}>
                                     "{c.quote}"
-                                    <div className="absolute top-0 left-0 w-2 h-2 bg-gray-100 rounded-full translate-x-4 -translate-y-1" />
                                 </div>
                                 <div className="flex flex-wrap gap-2 mb-6">
                                     {c.tools.split(', ').map(tool => (
-                                        <span key={tool} className="text-[10px] font-black text-gray-400 bg-gray-100 px-2 py-1 rounded-lg italic">#{tool.replace(' ', '')}</span>
+                                        <span key={tool} className={`text-[10px] font-black px-2 py-1 rounded-lg italic ${isDark ? 'text-gray-400 bg-gray-800' : 'text-gray-400 bg-gray-100'}`}>
+                                            #{tool.replace(' ', '')}
+                                        </span>
                                     ))}
                                 </div>
-                                <button className="flex items-center gap-2 text-gray-900 font-bold text-sm hover:underline">
+                                <button className={`flex items-center gap-2 font-bold text-sm hover:underline ${isDark ? 'text-white' : 'text-gray-900'}`}>
                                     View Full Case Study <ExternalLink className="w-4 h-4" />
                                 </button>
                             </div>
@@ -99,8 +111,8 @@ export function CaseStudies({ onBack }: { onBack: () => void }) {
                 </div>
 
                 <div className="mt-24 text-center">
-                    <h2 className="text-2xl font-bold mb-8 italic text-gray-400">Trusted by students from</h2>
-                    <div className="flex flex-wrap justify-around items-center opacity-30 grayscale gap-12">
+                    <h2 className={`text-2xl font-bold mb-8 italic ${isDark ? 'text-gray-600' : 'text-gray-400'}`}>Trusted by students from</h2>
+                    <div className={`flex flex-wrap justify-around items-center gap-12 ${isDark ? 'opacity-20' : 'opacity-30'} grayscale`}>
                         <div className="text-3xl font-black tracking-tighter">BITS PILANI</div>
                         <div className="text-3xl font-black tracking-tighter">IIT BOMBAY</div>
                         <div className="text-3xl font-black tracking-tighter">NIT TRICHY</div>
