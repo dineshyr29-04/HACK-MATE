@@ -1,64 +1,34 @@
-name: PR Validation
-
-permissions:
-  contents: read
-  pull-requests: write
+name: Strict PR Validation
 
 on:
   pull_request:
-    types: [opened, reopened,edited, synchronize]
+    types: [opened, edited, synchronize, reopened]
 
 jobs:
-  validate-pr:
+  validate:
     runs-on: ubuntu-latest
-    name: Check Image & Issue
 
     steps:
-      - name: Validate PR image and issue link
+      - name: Validate PR rules
         uses: actions/github-script@v7
         with:
           script: |
             const pr = context.payload.pull_request;
             const body = pr.body || "";
 
-            // Check for image
-            const imageRegex = /!\[.*?\]\(.*?\)/;
-            const hasImage = imageRegex.test(body);
+            let errors = [];
 
-            // Check for issue linking
-            const issueRegex = /(close[sd]?|fix(e[sd])?|resolve[sd]?|relates to|ref)\s+#\d+/i;
-            const hasIssue = issueRegex.test(body);
-
-            let failedChecks = [];
-            
-            if (!hasImage) {
-              failedChecks.push("❌ Missing image: Add screenshot using `![alt text](image-url)`");
-            }
-            
-            if (!hasIssue) {
-              failedChecks.push("❌ Missing issue link: Add `Closes #123` or `Fixes #456`");
+            // ✅ ONLY REQUIRED RULE: Issue linking
+            const issueRegex = /(close[sd]?|fix(e[sd])?|resolve[sd]?)\s+#\d+/i;
+            if (!issueRegex.test(body)) {
+              errors.push("❌ You must link an issue using: Closes #issue_number");
             }
 
-            if (failedChecks.length > 0) {
-              // Post comment with reason
-              const message = `## ❌ PR Requirements Not Met\n\n${failedChecks.join("\n")}\n\nThis PR will be automatically closed.`;
-              
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pr.number,
-                body: message
-              });
+            // Optional but useful: prevent empty PRs
+            if (body.trim().length < 20) {
+              errors.push("❌ PR description is too short. Add proper details.");
+            }
 
-              // Close the PR
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-                state: "closed"
-              });
-
-              core.setFailed(`PR closed: Missing ${failedChecks.length} requirement(s)`);
-            } else {
-              console.log("✅ PR meets all requirements!");
+            if (errors.length > 0) {
+              core.setFailed(errors.join("\n"));
             }
