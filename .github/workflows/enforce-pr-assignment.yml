@@ -48,42 +48,31 @@ jobs:
             console.log(`Linked issue numbers found: ${issueNumbers}`);
 
             if (issueNumbers.length === 0) {
-              console.log('No linked issues found via closing keywords. Closing PR.');
+              console.log('No linked issues found via closing keywords. Skipping check.');
 
-              // Remove approval label if present
-              try {
-                await github.rest.issues.removeLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: prNumber,
-                  name: 'status: approved to merge'
-                });
-              } catch (_) { /* label may not exist */ }
-
-              // Add relevant labels
+              // Add a label to indicate no issue is linked
               try {
                 await github.rest.issues.addLabels({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: prNumber,
-                  labels: ['status: invalid', 'needs: issue link']
+                  labels: ['needs: issue link']
                 });
               } catch (e) {
-                console.warn('Could not add labels:', e.message);
+                console.warn('Could not add label:', e.message);
               }
 
-              // Post explanation comment
+              // Post a comment guiding the contributor
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: prNumber,
                 body: [
-                  '## ❌ PR Closed — No Linked Issue Found',
+                  '## ⚠️ No Linked Issue Found',
                   '',
                   `Hi @${prAuthor}, thank you for your contribution!`,
                   '',
-                  'This PR has been **automatically closed** because it does not reference a linked issue using a closing keyword.',
-                  '',
+                  'This PR does not appear to reference a linked issue using a closing keyword.',
                   'Please update the PR description to include one of the following formats:',
                   '',
                   '```',
@@ -94,18 +83,8 @@ jobs:
                   '',
                   'Also make sure you are **assigned to the issue** before submitting a PR.',
                   '',
-                  'Once you have linked an issue and ensured you are assigned, please reopen this PR or create a new one.',
-                  '',
                   '> This check helps us maintain an organised contribution workflow. 🙏'
                 ].join('\n')
-              });
-
-              // Close the PR
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber,
-                state: 'closed'
               });
 
               return;

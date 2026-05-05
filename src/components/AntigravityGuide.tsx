@@ -17,7 +17,7 @@ export function AntigravityGuide({ onBack }: GuideProps) {
     { id: 'setup', label: 'Install & Setup', icon: <Terminal className="w-4 h-4" /> },
     { id: 'github', label: 'Connect GitHub', icon: <Github className="w-4 h-4" /> },
     { id: 'workflow', label: 'Coding with AI', icon: <Code2 className="w-4 h-4" /> },
-    { id: 'prompts', label: 'Prompts', icon: <Zap className="w-4 h-4" /> },
+    { id: 'prompts', label: 'Prompt', icon: <Zap className="w-4 h-4" /> },
   ];
 
   return (
