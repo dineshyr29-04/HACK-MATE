@@ -1,168 +1,93 @@
-name: Enforce Issue Link + Assignment Before PR
+name: PR Enforcer (Strict)
 
 on:
-  pull_request:
-    types: [opened, reopened, edited, synchronize]
-
-permissions:
-  pull-requests: write
-  issues: write
-  contents: read
+  pull_request_target:
+    types: [opened, edited, reopened]
 
 jobs:
-  check-assignment:
-    name: Verify PR author is assigned to linked issue
+  enforce:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check assignment and manage PR
+      - name: Enforce rules
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const pr = context.payload.pull_request;
-            const prAuthor = pr.user.login;
-            const prNumber = pr.number;
-            const prBody = pr.body || '';
+            const body = pr.body || "";
+            const title = (pr.title || "").toLowerCase();
 
             const owner = context.repo.owner;
             const repo = context.repo.repo;
+            const issue_number = pr.number;
 
-            const labelsToRemoveOnInvalid = [
-              'status: approved to merge',
-              'status: in review'
-            ];
+            // 🔍 Check for issue linking
+            const issueRegex = /(close[sd]?|fix(e[sd])?|resolve[sd]?)\s+#\d+/i;
+            const hasIssue = issueRegex.test(body);
 
-            async function safeRemoveLabel(name) {
-              try {
-                await github.rest.issues.removeLabel({ owner, repo, issue_number: prNumber, name });
-              } catch (_) {}
-            }
-
-            async function safeAddLabels(labels) {
-              try {
-                await github.rest.issues.addLabels({ owner, repo, issue_number: prNumber, labels });
-              } catch (e) {
-                core.warning(`Could not add labels: ${e.message}`);
-              }
-            }
-
-            async function comment(body) {
-              await github.rest.issues.createComment({ owner, repo, issue_number: prNumber, body });
-            }
-
-            async function closePr() {
-              try {
-                await github.rest.pulls.update({ owner, repo, pull_number: prNumber, state: 'closed' });
-              } catch (e) {
-                core.setFailed(`Failed to close PR #${prNumber}: ${e.message}`);
-              }
-            }
-
-            console.log(`PR #${prNumber} opened by: ${prAuthor}`);
-
-            // 1) Extract linked issue numbers using closing keywords
-            const closingKeywords = [
-              'close', 'closes', 'closed',
-              'fix', 'fixes', 'fixed',
-              'resolve', 'resolves', 'resolved'
-            ];
-            const keywordPattern = closingKeywords.join('|');
-            const issueRegex = new RegExp(`(?:${keywordPattern})\\s+#(\\d+)`, 'gi');
-
-            const matches = [...prBody.matchAll(issueRegex)];
-            const issueNumbers = [...new Set(matches.map(m => Number(m[1])).filter(n => Number.isInteger(n)))];
-
-            console.log(`Linked issue numbers found: ${issueNumbers.join(', ') || '(none)'}`);
-
-            // Helper: mark PR invalid consistently
-            async function markInvalid({ addLabels, message }) {
-              for (const l of labelsToRemoveOnInvalid) await safeRemoveLabel(l);
-
-              // Remove any previous invalid reasons so the current one is clear
-              for (const l of ['needs: issue link', 'needs: assignment']) await safeRemoveLabel(l);
-
-              await safeAddLabels(['status: invalid', 'status: closed', ...addLabels]);
-              await comment(message);
-              await closePr();
-            }
-
-            // 1a) No linked issue -> close + label
-            if (issueNumbers.length === 0) {
-              await markInvalid({
-                addLabels: ['needs: issue link'],
-                message: [
-                  'PR closed: no linked issue found.',
-                  '',
-                  `Hi @${prAuthor},`,
-                  '',
-                  'This pull request was automatically closed because it does not reference a linked issue using a closing keyword.',
-                  '',
-                  'Please edit the PR description to include one of:',
-                  '',
-                  '```',
-                  'Closes #<issue-number>',
-                  'Fixes #<issue-number>',
-                  'Resolves #<issue-number>',
-                  '```',
-                  '',
-                  'After you add the issue link and you are assigned to that issue, reopen the PR (or open a new one).'
-                ].join('\\n')
+            // ❌ If NO issue → comment + close PR
+            if (!hasIssue) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body: "❌ This PR has been closed because it does not reference any issue.\n\n👉 Please reopen after adding: `Closes #issue_number`"
               });
+
+              await github.rest.pulls.update({
+                owner,
+                repo,
+                pull_number: issue_number,
+                state: "closed"
+              });
+
               return;
             }
 
-            // 2) For each linked issue, verify PR author is assigned
-            let allAssigned = true;
-            const unassignedIssues = [];
+            // 🏷️ Auto labeling
+            let labels = [];
 
-            for (const issueNumber of issueNumbers) {
-              let issue;
-              try {
-                const { data } = await github.rest.issues.get({ owner, repo, issue_number: issueNumber });
-                issue = data;
-              } catch (e) {
-                console.log(`Could not fetch issue #${issueNumber}: ${e.message}`);
-                allAssigned = false;
-                unassignedIssues.push(issueNumber);
-                continue;
-              }
-
-              const assignees = (issue.assignees || []).map(a => a.login);
-              console.log(`Issue #${issueNumber} assignees: ${assignees.join(', ') || '(none)'}`);
-
-              if (!assignees.includes(prAuthor)) {
-                allAssigned = false;
-                unassignedIssues.push(issueNumber);
-              }
+            if (title.includes("fix") || body.toLowerCase().includes("bug")) {
+              labels.push("bug");
             }
 
-            // 3a) Not assigned -> close + label
-            if (!allAssigned) {
-              const issueList = unassignedIssues.map(n => `#${n}`).join(', ');
-              await markInvalid({
-                addLabels: ['needs: assignment'],
-                message: [
-                  'PR closed: assignment required.',
-                  '',
-                  `Hi @${prAuthor},`,
-                  '',
-                  `This pull request was automatically closed because you are not assigned to the linked issue(s): ${issueList}.`,
-                  '',
-                  'How to proceed:',
-                  '1. Open the issue(s) listed above.',
-                  '2. Comment that you want to work on it.',
-                  '3. Wait for a maintainer to assign you.',
-                  '4. Reopen this PR (or open a new one) after assignment.'
-                ].join('\\n')
+            if (title.includes("feat") || body.toLowerCase().includes("feature")) {
+              labels.push("enhancement");
+            }
+
+            if (body.toLowerCase().includes("doc")) {
+              labels.push("documentation");
+            }
+
+            if (body.toLowerCase().includes("ui")) {
+              labels.push("frontend");
+            }
+
+            if (body.toLowerCase().includes("api") || body.toLowerCase().includes("database")) {
+              labels.push("backend");
+            }
+
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number,
+                labels
               });
-              return;
             }
 
-            // 3b) Assigned -> label as in review
-            for (const l of ['status: invalid', 'needs: issue link', 'needs: assignment', 'status: closed']) {
-              await safeRemoveLabel(l);
-            }
+            // 👤 Auto assign repo owner
+            await github.rest.issues.addAssignees({
+              owner,
+              repo,
+              issue_number,
+              assignees: [owner]
+            });
 
-            await safeAddLabels(['status: in review']);
-            console.log('PR is valid: linked issue(s) found and author is assigned.');
+            // 💬 Success comment
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number,
+              body: "✅ PR looks good. Issue is linked and labels are applied. Maintainers will review soon."
+            });
