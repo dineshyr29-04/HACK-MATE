@@ -1,61 +1,65 @@
-name: Auto-Label PR
-
-permissions:
-  contents: read
-  pull-requests: write
+name: Auto Label + Assign + Comment
 
 on:
   pull_request:
-    types: [opened, edited, synchronize]
+    types: [opened, reopened]
 
 jobs:
-  auto-label:
+  manage-pr:
     runs-on: ubuntu-latest
-    name: Add Labels
 
     steps:
-      - name: Label PR
+      - name: Label + Assign + Comment
         uses: actions/github-script@v7
         with:
           script: |
             const pr = context.payload.pull_request;
-            const title = (pr.title || "").toLowerCase();
             const body = (pr.body || "").toLowerCase();
-            const labels = new Set();
+            const title = (pr.title || "").toLowerCase();
 
-            // Label by title keywords
-            if (title.includes("feat") || title.includes("feature")) {
-              labels.add("enhancement");
-            }
-            if (title.includes("fix") || title.includes("bug")) {
-              labels.add("bug");
-            }
-            if (title.includes("doc")) {
-              labels.add("documentation");
+            let labels = [];
+
+            if (title.includes("fix") || body.includes("bug")) {
+              labels.push("bug");
             }
 
-            // Add label by file changes
-            const files = await github.rest.pulls.listFiles({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: pr.number
-            });
+            if (title.includes("feat") || body.includes("feature")) {
+              labels.push("enhancement");
+            }
 
-            const fileCount = files.data.length;
-            let sizeLabel = "size/M";
-            if (fileCount < 10) sizeLabel = "size/XS";
-            else if (fileCount < 30) sizeLabel = "size/S";
-            else if (fileCount < 100) sizeLabel = "size/L";
-            else sizeLabel = "size/XL";
+            if (body.includes("doc")) {
+              labels.push("documentation");
+            }
 
-            labels.add(sizeLabel);
+            if (body.includes("ui")) {
+              labels.push("frontend");
+            }
 
-            // Add all labels
-            if (labels.size > 0) {
+            if (body.includes("api") || body.includes("database")) {
+              labels.push("backend");
+            }
+
+            if (labels.length > 0) {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pr.number,
-                labels: Array.from(labels)
+                labels
               });
             }
+
+            // Auto assign you (repo owner)
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              assignees: [context.repo.owner]
+            });
+
+            // Welcome comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: "👋 Thanks for your PR! Make sure it properly links an issue using `Closes #number`."
+            });
